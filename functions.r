@@ -115,19 +115,19 @@ pvalComp <- function(
   N,
   esType){
   pvalComp <- ifelse(esType=="t",
-                     pt(x, df = df2, lower.tail = FALSE) * 2,
+                     pt(abs(x), df = df2, lower.tail = FALSE) * 2,
                      ifelse(
                        esType=="F",
                        pf(x, df1 = df1, df2 = df2, lower.tail = FALSE),
                        ifelse(
                          esType=="r",
-                         pvalr(x, N) * 2,
+                         pvalr(abs(x), N) * 2,
                          ifelse(
                            esType=="Chi2",
                            pchisq(x, df = df1, lower.tail = FALSE),
                            ifelse(
                              esType == "z",
-                             pnorm(x, lower.tail = FALSE) * 2, 
+                             pnorm(abs(x), lower.tail = FALSE) * 2, 
                              NA
                            )
                          )
