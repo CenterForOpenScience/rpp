@@ -7,8 +7,7 @@
 ######################################################################################
 
 library(devtools)
-# source_url('https://gist.githubusercontent.com/chartgerink/cdf80f331bcde3d3103a/raw/aaaf193562ae04fc9983a97ff7ee2748846a04ef/RPPfunctions')
-source('functions.r')
+source_url('https://raw.githubusercontent.com/chartgerink/rpp/master/functions.r')
 
 # Read in the google spreadsheet
 # Written by Sacha Epskamp
