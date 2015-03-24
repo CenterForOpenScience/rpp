@@ -297,25 +297,60 @@ binom.test(x = sum(temp[!is.na(temp)]), n = length(temp[!is.na(temp)]),
 
 pdf('effect plots.pdf', width = 11.2, height = 9, onefile = TRUE)
 # Effect replication and original
-plot(x = MASTER$T_r..R., y = MASTER$T_r..O., xlab = "Effect size r (replication)",
-     ylab = "Effect size r (original)", col = "white")
-points(x = MASTER$T_r..R.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
-       y = MASTER$T_r..O.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
-points(x = MASTER$T_r..R.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
-       y = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
-points(x = MASTER$T_r..R.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
-       y = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
+plot(y = MASTER$T_r..R., x = MASTER$T_r..O., xlab = "Effect size r (original)",
+     ylab = "Effect size r (replication)", col = "white")
+points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
+       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
+points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
+       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
+points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
+       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
 lines(x = seq(0, 1, .001), y = seq(0, 1, .001), type = 'l')
 
 # Regression line
-xx <- lm(MASTER$T_r..R. ~ MASTER$T_r..O.)
+x1 <- MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]
+y1 <- MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]
+
+# Linear
+xx <- lm(y1 ~ x1)
+lines(loess.smooth(x = x1, y = y1), lty = 2)
 curve(expr = (xx$coefficients[1] + xx$coefficients[2] * x), from = -10, to = 10, add = TRUE, col = "blue")
 
-legend(x=.6,y=.25,legend=c('Both nonsignificant', 'Original significant', 'Both significant', 'Replication predicted by original'),
+legend(x=.6,y=.0,legend=c('Both nonsignificant',
+                          'Original significant',
+                          'Both significant',
+                          'Repl. predicted by orig.',
+                          'Loess curve'),
        cex=1,
-       lty=c(0,0, 0, 1), bty = 'n', pch = c(4, 21, 10, NA),
-       col = c("black", "black", "black", "blue"),box.lwd=0)
+       lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
+       col = c("black", "black", "black", "blue", "black"),box.lwd=0)
 
+# R2
+xr2 <- x1 * x1
+yr2 <- y1 * y1
+
+plot(y = yr2, x = xr2, xlab = "Effect size r (original)",
+     ylab = "Effect size r (replication)", col = "white", ylim = c(0,1), xlim = c(0,1))
+points(y = yr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
+       x = xr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
+points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
+       x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
+points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
+       x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
+lines(x = seq(0, 1, .001), y = seq(0, 1, .001), type = 'l')
+
+r2 <- lm(yr2 ~ xr2)
+lines(loess.smooth(x = xr2, y = yr2), lty = 2)
+curve(expr = (r2$coefficients[1] + r2$coefficients[2] * x), from = 0, to = 1, add = TRUE, col = "blue")
+
+legend(x=.6,y=.2,legend=c('Both nonsignificant',
+                          'Original significant',
+                          'Both significant',
+                          'Repl. predicted by orig.',
+                          'Loess curve'),
+       cex=1,
+       lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
+       col = c("black", "black", "black", "blue", "black"),box.lwd=0)
 # Histogram effects 
 hist1 <- hist(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=15)
 hist2 <- hist(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=20)
@@ -352,7 +387,6 @@ legend(x=.6,y=.5,legend=c(paste("Original, k = ",
        lty=c(1,1), bty = 'n',
        col = c("grey","black"),box.lwd=0)
 
-MASTER$T_r..R.^2 ~ MASTER$T_r..O.^2
 dev.off()
 
 ###
