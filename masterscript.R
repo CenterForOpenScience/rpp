@@ -389,12 +389,399 @@ legend(x=.6,y=.5,legend=c(paste("Original, k = ",
 
 dev.off()
 
-###
+#----------------------
 
 # Meta-analysis
 # Written by RCM van Aert
 
-###
+##########################################
+### Create correct order of categories ###
+##########################################
 
-# Moderator analysis
-# Written by RCM van Aert
+### Create the right order of the variable "Perceived expertise required"
+fac.expe <- factor(MASTER$Methodology.expertise.required..O., levels = c("No expertise required", "Slight expertise required",
+                                                                         "Moderate expertise required", "Strong expertise required", 
+                                                                         "Extreme expertise required"))
+
+### Create the right order of the variable "Opportunity for expectancy biases"
+fac.oppo.expe <- factor(MASTER$Opportunity.for.expectancy.bias..O., levels = c("No opportunity for researcher expectations to influence results",
+                                                                               "Slight opportunity for researcher expectations to influence results",
+                                                                               "Moderate opportunity for researcher expectations to influence results",
+                                                                               "Strong opportunity for researcher expectations to influence results",
+                                                                               "Extreme opportunity for researcher expectations to influence results"))
+
+### Create the right order of the variable "Opportunity for lack of diligence"
+fac.oppo.dili <- factor(MASTER$Opportunity.for.lack.of.diligence..O., levels = c("No opportunity for lack of diligence to affect the results",
+                                                                                 "Slight opportunity for lack of diligence to affect the results",
+                                                                                 "Moderate opportunity for lack of diligence to affect the results",
+                                                                                 "Strong opportunity for lack of diligence to affect the results",
+                                                                                 "Extreme opportunity for lack of diligence to affect the results"))
+
+### Create the right order of the variable "Current position"
+fac.posi <- factor(MASTER$Current.position..R., levels = c("Professor (or equivalent)", "Associate Professor (or equivalent)", "Assistant Professor (or equivalent)",
+                                                           "Post-doc or Research Scientist", "PhD student", "Master's student", "Undergraduate student", 
+                                                           "Faculty (non-tenure track) full-time lecturer", "Private sector researcher"))
+
+### Change "Faculty (non-tenure track) full-time lecturer" into "Assistant Professor (or equivalent)"
+tmp <- numeric()
+for(i in 1:length(fac.posi)) {
+  if(is.na(fac.posi[i] == TRUE)) { tmp[i] <- NA }
+  else if(as.character(fac.posi[i]) == "Faculty (non-tenure track) full-time lecturer") { tmp[i] <- "Assistant Professor (or equivalent)"
+  } else if (as.character(fac.posi[i]) == "Private sector researcher") { tmp[i] <- "Post-doc or Research Scientist"
+  } else { tmp[i] <- as.character(fac.posi[i]) }
+}
+fac.posi <- as.factor(tmp)
+
+### Create the right order of the variable "Degree"
+fac.degr <- factor(MASTER$Degree..R., levels = c("PhD or equivalent", "Master's degree or equivalent", "Some graduate school", "Bachelor's degree or equivalent", "some college/university",
+                                                 "high school/equivalent"))
+
+### Create the right order of the variable "Domain expertise"
+fac.doma <- factor(MASTER$Domain.expertise..R., levels = c("No Expertise", "Slight Expertise", "Some Expertise", "Moderate Expertise", "High Expertise"))
+
+### Create the right order of the variable "Method expertise"
+fac.meth <- factor(MASTER$Method.expertise..R., levels = c("No Expertise", "Slight Expertise", "Some Expertise", "Moderate Expertise", "High Expertise"))
+
+### Create the right order of the variable "Implementation quality"
+fac.impl <- factor(MASTER$Implementation.quality..R., levels = c("was of much higher quality than the original study", "was of moderately higher quality than the original study",
+                                                                 "was of slightly higher quality than the original study", "was about the same quality as the original study", 
+                                                                 "was of slightly lower quality than the original study", "was of moderately lower quality than the original study"))
+
+### Create the right order of the variable "Data collection quality"
+fac.data <- factor(MASTER$Data.collection.quality..R., levels = c("was much better than the average study", "was better than the average study", "was slightly better than the average study",
+                                                                  "was about the same as the average study", "was slightly worse than the average study", "was worse than the average study",
+                                                                  "was much worse than the average study"))
+
+### Create the right order of the variable "Replication similarity"
+fac.repl <- factor(MASTER$Replication.similarity..R., levels = c("Not at all similar", "Slightly similar", "Somewhat similar", "Moderately similar", "Very similar", "Extremely similar",
+                                                                 "Virtually identical"))
+
+### Create the right order of the variable "Difficulty of implementation"
+fac.diff <- factor(MASTER$Difficulty.of.implimentation..R., levels = c("Extremely challenging", "Very challenging", "Moderately challenging", "Somewhat challenging", "Slightly challenging",
+                                                                       "Not at all challenging"))
+
+###########################################
+### Prepare variables for meta-analyses ###
+###########################################
+
+### Function for standardizing variables
+stand <- function(x, max, min, option) {
+  
+  if(option == 1) {
+    res <- (x-mean(x, na.rm = TRUE))/sd(x, na.rm = TRUE)
+  }
+  
+  if(option == 2) {
+    res <- (x - min)/(max-min)
+  }
+  
+  return(res)
+}
+
+### OPTION 1 FOR STANDARDIZING ###
+option <- 1
+
+# a. PUBLISHING JOURNAL AND SUBDISCIPLINE
+
+### Create dummy variables for "Publishing journal and subdiscipline"
+### JPSP is reference category because it has the most cases
+d.JEP <- ifelse(jour == 1, 1, 0)
+d.PSCog <- ifelse(jour == 3, 1, 0)
+d.PSSoc <- ifelse(jour == 4, 1, 0)
+d.PSOth <- ifelse(jour == 5, 1, 0)
+
+# b. IMPORTANCE OF THE EFFECT
+
+### Standardizing "Citation count, paper (O)"
+st.impa <- stand(MASTER$Citation.count..paper..O., option = option)
+
+### Standardizing "Exciting/important effect"
+st.exci <- stand(as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.], option = option)
+
+### Creating scale
+sc.impo <- (st.impa + st.exci)/2
+
+# c. SURPRISING EFFECT
+
+### Standardizing "Surprising effect" and creating scale
+sc.surp <- stand(as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.], option = option)
+
+# d. EXPERIENCE AND EXPERTISE OF ORIGINAL TEAM
+
+### Taking the average and then standardizing "Institution prestige of 1st author and senior author" 
+ave.pres <- (MASTER$Institution.prestige..1st.author..O.+MASTER$Institution.prestige..senior.author..O.)/2
+st.pres <- stand(ave.pres, option = option)
+
+### Standardizing "Citation Count, 1st author (O)"
+st.impa.1st <- stand(MASTER$Citation.Count..1st.author..O., option = option)
+
+### Standardizing "Citation count, senior author (O)"
+### NOG CHECKEN!
+st.impa.sen <- stand(MASTER$Citation.count..senior.author..O., option = option)
+
+### Creating scale
+sc.expe1 <- (st.pres + st.impa.1st + st.impa.sen)/3
+
+# e. CHALLENGE OF CONDUCTING REPLICATION
+
+### Standardizing "Perceived expertise required"
+st.expe <- stand(as.numeric(fac.expe), option = option)
+
+### Standardizing "Perceived opportunity for expectancy biases"
+st.oppo.expe <- stand(as.numeric(fac.oppo.expe), option = option)
+
+### Standardizing "Perceived opportunity for impact of lack of diligence"
+st.oppo.dili <- stand(as.numeric(fac.oppo.dili), option = option)
+
+### Create scale
+sc.chal <- (st.expe + st.oppo.expe + st.oppo.dili)/3
+
+# f. EXPERIENCE AND EXPERTISE OF REPLICATION TEAM
+
+### Standardizing "Position of senior member of replication team"
+st.posi <- stand(as.numeric(fac.posi), option = option)
+
+### Standardizing "Highest degree of replication team's senior member"
+st.degr <- stand(as.numeric(fac.degr), option = option)
+
+### Standardizing "Replication team domain expertise"
+st.doma <- stand(as.numeric(fac.doma), option = option)
+
+### Standardizing "Replication team method expertise"
+st.meth <- stand(as.numeric(fac.meth), option = option)
+
+### Standardizing "Replication team senior member's total publications"
+st.publ <- stand(MASTER$Total.publications..R., option = option)
+
+### Standardizing "Replication team senior member's total publications and total number of peer-reviewed articles"
+st.peer <- stand(MASTER$Peer.reviewed.articles..R., option = option)
+
+### Standardizing "Replication team senior member's total citations"
+st.cita <- stand(MASTER$Citations..R., option = option)
+
+### Create scale
+sc.expe2 <- (st.posi + st.degr + st.doma + st.meth + st.publ + st.cita)/6
+
+# g. SELF-ASSESSED QUALITY OF REPLICATION
+
+### Standardizing "Self-assessed quality of replication"
+st.impl <- stand(as.numeric(fac.impl), option = option)
+
+### Standardizing "Self-assessed data collection quality of replication"
+st.data <- stand(as.numeric(fac.data), option = option)
+
+### Standardizing "Self-assessed replication similarity to original"
+st.repl <- stand(as.numeric(fac.repl), option = option)
+
+### Standardizing "Self-assessed difficulty of implementation"
+st.diff <- stand(as.numeric(fac.diff), option = option)
+
+### Create a scale
+sc.self <- (st.impl + st.data + st.repl + st.diff)/4
+
+###########################################
+### Transforming correlations to Fisher ###
+###########################################
+
+ri.o <- MASTER$T_r..O.
+ri.r <- MASTER$T_r..R.
+N.o <- MASTER$T_df2..O.+2
+N.r <- MASTER$T_df2..R.+2
+
+### Transform to Fisher's z
+fis.o <- 0.5*log((1 + ri.o) / (1 - ri.o)) 
+fis.r <- 0.5*log((1 + ri.r) / (1 - ri.r))
+
+### Difference in Fisher's z scores
+yi <- numeric()
+for(i in 1:length(fis.o)) {
+  
+  if(is.na(fis.o[i]) == TRUE | is.na(fis.r[i]) == TRUE) { yi[i] <- NA }
+  else if(fis.o[i] < 0 & fis.r[i] < 0) { yi[i] <- fis.o[i]*-1-fis.r[i]*-1 } 
+  else if(fis.o[i] < 0 & fis.r[i] > 0) { yi[i] <- fis.o[i]*-1+fis.r[i] }
+  else {  yi[i] <- fis.o[i]-fis.r[i] }
+  
+}
+
+### Standard errors original and replication study
+sei.o <- sqrt(1/(N.o-3))
+sei.r <- sqrt(1/(N.r-3))
+
+### p-values original and replication study
+pval.o <- pnorm(fis.o, sd = sei.o, lower.tail = FALSE)
+pval.r <- pnorm(fis.r, sd = sei.r, lower.tail = FALSE)
+
+### Standard error of difference score
+sei <- sqrt(1/(N.o-3) + 1/(N.r-3))
+
+#######################################
+### Select studies for the analyses ###
+#######################################
+
+df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
+                 d.JEP, d.PSCog, d.PSSoc, d.PSOth, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self)
+df <- df[-149, ] ### Remove duplicate
+
+### Select: F(df1 = 1, df2), t, and r
+sub <- subset(df, (df$stat == "F" & df$df1 == 1) | df$stat == "t" | df$stat == "r")
+
+### Remove rows when NA on yi
+final <- sub[!is.na(sub$yi) & !is.na(sub$sei), ]
+
+#######################################
+### Correlations between moderators ###
+#######################################
+
+### Issue with NAs has to be solved for variable sc.expe2
+cor(data.frame(final$fis.o, final$fis.r, final$yi, final$sc.imp, final$sc.surp, final$sc.expe1, final$sc.chal, final$sc.expe2, final$sc.self))
+
+####################
+### Tables Brian ###
+####################
+
+### Load metafor package
+library(metafor)
+
+### Meta-analytic mean and sd of the estimate combining per pair the original study and replication 
+est <- pval <- numeric()
+
+for(i in 1:length(final$fis.o)) {
+  tmp <- rma(yi = c(final$fis.o[i], final$fis.r[i]), sei = c(final$sei.o[i], final$sei.r[i]), method = "FE")
+  est[i] <- tmp$b[1]
+  if (tmp$pval < 0.05) { pval[i] <- TRUE
+  } else { pval[i] <- FALSE }
+}
+
+mean(est)
+sd(est)
+sum(pval)/length(pval) # Proportion of statistically significant studies
+
+#################################################################################
+### Meta-analyses based on differences between original study and replication ###
+#################################################################################
+
+### Meta-analysis of null model
+res <- rma(yi = final$yi, sei = final$sei, method = "REML")
+res
+# png("C:/Users/S787802/Desktop/Funnel RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
+funnel(res, main = "Funnel plot based on difference original and replication study")
+# dev.off()
+
+### Meta-analysis of only original studies
+res <- rma(yi = final$fis.o, sei = final$sei.o, method = "REML")
+# png("C:/Users/S787802/Desktop/Funnel original RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
+funnel(res, main = "Funnel plot based on original studies")
+# dev.off()
+
+### Meta-analysis of only original studies with se in original study as moderator
+rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o, method = "REML")
+
+### Meta-analysis of only replication studies
+res <- rma(yi = final$fis.r, sei = final$sei.r, method = "REML")
+# png("C:/Users/S787802/Desktop/Funnel replication RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
+funnel(res, main = "Funnel plot based on replication studies")
+# dev.off()
+
+### Meta-analysis of only replication studies with se in replication study as moderator
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r, method = "REML")
+
+### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE as moderator
+rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+
+### Meta-analysis with sei.o as moderator
+rma(yi = final$yi, sei = final$sei, mods = ~ final$sei.o, method = "REML")
+
+### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE and sei.o as moderators
+rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o, method = "REML")
+
+### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE, sei.o, and its interaction as moderators
+rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o, final$d.JEP*final$sei.o + final$d.PSCog*final$sei.o + final$d.PSSoc*final$sei.o + final$d.PSoth*final$sei.o, method = "REML")
+
+### Meta-analysis with b. IMPORTANCE OF THE EFFECT as moderator
+rma(yi = yi, sei = sei, mods = ~ sc.impo, method = "REML")
+
+### Meta-analysis with c. SURPRISING EFFECT as moderator
+rma(yi = yi, sei = sei, mods = ~ sc.surp, method = "REML")
+
+### Meta-analysis with d. EXPERIENCE AND EXPERTISE OF ORIGINAL TEAM as moderator
+rma(yi = yi, sei = sei, mods = ~ sc.expe1, method = "REML")
+
+### Meta-analysis with e. CHALLENGE OF CONDUCTING REPLICATION as moderator
+rma(yi = yi, sei = sei, mods = ~ sc.chal, method = "REML")
+
+### Meta-analysis with f. EXPERIENCE AND EXPERTISE OF REPLICATION TEAM
+rma(yi = yi, sei = sei, mods = ~ sc.expe2, method = "REML")
+
+### Meta-analysis with g. SELF-ASSESSED QUALITY OF REPLICATION
+rma(yi = yi, sei = sei, mods = ~ sc.self, method = "REML")
+
+##############################
+### Meta-analyses per pair ###
+##############################
+
+### How often is the null hypotheses rejected in the meta-analysis
+in.ci <- es.meta <- se.meta <- ci.lb.meta <- ci.ub.meta <- pval.meta <- numeric()
+
+for(i in 1:length(final$fis.o)) {
+  tmp <- rma(yi = c(final$fis.o[i], final$fis.r[i]), sei = c(final$sei.o[i], final$sei.r[i]), method = "FE")
+  es.meta[i] <- tmp$b[1]
+  se.meta[i] <- tmp$se
+  ci.lb.meta[i] <- tmp$ci.lb
+  ci.ub.meta[i] <- tmp$ci.ub
+  pval.meta[i] <- tmp$pval
+  
+  if(tmp$pval < 0.05) { in.ci[i] <- 1
+  } else { in.ci[i] <- 0 }
+}
+
+sum(in.ci)/length(in.ci) # Proportion of times the null hypothesis of no effect is rejected
+
+### Create data frame
+tab <- data.frame(ID = final$ID, fis.o = final$fis.o, sei.o = final$sei.o, pval.o = final$pval.o, fis.r = final$fis.r, sei.r = final$sei.r, 
+                  pval.r = final$pval.r, diff = final$yi, es.meta = es.meta, se.meta = se.meta, ci.lb.meta = ci.lb.meta, ci.ub.meta = ci.ub.meta, pval.meta = pval.meta)
+
+### Check how often effect size original study is within CI of meta-analysis
+in.ci.meta <- numeric()
+
+for(i in 1:length(final$fis.o)) {
+  
+  if(final$fis.o[i] > ci.lb.meta[i] & final$fis.o[i] < ci.ub.meta[i]) {
+    in.ci.meta[i] <- TRUE
+  } else { in.ci.meta[i] <- FALSE }
+  
+}
+
+sum(in.ci.meta)/length(in.ci.meta) # Proportion of times the original study is within the CI of meta-analysis
+
+############################################################
+### How often is original study within CI of replication ###
+############################################################
+
+### Create confidence interval for replications
+ci.lb <- final$fis.r-qnorm(.975)*final$sei.r
+ci.ub <- final$fis.r+qnorm(.975)*final$sei.r
+
+in.ci <- numeric()
+
+for(i in 1:length(final$fis.r)) {
+  
+  if (final$fis.o[i] > ci.lb[i] & final$fis.o[i] < ci.ub[i]) {
+    in.ci[i] <- TRUE
+  } else { in.ci[i] <- FALSE }
+  
+}
+
+sum(in.ci)/length(in.ci) # Proportion of times the original study is within the CI of the replication
+
+### Predicting how often effect size of original study is within CI of replication
+overlap <- numeric()
+points <- 1000000
+p <- 1:points/(points+1)
+
+for (i in 1:length(final$N.r)) {
+  zu <- qnorm(p,0,1/sqrt(final$N.r[i]-3)) + qnorm(.975)/sqrt(final$N.r[i]-3)
+  zl <- zu - 2*qnorm(.975)/sqrt(final$N.r[i]-3)
+  overlap[i] <- mean(pnorm(zu,0,1/sqrt(final$N.o[i]-3))) - mean(pnorm(zl,0,1/sqrt(final$N.o[i]-3)))
+}
+overlap
+mean(overlap)
