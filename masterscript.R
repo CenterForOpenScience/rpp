@@ -1,3 +1,4 @@
+
 # wd <- "SET WORKING DIRECTORY HERE"
 wd <- "C:/Users/chjh/Dropbox/projects/2014rpp/master"
 
@@ -171,7 +172,7 @@ FisherMethod(x = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)],
              alpha = .05)
 
 # Distribution p-values
-pdf('pvalue distributions.pdf', onefile = TRUE, width = 11, height = 9.2)
+png('Fig1PDFp.png', width = 900, height = 900)
 #PDF
 plot(density(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
      lty=1,
@@ -193,7 +194,9 @@ legend(x=.4,y=4,legend=c(paste('Original p-values, k = ',
        cex=1,
        lty=c(1,1), bty = 'n',
        col = c("grey","black"),box.lwd=0)
+dev.off()
 
+png('Fig1CDFp.png', width = 900, height = 900)
 # CDF
 plot(ecdf(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
      lty=1,
@@ -295,7 +298,7 @@ prop <- sum(temp[!is.na(temp)])/length(temp[!is.na(temp)])
 binom.test(x = sum(temp[!is.na(temp)]), n = length(temp[!is.na(temp)]),
            p = .5,alternative = "two.sided")
 
-pdf('effect plots.pdf', width = 11.2, height = 9, onefile = TRUE)
+png('effect plots.png', width=900, height = 900)
 # Effect replication and original
 plot(y = MASTER$T_r..R., x = MASTER$T_r..O., xlab = "Effect size r (original)",
      ylab = "Effect size r (replication)", col = "white")
@@ -351,6 +354,10 @@ legend(x=.6,y=.2,legend=c('Both nonsignificant',
        cex=1,
        lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
        col = c("black", "black", "black", "blue", "black"),box.lwd=0)
+dev.off()
+
+png('effecthis.png', height = 900, width = 1200)
+par(mfrow = c(1,2))
 # Histogram effects 
 hist1 <- hist(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=15)
 hist2 <- hist(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=20)

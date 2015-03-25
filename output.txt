@@ -1,0 +1,1377 @@
+
+R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet"
+Copyright (C) 2014 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> 
+> # wd <- "SET WORKING DIRECTORY HERE"
+> wd <- "C:/Users/chjh/Dropbox/projects/2014rpp/master"
+> 
+> ######################################################################################
+> # Master script Tilburg University Analyses                                          #
+> # Responsible for this file: CHJ Hartgerink (c.h.j.hartgerink@tilburguniversity.edu) #
+> ######################################################################################
+> 
+> setwd(wd)
+> # Read in Tilburg data
+> MASTER <- read.csv('tilburg data.csv')
+> # source functions
+> source('functions.r')
+> # ALL ANALYSES INCLUDE PAIRWISE SELECTION.
+> 
+> #-----------------------------
+> 
+> # Writing out data for table
+> # https://docs.google.com/spreadsheets/d/16aqIekNerZcflSJwM7dOiXnN24-KvZqaa3eTg4js41U/edit#gid=0
+> # Columns B-E
+> ### Recode "Publishing journal and subdiscipline"
+> jour <- numeric()
+> 
+> for(i in 1:nrow(MASTER)) {
++   if(as.character(MASTER$Journal..O.[i]) == "JEPLMC") {
++     jour[i] <- 2
++   } else if(as.character(MASTER$Journal..O.[i]) == "JPSP") {
++     jour[i] <- 1
++   } else if(as.character(MASTER$Journal..O.[i]) == "PS") {
++     if(as.character(MASTER$Discipline..O.[i]) == "Cognitive") {
++       jour[i] <- 4
++     } else if(as.character(MASTER$Discipline..O.[i]) == "Social") {
++       jour[i] <- 3
++     } else { jour[i] <- 5 }
++   }
++   else { jour[i] <- NA }
++ }
+> 
+> # Overall 
+> sel <- MASTER[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.),]
+> 
+> # Column B
+> # Relations tested
+> reltest <- dim(sel)[1]
+> # Relations both significant
+> relsig <- sum((sel$T_pval_USE..O.) <= .05 & (sel$T_pval_USE..R. <= .05), na.rm = TRUE)
+> writeClipboard(
++   paste0(
++     round(relsig, 0),
++     " / ",
++     round(reltest, 0)
++   )
++ )
+> cat("\014")
+> readline("Paste into column B, then press ENTER key")
+Paste into column B, then press ENTER key
+[1] ""
+> # Column C
+> # Percent
+> writeClipboard(as.character(round((relsig / reltest), 2)))
+> cat("\014")
+> readline("Paste into column C, then press ENTER key")
+Paste into column C, then press ENTER key
+[1] ""
+> # Column D
+> # Mean
+> temp1 <- mean(sel$T_r..O., na.rm = TRUE)
+> # SD
+> temp2 <- sd(sel$T_r..O., na.rm = TRUE)
+> 
+> writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
+> cat("\014")
+> readline("Paste into column D, then press ENTER key")
+Paste into column D, then press ENTER key
+[1] ""
+> # Column E
+> # Mean
+> temp1 <- mean(sel$T_r..R., na.rm = TRUE)
+> # SD
+> temp2 <- sd(sel$T_r..R., na.rm = TRUE)
+> 
+> writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
+> cat("\014")
+> readline("Paste into column E, then press ENTER key")
+Paste into column E, then press ENTER key
+[1] ""
+> # Per journal 
+> for(journal in sort(unique(jour))){
++   sel <- MASTER[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.) & jour == journal,]
++   
++   # Column B
++   # Relations tested
++   reltest <- dim(sel)[1]
++   # Relations both significant
++   relsig <- sum((sel$T_pval_USE..O.) <= .05 & (sel$T_pval_USE..R. <= .05), na.rm = TRUE)
++   writeClipboard(
++     paste0(
++       round(relsig, 0),
++       " / ",
++       round(reltest, 0)
++     )
++   )
++   cat("\014")
++   readline("Paste into column B, then press ENTER key")
++   
++   # Column C
++   # Percent
++   writeClipboard(as.character(round((relsig / reltest) * 100, 0)))
++   cat("\014")
++   readline("Paste into column C, then press ENTER key")
++   
++   # Column D
++   # Mean
++   temp1 <- mean(sel$T_r..O., na.rm = TRUE)
++   # SD
++   temp2 <- sd(sel$T_r..O., na.rm = TRUE)
++   
++   writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
++   cat("\014")
++   readline("Paste into column D, then press ENTER key")
++   
++   # Column E
++   # Mean
++   temp1 <- mean(sel$T_r..R., na.rm = TRUE)
++   # SD
++   temp2 <- sd(sel$T_r..R., na.rm = TRUE)
++   
++   writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
++   cat("\014")
++   readline("Paste into column E, then press ENTER key")
++ }
+Paste into column B, then press ENTER key
+Paste into column C, then press ENTER key#---------------
+Paste into column D, then press ENTER key
+Paste into column E, then press ENTER key# P-value analyses
+Paste into column B, then press ENTER key# Written by CHJ Hartgerink
+Paste into column C, then press ENTER key
+Paste into column D, then press ENTER key#  McNemar test
+Paste into column E, then press ENTER keytab <- table(MASTER$T_sign..O.[!is.na(MASTER$T_sign..O.) & !is.na(MASTER$T_sign..R.)],
+Paste into column B, then press ENTER key             MASTER$T_sign..R.[!is.na(MASTER$T_sign..O.) & !is.na(MASTER$T_sign..R.)])
+Paste into column C, then press ENTER key
+Paste into column D, then press ENTER keymcnemarchi <- (tab[1,2]-tab[2,1])^2/(tab[1,2]+tab[2,1])
+Paste into column E, then press ENTER keymcnemarp <- pchisq(q = mcnemarchi, df = 1, lower.tail = FALSE)
+Paste into column B, then press ENTER key
+Paste into column C, then press ENTER key# Dependent t-test p-values
+Paste into column D, then press ENTER keyt.test(x = MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
+Paste into column E, then press ENTER key       y = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
+Paste into column B, then press ENTER key       paired = TRUE)
+Paste into column C, then press ENTER key
+Paste into column D, then press ENTER key# Wilcoxon signed-rank test p-values
+Paste into column E, then press ENTER keywilcox.test(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
+>             MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
+Error: unexpected ',' in "            MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],"
+>             alternative="two.sided")
+Error: unexpected ')' in "            alternative="two.sided")"
+> 
+> sd(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
+[1] 0.1048667
+> summary(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
+     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+0.0000000 0.0005945 0.0076550 0.0294500 0.0244900 0.9124000 
+> sd(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
+[1] 0.3167277
+> summary(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
+    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+0.000000 0.007754 0.198200 0.301100 0.523500 0.974800 
+> 
+> # Percent significant and nonsignificant for original studies
+> # Significant
+> sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)] <= .05) / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)])
+[1] 0.9300699
+> # Nonsignificant
+> sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)] > .05) / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)])
+[1] 0.06993007
+> 
+> # Percent significant and nonsignificant for replication studies
+> # Significant
+> sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)] <= .05) / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)])
+[1] 0.3473684
+> # Nonsignificant
+> sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)] > .05) / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)])
+[1] 0.6526316
+> 
+> # Deviation from uniformity in nonsignificant replication studies
+> FisherMethod(x = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)],
++              id = 1,
++              alpha = .05)
+      Fish      PFish CountNSig CountSig PercentNonSig
+1 153.9089 0.03541897        62       33     0.6526316
+> 
+> # Distribution p-values
+> png('Fig1PDFp.png', width = 900, height = 900)
+> #PDF
+> plot(density(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
++      lty=1,
++      frame.plot=F, 
++      main="P-value distributions (PDF)",
++      xlim=c(0,1),
++      xaxs="i",
++      yaxs="i",
++      xlab="P-value",
++      ylab = "Density",
++      cex.axis=.6,
++      cex.lab=.7,
++      col = "grey")
+> lines(density(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))
+> legend(x=.4,y=4,legend=c(paste('Original p-values, k = ',
++                                length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])),
++                          paste('Replication p-values, k = ',
++                                length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))),
++        cex=1,
++        lty=c(1,1), bty = 'n',
++        col = c("grey","black"),box.lwd=0)
+> dev.off()
+null device 
+          1 
+> 
+> png('Fig1CDFp.png', width = 900, height = 900)
+> # CDF
+> plot(ecdf(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
++      lty=1,
++      frame.plot=F, 
++      main="P-value distributions (CDF)",
++      xlim=c(0,1),
++      xaxs="i",
++      yaxs="i",
++      xlab="P-value",
++      ylab = "Density",
++      cex.axis=.6,
++      cex.lab=.7,
++      col = "grey")
+> lines(ecdf(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))
+> legend(x=.5,y=.3,legend=c(paste('Original p-values, k = ',
++                                 length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])),
++                           paste('Replication p-values, k = ',
++                                 length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))),
++        cex=1,
++        lty=c(1,1), bty = 'n',
++        col = c("grey","black"),box.lwd=0)
+> dev.off()
+null device 
+          1 
+> 
+> # Significance per journal
+> 
+> # Table significance, per journal
+> d11 <- sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "JPSP"] <= .05)
+> d11perc <- d11 / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "JPSP"])
+> d12 <- sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "JEPLMC"] <= .05)
+> d12perc <- d12 / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "JEPLMC"])
+> d13 <- sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "PS"] <= .05)
+> d13perc <- d13 / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "PS"])
+> 
+> d21 <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JPSP"] <= .05)
+> d21perc <- d21 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JPSP"])
+> d22 <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JEPLMC"] <= .05)
+> d22perc <- d22 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JEPLMC"])
+> d23 <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "PS"] <= .05)
+> d23perc <- d23 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "PS"])
+> 
+> d21cond <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JPSP" & 
++                                        MASTER$T_pval_USE..O. <= .05] <= .05)
+> d21perccond <- d21 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JPSP" & 
++                                                     MASTER$T_pval_USE..O. <= .05])
+> d22cond <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JEPLMC" &
++                                        MASTER$T_pval_USE..O. <= .05] <= .05)
+> d22perccond <- d22 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JEPLMC" &
++                                                     MASTER$T_pval_USE..O. <= .05])
+> d23cond <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "PS" &
++                                        MASTER$T_pval_USE..O. <= .05] <= .05)
+> d23perccond <- d23 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "PS" &
++                                                     MASTER$T_pval_USE..O. <= .05])
+> 
+> labels <- c("Original", "Replication", "Replication | sig original")
+> 
+> col1 <- c(d11, d21, d21cond)
+> col1perc <- c(d11perc, d21perc, d21perccond)
+> col2 <- c(d12, d22, d22cond)
+> col2perc <- c(d12perc, d22perc, d22perccond)
+> col3 <- c(d13, d23, d23cond)
+> col3perc <- c(d13perc, d23perc, d23perccond)
+> 
+> cbind(labels, col1, col1perc, col2, col2perc, col3, col3perc)
+     labels                       col1 col1perc            col2
+[1,] "Original"                   "45" "0.957446808510638" "32"
+[2,] "Replication"                "6"  "0.2"               "12"
+[3,] "Replication | sig original" "6"  "0.206896551724138" "12"
+     col2perc            col3 col3perc           
+[1,] "0.864864864864865" "56" "0.949152542372881"
+[2,] "0.461538461538462" "15" "0.384615384615385"
+[3,] "0.521739130434783" "14" "0.405405405405405"
+> 
+> #---------------
+> 
+> # Effect size distributions
+> # Written by CHJ Hartgerink
+> 
+> # Original effects recomputed
+> length(MASTER$T_r..O.[!is.na(MASTER$T_r..O.)])
+[1] 142
+> # Replication effects recopmuted
+> length(MASTER$T_r..R.[!is.na(MASTER$T_r..R.)])
+[1] 94
+> 
+> # Number of pairs
+> sum(!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.))
+[1] 94
+> 
+> # Dependent t-test effects (r values)
+> t.test(x = MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
++        y = MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
++        paired = TRUE)
+
+        Paired t-test
+
+data:  MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)] and MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]
+t = 9.3625, df = 93, p-value = 4.568e-15
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.1441027 0.2216878
+sample estimates:
+mean of the differences 
+              0.1828952 
+
+> 
+> 
+> # Wilcox test effects (r values)
+> wilcox.test(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
++             MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
++             alternative="two.sided")
+
+        Wilcoxon rank sum test with continuity correction
+
+data:  MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)] and MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]
+W = 6633, p-value = 2.917e-09
+alternative hypothesis: true location shift is not equal to 0
+
+> 
+> summary(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.00464 0.22440 0.37330 0.39190 0.52260 0.85960 
+> sd(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
+[1] 0.1927125
+> summary(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.2229  0.0368  0.1260  0.2090  0.3430  0.9229 
+> sd(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
+[1] 0.244331
+> 
+> mean(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])-mean(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
+[1] 0.1828952
+> 
+> # Binomial test to see if replicated effect is larger than original
+> temp <- MASTER$T_Comparison.effects..R.O.
+> prop <- sum(temp[!is.na(temp)])/length(temp[!is.na(temp)])
+> binom.test(x = sum(temp[!is.na(temp)]), n = length(temp[!is.na(temp)]),
++            p = .5,alternative = "two.sided")
+
+        Exact binomial test
+
+data:  sum(temp[!is.na(temp)]) and length(temp[!is.na(temp)])
+number of successes = 42, number of trials = 95, p-value = 0.3049
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.3402392 0.5476798
+sample estimates:
+probability of success 
+             0.4421053 
+
+> 
+> png('effect plots.png', width=900, height = 900)
+> # Effect replication and original
+> plot(y = MASTER$T_r..R., x = MASTER$T_r..O., xlab = "Effect size r (original)",
++      ylab = "Effect size r (replication)", col = "white")
+> points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
++        x = MASTER$T_r..O.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
+> points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
++        x = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
+> points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
++        x = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
+> lines(x = seq(0, 1, .001), y = seq(0, 1, .001), type = 'l')
+> 
+> # Regression line
+> x1 <- MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]
+> y1 <- MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]
+> 
+> # Linear
+> xx <- lm(y1 ~ x1)
+> lines(loess.smooth(x = x1, y = y1), lty = 2)
+> curve(expr = (xx$coefficients[1] + xx$coefficients[2] * x), from = -10, to = 10, add = TRUE, col = "blue")
+> 
+> legend(x=.6,y=.0,legend=c('Both nonsignificant',
++                           'Original significant',
++                           'Both significant',
++                           'Repl. predicted by orig.',
++                           'Loess curve'),
++        cex=1,
++        lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
++        col = c("black", "black", "black", "blue", "black"),box.lwd=0)
+> 
+> # R2
+> xr2 <- x1 * x1
+> yr2 <- y1 * y1
+> 
+> plot(y = yr2, x = xr2, xlab = "Effect size r (original)",
++      ylab = "Effect size r (replication)", col = "white", ylim = c(0,1), xlim = c(0,1))
+> points(y = yr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
++        x = xr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
+> points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
++        x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
+> points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
++        x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
+> lines(x = seq(0, 1, .001), y = seq(0, 1, .001), type = 'l')
+> 
+> r2 <- lm(yr2 ~ xr2)
+> lines(loess.smooth(x = xr2, y = yr2), lty = 2)
+> curve(expr = (r2$coefficients[1] + r2$coefficients[2] * x), from = 0, to = 1, add = TRUE, col = "blue")
+> 
+> legend(x=.6,y=.2,legend=c('Both nonsignificant',
++                           'Original significant',
++                           'Both significant',
++                           'Repl. predicted by orig.',
++                           'Loess curve'),
++        cex=1,
++        lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
++        col = c("black", "black", "black", "blue", "black"),box.lwd=0)
+> dev.off()
+null device 
+          1 
+> 
+> png('effecthis.png', height = 900, width = 1200)
+> par(mfrow = c(1,2))
+> # Histogram effects 
+> hist1 <- hist(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=15)
+> hist2 <- hist(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=20)
+> plot(hist1, xlim = c(-.6, 1.2), ylim = c(0, 50), xlab = "Effect size r",
++      main = "Effect histograms")
+> plot(hist2, add = TRUE, col = addTrans("grey",150))
+> legend(x = .7, y = 25,
++        leg=c(paste("Original, k = ",
++                    length(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])),
++              paste("Replication, k = ",
++                    length(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))),
++        fill=c("white", "grey"),
++        bty = 'n')
+> 
+> # CDF effects
+> plot(ecdf(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]),
++      lty=1,
++      frame.plot=F, 
++      main="Cumulative effect distributions",
++      xlim=c(0,1),
++      xaxs="i",
++      yaxs="i",
++      xlab="Correlation coefficient",
++      ylab = "Cumulative density",
++      cex.axis=.6,
++      cex.lab=.7,
++      col = "grey")
+> lines(ecdf(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))
+> legend(x=.6,y=.5,legend=c(paste("Original, k = ",
++                                 length(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])),
++                           paste("Replication, k = ",
++                                 length(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))),
++        cex=1,
++        lty=c(1,1), bty = 'n',
++        col = c("grey","black"),box.lwd=0)
+> 
+> dev.off()
+null device 
+          1 
+> 
+> #----------------------
+> 
+> # Meta-analysis
+> # Written by RCM van Aert
+> 
+> ##########################################
+> ### Create correct order of categories ###
+> ##########################################
+> 
+> ### Create the right order of the variable "Perceived expertise required"
+> fac.expe <- factor(MASTER$Methodology.expertise.required..O., levels = c("No expertise required", "Slight expertise required",
++                                                                          "Moderate expertise required", "Strong expertise required", 
++                                                                          "Extreme expertise required"))
+> 
+> ### Create the right order of the variable "Opportunity for expectancy biases"
+> fac.oppo.expe <- factor(MASTER$Opportunity.for.expectancy.bias..O., levels = c("No opportunity for researcher expectations to influence results",
++                                                                                "Slight opportunity for researcher expectations to influence results",
++                                                                                "Moderate opportunity for researcher expectations to influence results",
++                                                                                "Strong opportunity for researcher expectations to influence results",
++                                                                                "Extreme opportunity for researcher expectations to influence results"))
+> 
+> ### Create the right order of the variable "Opportunity for lack of diligence"
+> fac.oppo.dili <- factor(MASTER$Opportunity.for.lack.of.diligence..O., levels = c("No opportunity for lack of diligence to affect the results",
++                                                                                  "Slight opportunity for lack of diligence to affect the results",
++                                                                                  "Moderate opportunity for lack of diligence to affect the results",
++                                                                                  "Strong opportunity for lack of diligence to affect the results",
++                                                                                  "Extreme opportunity for lack of diligence to affect the results"))
+> 
+> ### Create the right order of the variable "Current position"
+> fac.posi <- factor(MASTER$Current.position..R., levels = c("Professor (or equivalent)", "Associate Professor (or equivalent)", "Assistant Professor (or equivalent)",
++                                                            "Post-doc or Research Scientist", "PhD student", "Master's student", "Undergraduate student", 
++                                                            "Faculty (non-tenure track) full-time lecturer", "Private sector researcher"))
+> 
+> ### Change "Faculty (non-tenure track) full-time lecturer" into "Assistant Professor (or equivalent)"
+> tmp <- numeric()
+> for(i in 1:length(fac.posi)) {
++   if(is.na(fac.posi[i] == TRUE)) { tmp[i] <- NA }
++   else if(as.character(fac.posi[i]) == "Faculty (non-tenure track) full-time lecturer") { tmp[i] <- "Assistant Professor (or equivalent)"
++   } else if (as.character(fac.posi[i]) == "Private sector researcher") { tmp[i] <- "Post-doc or Research Scientist"
++   } else { tmp[i] <- as.character(fac.posi[i]) }
++ }
+> fac.posi <- as.factor(tmp)
+> 
+> ### Create the right order of the variable "Degree"
+> fac.degr <- factor(MASTER$Degree..R., levels = c("PhD or equivalent", "Master's degree or equivalent", "Some graduate school", "Bachelor's degree or equivalent", "some college/university",
++                                                  "high school/equivalent"))
+> 
+> ### Create the right order of the variable "Domain expertise"
+> fac.doma <- factor(MASTER$Domain.expertise..R., levels = c("No Expertise", "Slight Expertise", "Some Expertise", "Moderate Expertise", "High Expertise"))
+> 
+> ### Create the right order of the variable "Method expertise"
+> fac.meth <- factor(MASTER$Method.expertise..R., levels = c("No Expertise", "Slight Expertise", "Some Expertise", "Moderate Expertise", "High Expertise"))
+> 
+> ### Create the right order of the variable "Implementation quality"
+> fac.impl <- factor(MASTER$Implementation.quality..R., levels = c("was of much higher quality than the original study", "was of moderately higher quality than the original study",
++                                                                  "was of slightly higher quality than the original study", "was about the same quality as the original study", 
++                                                                  "was of slightly lower quality than the original study", "was of moderately lower quality than the original study"))
+> 
+> ### Create the right order of the variable "Data collection quality"
+> fac.data <- factor(MASTER$Data.collection.quality..R., levels = c("was much better than the average study", "was better than the average study", "was slightly better than the average study",
++                                                                   "was about the same as the average study", "was slightly worse than the average study", "was worse than the average study",
++                                                                   "was much worse than the average study"))
+> 
+> ### Create the right order of the variable "Replication similarity"
+> fac.repl <- factor(MASTER$Replication.similarity..R., levels = c("Not at all similar", "Slightly similar", "Somewhat similar", "Moderately similar", "Very similar", "Extremely similar",
++                                                                  "Virtually identical"))
+> 
+> ### Create the right order of the variable "Difficulty of implementation"
+> fac.diff <- factor(MASTER$Difficulty.of.implimentation..R., levels = c("Extremely challenging", "Very challenging", "Moderately challenging", "Somewhat challenging", "Slightly challenging",
++                                                                        "Not at all challenging"))
+> 
+> ###########################################
+> ### Prepare variables for meta-analyses ###
+> ###########################################
+> 
+> ### Function for standardizing variables
+> stand <- function(x, max, min, option) {
++   
++   if(option == 1) {
++     res <- (x-mean(x, na.rm = TRUE))/sd(x, na.rm = TRUE)
++   }
++   
++   if(option == 2) {
++     res <- (x - min)/(max-min)
++   }
++   
++   return(res)
++ }
+> 
+> ### OPTION 1 FOR STANDARDIZING ###
+> option <- 1
+> 
+> # a. PUBLISHING JOURNAL AND SUBDISCIPLINE
+> 
+> ### Create dummy variables for "Publishing journal and subdiscipline"
+> ### JPSP is reference category because it has the most cases
+> d.JEP <- ifelse(jour == 1, 1, 0)
+> d.PSCog <- ifelse(jour == 3, 1, 0)
+> d.PSSoc <- ifelse(jour == 4, 1, 0)
+> d.PSOth <- ifelse(jour == 5, 1, 0)
+> 
+> # b. IMPORTANCE OF THE EFFECT
+> 
+> ### Standardizing "Citation count, paper (O)"
+> st.impa <- stand(MASTER$Citation.count..paper..O., option = option)
+> 
+> ### Standardizing "Exciting/important effect"
+> st.exci <- stand(as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.], option = option)
+Warning message:
+In stand(as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.],  :
+  NAs introduced by coercion
+> 
+> ### Creating scale
+> sc.impo <- (st.impa + st.exci)/2
+> 
+> # c. SURPRISING EFFECT
+> 
+> ### Standardizing "Surprising effect" and creating scale
+> sc.surp <- stand(as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.], option = option)
+Warning message:
+In stand(as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.],  :
+  NAs introduced by coercion
+> 
+> # d. EXPERIENCE AND EXPERTISE OF ORIGINAL TEAM
+> 
+> ### Taking the average and then standardizing "Institution prestige of 1st author and senior author" 
+> ave.pres <- (MASTER$Institution.prestige..1st.author..O.+MASTER$Institution.prestige..senior.author..O.)/2
+> st.pres <- stand(ave.pres, option = option)
+> 
+> ### Standardizing "Citation Count, 1st author (O)"
+> st.impa.1st <- stand(MASTER$Citation.Count..1st.author..O., option = option)
+> 
+> ### Standardizing "Citation count, senior author (O)"
+> ### NOG CHECKEN!
+> st.impa.sen <- stand(MASTER$Citation.count..senior.author..O., option = option)
+> 
+> ### Creating scale
+> sc.expe1 <- (st.pres + st.impa.1st + st.impa.sen)/3
+> 
+> # e. CHALLENGE OF CONDUCTING REPLICATION
+> 
+> ### Standardizing "Perceived expertise required"
+> st.expe <- stand(as.numeric(fac.expe), option = option)
+> 
+> ### Standardizing "Perceived opportunity for expectancy biases"
+> st.oppo.expe <- stand(as.numeric(fac.oppo.expe), option = option)
+> 
+> ### Standardizing "Perceived opportunity for impact of lack of diligence"
+> st.oppo.dili <- stand(as.numeric(fac.oppo.dili), option = option)
+> 
+> ### Create scale
+> sc.chal <- (st.expe + st.oppo.expe + st.oppo.dili)/3
+> 
+> # f. EXPERIENCE AND EXPERTISE OF REPLICATION TEAM
+> 
+> ### Standardizing "Position of senior member of replication team"
+> st.posi <- stand(as.numeric(fac.posi), option = option)
+> 
+> ### Standardizing "Highest degree of replication team's senior member"
+> st.degr <- stand(as.numeric(fac.degr), option = option)
+> 
+> ### Standardizing "Replication team domain expertise"
+> st.doma <- stand(as.numeric(fac.doma), option = option)
+> 
+> ### Standardizing "Replication team method expertise"
+> st.meth <- stand(as.numeric(fac.meth), option = option)
+> 
+> ### Standardizing "Replication team senior member's total publications"
+> st.publ <- stand(MASTER$Total.publications..R., option = option)
+> 
+> ### Standardizing "Replication team senior member's total publications and total number of peer-reviewed articles"
+> st.peer <- stand(MASTER$Peer.reviewed.articles..R., option = option)
+> 
+> ### Standardizing "Replication team senior member's total citations"
+> st.cita <- stand(MASTER$Citations..R., option = option)
+> 
+> ### Create scale
+> sc.expe2 <- (st.posi + st.degr + st.doma + st.meth + st.publ + st.cita)/6
+> 
+> # g. SELF-ASSESSED QUALITY OF REPLICATION
+> 
+> ### Standardizing "Self-assessed quality of replication"
+> st.impl <- stand(as.numeric(fac.impl), option = option)
+> 
+> ### Standardizing "Self-assessed data collection quality of replication"
+> st.data <- stand(as.numeric(fac.data), option = option)
+> 
+> ### Standardizing "Self-assessed replication similarity to original"
+> st.repl <- stand(as.numeric(fac.repl), option = option)
+> 
+> ### Standardizing "Self-assessed difficulty of implementation"
+> st.diff <- stand(as.numeric(fac.diff), option = option)
+> 
+> ### Create a scale
+> sc.self <- (st.impl + st.data + st.repl + st.diff)/4
+> 
+> ###########################################
+> ### Transforming correlations to Fisher ###
+> ###########################################
+> 
+> ri.o <- MASTER$T_r..O.
+> ri.r <- MASTER$T_r..R.
+> N.o <- MASTER$T_df2..O.+2
+> N.r <- MASTER$T_df2..R.+2
+> 
+> ### Transform to Fisher's z
+> fis.o <- 0.5*log((1 + ri.o) / (1 - ri.o)) 
+Warning message:
+In log((1 + ri.o)/(1 - ri.o)) : NaNs produced
+> fis.r <- 0.5*log((1 + ri.r) / (1 - ri.r))
+> 
+> ### Difference in Fisher's z scores
+> yi <- numeric()
+> for(i in 1:length(fis.o)) {
++   
++   if(is.na(fis.o[i]) == TRUE | is.na(fis.r[i]) == TRUE) { yi[i] <- NA }
++   else if(fis.o[i] < 0 & fis.r[i] < 0) { yi[i] <- fis.o[i]*-1-fis.r[i]*-1 } 
++   else if(fis.o[i] < 0 & fis.r[i] > 0) { yi[i] <- fis.o[i]*-1+fis.r[i] }
++   else {  yi[i] <- fis.o[i]-fis.r[i] }
++   
++ }
+> 
+> ### Standard errors original and replication study
+> sei.o <- sqrt(1/(N.o-3))
+> sei.r <- sqrt(1/(N.r-3))
+> 
+> ### p-values original and replication study
+> pval.o <- pnorm(fis.o, sd = sei.o, lower.tail = FALSE)
+> pval.r <- pnorm(fis.r, sd = sei.r, lower.tail = FALSE)
+> 
+> ### Standard error of difference score
+> sei <- sqrt(1/(N.o-3) + 1/(N.r-3))
+> 
+> #######################################
+> ### Select studies for the analyses ###
+> #######################################
+> 
+> df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
++                  d.JEP, d.PSCog, d.PSSoc, d.PSOth, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self)
+> df <- df[-149, ] ### Remove duplicate
+> 
+> ### Select: F(df1 = 1, df2), t, and r
+> sub <- subset(df, (df$stat == "F" & df$df1 == 1) | df$stat == "t" | df$stat == "r")
+> 
+> ### Remove rows when NA on yi
+> final <- sub[!is.na(sub$yi) & !is.na(sub$sei), ]
+> 
+> #######################################
+> ### Correlations between moderators ###
+> #######################################
+> 
+> ### Option 1 for standardizing moderators
+> cor(data.frame(final$fis.o, final$fis.r, final$yi, final$sc.imp, final$sc.surp, final$sc.expe1, final$sc.chal, final$sc.expe2, final$sc.self))
+               final.fis.o final.fis.r    final.yi final.sc.imp final.sc.surp
+final.fis.o     1.00000000  0.61216672  0.21030248  -0.26887800   -0.17154239
+final.fis.r     0.61216672  1.00000000 -0.64430498  -0.12978532   -0.18795938
+final.yi        0.21030248 -0.64430498  1.00000000  -0.09958739    0.06647752
+final.sc.imp   -0.26887800 -0.12978532 -0.09958739   1.00000000    0.43473026
+final.sc.surp  -0.17154239 -0.18795938  0.06647752   0.43473026    1.00000000
+final.sc.expe1 -0.08274971 -0.02230036 -0.05246141   0.43431506    0.02658527
+final.sc.chal  -0.16682417 -0.23546101  0.12977061   0.33628671    0.22836360
+final.sc.expe2  0.15937539 -0.14839294  0.33761217   0.08955143    0.08021013
+final.sc.self  -0.01958146 -0.02673318  0.01411362   0.07161665   -0.06554352
+               final.sc.expe1 final.sc.chal final.sc.expe2 final.sc.self
+final.fis.o       -0.08274971 -0.1668241679     0.15937539 -0.0195814557
+final.fis.r       -0.02230036 -0.2354610061    -0.14839294 -0.0267331768
+final.yi          -0.05246141  0.1297706095     0.33761217  0.0141136170
+final.sc.imp       0.43431506  0.3362867107     0.08955143  0.0716166500
+final.sc.surp      0.02658527  0.2283635956     0.08021013 -0.0655435202
+final.sc.expe1     1.00000000  0.1310556243    -0.07241371  0.2332941081
+final.sc.chal      0.13105562  1.0000000000    -0.07639908 -0.0005093959
+final.sc.expe2    -0.07241371 -0.0763990832     1.00000000 -0.1036636901
+final.sc.self      0.23329411 -0.0005093959    -0.10366369  1.0000000000
+> 
+> ### Option 2 for standardizing moderators
+> option <- 2
+> 
+> # b. IMPORTANCE OF THE EFFECT
+> 
+> ### Standardizing "Citation count, paper (O)"
+> st.impa <- stand(MASTER$Citation.count..paper..O., max = max(MASTER$Citation.count..paper..O., na.rm = TRUE), min = min(MASTER$Citation.count..paper..O., na.rm = TRUE), option = option)
+> 
+> ### Standardizing "Exciting/important effect"
+> st.exci <- stand(as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.], max = 6, min = 1, option = option)
+Warning message:
+In stand(as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.],  :
+  NAs introduced by coercion
+> 
+> ### Creating scale
+> sc.impo <- (st.impa + st.exci)/2
+> 
+> # c. SURPRISING EFFECT
+> 
+> ### Standardizing "Surprising effect" and creating scale
+> sc.surp <- stand(as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.], max = 6, min = 1, option = option)
+Warning message:
+In stand(as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.],  :
+  NAs introduced by coercion
+> 
+> # d. EXPERIENCE AND EXPERTISE OF ORIGINAL TEAM
+> 
+> ### Taking the average and then standardizing "Institution prestige of 1st author and senior author" 
+> ave.pres <- (MASTER$Institution.prestige..1st.author..O.+MASTER$Institution.prestige..senior.author..O.)/2
+> st.pres <- stand(ave.pres, min = 2, max = 10, option = option)
+> 
+> ### Standardizing "Citation Count, 1st author (O)"
+> st.impa.1st <- stand(MASTER$Citation.Count..1st.author..O., max = max(MASTER$Citation.Count..1st.author..O., na.rm = TRUE), min = min(MASTER$Citation.Count..1st.author..O., na.rm = TRUE), option = option)
+> 
+> ### Standardizing "Citation count, senior author (O)"
+> st.impa.sen <- stand(MASTER$Citation.count..senior.author..O., max = max(MASTER$Citation.count..senior.author..O., na.rm = TRUE), min = min(MASTER$Citation.count..senior.author..O., na.rm = TRUE), option = option)
+> 
+> ### Creating scale
+> sc.expe1 <- (st.pres + st.impa.1st + st.impa.sen)/3
+> 
+> # e. CHALLENGE OF CONDUCTING REPLICATION
+> 
+> ### Standardizing "Perceived expertise required"
+> st.expe <- stand(as.numeric(fac.expe), max = 1, min = 5, option = option)
+> 
+> ### Standardizing "Perceived opportunity for expectancy biases"
+> st.oppo.expe <- stand(as.numeric(fac.oppo.expe), max = 4, min = 1, option = option)
+> 
+> ### Standardizing "Perceived opportunity for impact of lack of diligence"
+> st.oppo.dili <- stand(as.numeric(fac.oppo.dili), max = 4, min = 1, option = option)
+> 
+> ### Create scale
+> sc.chal <- (st.expe + st.oppo.expe + st.oppo.dili)/3
+> 
+> # f. EXPERIENCE AND EXPERTISE OF REPLICATION TEAM
+> 
+> ### Standardizing "Position of senior member of replication team"
+> st.posi <- stand(as.numeric(fac.posi), max = 7, min = 1, option = option)
+> 
+> ### Standardizing "Highest degree of replication team's senior member"
+> st.degr <- stand(as.numeric(fac.degr), max = 6, min = 1, option = option)
+> 
+> ### Standardizing "Replication team domain expertise"
+> st.doma <- stand(as.numeric(fac.doma), max = 5, min = 1, option = option)
+> 
+> ### Standardizing "Replication team method expertise"
+> st.meth <- stand(as.numeric(fac.meth), max = 5, min = 1, option = option)
+> 
+> ### Standardizing "Replication team senior member's total publications"
+> st.publ <- stand(MASTER$Total.publications..R., max = max(MASTER$Total.publications..R., na.rm = TRUE), min = min(MASTER$Total.publications..R., na.rm = TRUE), option = option)
+> 
+> ### Standardizing "Replication team senior member's total publications and total number of peer-reviewed articles"
+> st.peer <- stand(MASTER$Peer.reviewed.articles..R., max = max(MASTER$Peer.reviewed.articles..R., na.rm = TRUE), min = min(MASTER$Peer.reviewed.articles..R., na.rm = TRUE), option = option)
+> 
+> ### Standardizing "Replication team senior member's total citations"
+> st.cita <- stand(MASTER$Citations..R., max = max(MASTER$Citations..R., na.rm = TRUE), min = min(MASTER$Citations..R., na.rm = TRUE), option = option)
+> 
+> ### Create scale
+> sc.expe2 <- (st.posi + st.degr + st.doma + st.meth + st.publ + st.cita)/6
+> 
+> # g. SELF-ASSESSED QUALITY OF REPLICATION
+> 
+> ### Standardizing "Self-assessed quality of replication"
+> st.impl <- stand(as.numeric(fac.impl), max = 6, min = 1, option = option)
+> 
+> ### Standardizing "Self-assessed data collection quality of replication"
+> st.data <- stand(as.numeric(fac.data), max = 7, min = 1, option = option)
+> 
+> ### Standardizing "Self-assessed replication similarity to original"
+> st.repl <- stand(as.numeric(fac.repl), max = 7, min = 1, option = option)
+> 
+> ### Standardizing "Self-assessed difficulty of implementation"
+> st.diff <- stand(as.numeric(fac.diff), max = 6, min = 1, option = option)
+> 
+> ### Create a scale
+> sc.self <- (st.impl + st.data + st.repl + st.diff)/4
+> 
+> ### Select the same studies as with the other option for standardizing
+> df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
++                  d.JEP, d.PSCog, d.PSSoc, d.PSOth, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self)
+> df <- df[-149, ] ### Remove duplicate
+> 
+> ### Select: F(df1 = 1, df2), t, and r
+> sub <- subset(df, (df$stat == "F" & df$df1 == 1) | df$stat == "t" | df$stat == "r")
+> 
+> ### Remove rows when NA on yi
+> final <- sub[!is.na(sub$yi) & !is.na(sub$sei), ]
+> 
+> ### Create correlation table for option 2
+> cor(data.frame(final$fis.o, final$fis.r, final$yi, final$sc.imp, final$sc.surp, final$sc.expe1, final$sc.chal, final$sc.expe2, final$sc.self))
+               final.fis.o final.fis.r    final.yi final.sc.imp final.sc.surp
+final.fis.o     1.00000000  0.61216672  0.21030248  -0.25389705   -0.17154239
+final.fis.r     0.61216672  1.00000000 -0.64430498  -0.11954772   -0.18795938
+final.yi        0.21030248 -0.64430498  1.00000000  -0.09775579    0.06647752
+final.sc.imp   -0.25389705 -0.11954772 -0.09775579   1.00000000    0.40129585
+final.sc.surp  -0.17154239 -0.18795938  0.06647752   0.40129585    1.00000000
+final.sc.expe1 -0.08918522 -0.01389391 -0.06907915   0.45194979    0.04334506
+final.sc.chal  -0.29400662 -0.31685414  0.10739598   0.24369330    0.10721159
+final.sc.expe2  0.14507796 -0.14231679  0.31627174   0.10109537    0.09166500
+final.sc.self  -0.03233269 -0.03728674  0.01482916   0.04145653   -0.06916958
+               final.sc.expe1 final.sc.chal final.sc.expe2 final.sc.self
+final.fis.o       -0.08918522   -0.29400662     0.14507796   -0.03233269
+final.fis.r       -0.01389391   -0.31685414    -0.14231679   -0.03728674
+final.yi          -0.06907915    0.10739598     0.31627174    0.01482916
+final.sc.imp       0.45194979    0.24369330     0.10109537    0.04145653
+final.sc.surp      0.04334506    0.10721159     0.09166500   -0.06916958
+final.sc.expe1     1.00000000    0.04696403    -0.13892672    0.22366603
+final.sc.chal      0.04696403    1.00000000     0.01763005   -0.08871148
+final.sc.expe2    -0.13892672    0.01763005     1.00000000   -0.11681970
+final.sc.self      0.22366603   -0.08871148    -0.11681970    1.00000000
+> 
+> ####################
+> ### Tables Brian ###
+> ####################
+> 
+> ### Load metafor package
+> library(metafor)
+Loading 'metafor' package (version 1.9-5). For an overview 
+and introduction to the package please type: help(metafor).
+> 
+> ### Meta-analytic mean and sd of the estimate combining per pair the original study and replication 
+> est <- pval <- numeric()
+> 
+> for(i in 1:length(final$fis.o)) {
++   tmp <- rma(yi = c(final$fis.o[i], final$fis.r[i]), sei = c(final$sei.o[i], final$sei.r[i]), method = "FE")
++   est[i] <- tmp$b[1]
++   if (tmp$pval < 0.05) { pval[i] <- TRUE
++   } else { pval[i] <- FALSE }
++ }
+> 
+> mean(est)
+[1] 0.3557107
+> sd(est)
+[1] 0.2922269
+> sum(pval)/length(pval) # Proportion of statistically significant studies
+[1] 0.7246377
+> 
+> #################################################################################
+> ### Meta-analyses based on differences between original study and replication ###
+> #################################################################################
+> 
+> ### Meta-analysis of null model
+> res <- rma(yi = final$yi, sei = final$sei, method = "REML")
+> res
+
+Random-Effects Model (k = 69; tau^2 estimator: REML)
+
+tau^2 (estimated amount of total heterogeneity): 0.0207 (SE = 0.0086)
+tau (square root of estimated tau^2 value):      0.1440
+I^2 (total heterogeneity / total variability):   45.94%
+H^2 (total variability / sampling variability):  1.85
+
+Test for Heterogeneity: 
+Q(df = 68) = 136.1423, p-val < .0001
+
+Model Results:
+
+estimate       se     zval     pval    ci.lb    ci.ub          
+  0.1981   0.0286   6.9269   <.0001   0.1421   0.2542      *** 
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+> # png("C:/Users/S787802/Desktop/Funnel RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
+> funnel(res, main = "Funnel plot based on difference original and replication study")
+> # dev.off()
+> 
+> ### Meta-analysis of only original studies
+> res <- rma(yi = final$fis.o, sei = final$sei.o, method = "REML")
+> # png("C:/Users/S787802/Desktop/Funnel original RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
+> funnel(res, main = "Funnel plot based on original studies")
+> # dev.off()
+> 
+> ### Meta-analysis of only original studies with se in original study as moderator
+> rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o, method = "REML")
+
+Mixed-Effects Model (k = 69; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0243 (SE = 0.0074)
+tau (square root of estimated tau^2 value):             0.1558
+I^2 (residual heterogeneity / unaccounted variability): 64.28%
+H^2 (unaccounted variability / sampling variability):   2.80
+R^2 (amount of heterogeneity accounted for):            32.90%
+
+Test for Residual Heterogeneity: 
+QE(df = 67) = 201.9035, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 28.3745, p-val < .0001
+
+Model Results:
+
+             estimate      se    zval    pval   ci.lb   ci.ub     
+intrcpt        0.1223  0.0600  2.0383  0.0415  0.0047  0.2399    *
+final$sei.o    2.1614  0.4058  5.3268  <.0001  1.3661  2.9567  ***
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+> 
+> ### Meta-analysis of only replication studies
+> res <- rma(yi = final$fis.r, sei = final$sei.r, method = "REML")
+> # png("C:/Users/S787802/Desktop/Funnel replication RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
+> funnel(res, main = "Funnel plot based on replication studies")
+> # dev.off()
+> 
+> ### Meta-analysis of only replication studies with se in replication study as moderator
+> rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r, method = "REML")
+
+Mixed-Effects Model (k = 69; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0510 (SE = 0.0119)
+tau (square root of estimated tau^2 value):             0.2259
+I^2 (residual heterogeneity / unaccounted variability): 86.55%
+H^2 (unaccounted variability / sampling variability):   7.43
+R^2 (amount of heterogeneity accounted for):            20.04%
+
+Test for Residual Heterogeneity: 
+QE(df = 67) = 361.5331, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 14.8686, p-val = 0.0001
+
+Model Results:
+
+             estimate      se     zval    pval    ci.lb   ci.ub     
+intrcpt       -0.0197  0.0675  -0.2921  0.7702  -0.1520  0.1126     
+final$sei.r    1.8148  0.4706   3.8560  0.0001   0.8923  2.7372  ***
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+> 
+> ### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE as moderator
+> rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+
+Mixed-Effects Model (k = 69; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0181 (SE = 0.0083)
+tau (square root of estimated tau^2 value):             0.1344
+I^2 (residual heterogeneity / unaccounted variability): 41.30%
+H^2 (unaccounted variability / sampling variability):   1.70
+R^2 (amount of heterogeneity accounted for):            12.79%
+
+Test for Residual Heterogeneity: 
+QE(df = 64) = 111.2240, p-val = 0.0002
+
+Test of Moderators (coefficient(s) 2,3,4,5): 
+QM(df = 4) = 5.3652, p-val = 0.2518
+
+Model Results:
+
+               estimate      se     zval    pval    ci.lb   ci.ub     
+intrcpt          0.1977  0.0571   3.4621  0.0005   0.0858  0.3096  ***
+final$d.JEP      0.0539  0.0733   0.7362  0.4616  -0.0897  0.1975     
+final$d.PSCog   -0.0749  0.0767  -0.9767  0.3287  -0.2251  0.0754     
+final$d.PSSoc   -0.0829  0.1221  -0.6790  0.4971  -0.3222  0.1564     
+final$d.PSOth    0.1544  0.1492   1.0353  0.3005  -0.1379  0.4468     
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+> 
+> ### Meta-analysis with sei.o as moderator
+> rma(yi = final$yi, sei = final$sei, mods = ~ final$sei.o, method = "REML")
+
+Mixed-Effects Model (k = 69; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0180 (SE = 0.0080)
+tau (square root of estimated tau^2 value):             0.1341
+I^2 (residual heterogeneity / unaccounted variability): 41.77%
+H^2 (unaccounted variability / sampling variability):   1.72
+R^2 (amount of heterogeneity accounted for):            13.23%
+
+Test for Residual Heterogeneity: 
+QE(df = 67) = 117.2701, p-val = 0.0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 3.2255, p-val = 0.0725
+
+Model Results:
+
+             estimate      se    zval    pval    ci.lb   ci.ub   
+intrcpt        0.0932  0.0636  1.4663  0.1426  -0.0314  0.2179   
+final$sei.o    0.8196  0.4564  1.7960  0.0725  -0.0748  1.7141  .
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+> 
+> ### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE and sei.o as moderators
+> rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o, method = "REML")
+
+Mixed-Effects Model (k = 69; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0153 (SE = 0.0077)
+tau (square root of estimated tau^2 value):             0.1235
+I^2 (residual heterogeneity / unaccounted variability): 36.87%
+H^2 (unaccounted variability / sampling variability):   1.58
+R^2 (amount of heterogeneity accounted for):            26.41%
+
+Test for Residual Heterogeneity: 
+QE(df = 63) = 99.1867, p-val = 0.0025
+
+Test of Moderators (coefficient(s) 2,3,4,5,6): 
+QM(df = 5) = 9.7830, p-val = 0.0816
+
+Model Results:
+
+               estimate      se     zval    pval    ci.lb   ci.ub   
+intrcpt          0.0550  0.0909   0.6054  0.5449  -0.1232  0.2333   
+final$d.JEP      0.0935  0.0736   1.2703  0.2040  -0.0508  0.2378   
+final$d.PSCog   -0.0372  0.0767  -0.4858  0.6271  -0.1875  0.1130   
+final$d.PSSoc   -0.0991  0.1187  -0.8347  0.4039  -0.3318  0.1336   
+final$d.PSOth    0.1275  0.1474   0.8649  0.3871  -0.1614  0.4164   
+final$sei.o      0.9434  0.4835   1.9511  0.0510  -0.0043  1.8911  .
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+> 
+> ### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE, sei.o, and its interaction as moderators
+> # rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o, final$d.JEP*final$sei.o + final$d.PSCog*final$sei.o + final$d.PSSoc*final$sei.o + final$d.PSoth*final$sei.o, method = "REML")
+> 
+> ### Meta-analysis with b. IMPORTANCE OF THE EFFECT as moderator
+> rma(yi = yi, sei = sei, mods = ~ sc.impo, method = "REML")
+
+Mixed-Effects Model (k = 87; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0160 (SE = 0.0062)
+tau (square root of estimated tau^2 value):             0.1264
+I^2 (residual heterogeneity / unaccounted variability): 59.34%
+H^2 (unaccounted variability / sampling variability):   2.46
+R^2 (amount of heterogeneity accounted for):            0.00%
+
+Test for Residual Heterogeneity: 
+QE(df = 85) = 211.3443, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 0.7139, p-val = 0.3981
+
+Model Results:
+
+         estimate      se    zval    pval    ci.lb   ci.ub   
+intrcpt    0.1104  0.0671  1.6443  0.1001  -0.0212  0.2419   
+sc.impo    0.1631  0.1930  0.8450  0.3981  -0.2152  0.5414   
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+Warning message:
+In rma(yi = yi, sei = sei, mods = ~sc.impo, method = "REML") :
+  Studies with NAs omitted from model fitting.
+> 
+> ### Meta-analysis with c. SURPRISING EFFECT as moderator
+> rma(yi = yi, sei = sei, mods = ~ sc.surp, method = "REML")
+
+Mixed-Effects Model (k = 87; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0162 (SE = 0.0062)
+tau (square root of estimated tau^2 value):             0.1272
+I^2 (residual heterogeneity / unaccounted variability): 58.80%
+H^2 (unaccounted variability / sampling variability):   2.43
+R^2 (amount of heterogeneity accounted for):            0.00%
+
+Test for Residual Heterogeneity: 
+QE(df = 85) = 205.3677, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 0.5587, p-val = 0.4548
+
+Model Results:
+
+         estimate      se    zval    pval    ci.lb   ci.ub   
+intrcpt    0.1231  0.0592  2.0801  0.0375   0.0071  0.2391  *
+sc.surp    0.1021  0.1366  0.7475  0.4548  -0.1657  0.3699   
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+Warning message:
+In rma(yi = yi, sei = sei, mods = ~sc.surp, method = "REML") :
+  Studies with NAs omitted from model fitting.
+> 
+> ### Meta-analysis with d. EXPERIENCE AND EXPERTISE OF ORIGINAL TEAM as moderator
+> rma(yi = yi, sei = sei, mods = ~ sc.expe1, method = "REML")
+
+Mixed-Effects Model (k = 87; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0161 (SE = 0.0062)
+tau (square root of estimated tau^2 value):             0.1268
+I^2 (residual heterogeneity / unaccounted variability): 53.03%
+H^2 (unaccounted variability / sampling variability):   2.13
+R^2 (amount of heterogeneity accounted for):            0.00%
+
+Test for Residual Heterogeneity: 
+QE(df = 85) = 174.9640, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 0.5420, p-val = 0.4616
+
+Model Results:
+
+          estimate      se     zval    pval    ci.lb   ci.ub     
+intrcpt     0.1863  0.0383   4.8595  <.0001   0.1112  0.2615  ***
+sc.expe1   -0.1321  0.1794  -0.7362  0.4616  -0.4838  0.2196     
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+Warning message:
+In rma(yi = yi, sei = sei, mods = ~sc.expe1, method = "REML") :
+  Studies with NAs omitted from model fitting.
+> 
+> ### Meta-analysis with e. CHALLENGE OF CONDUCTING REPLICATION as moderator
+> rma(yi = yi, sei = sei, mods = ~ sc.chal, method = "REML")
+
+Mixed-Effects Model (k = 86; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0157 (SE = 0.0062)
+tau (square root of estimated tau^2 value):             0.1254
+I^2 (residual heterogeneity / unaccounted variability): 44.70%
+H^2 (unaccounted variability / sampling variability):   1.81
+R^2 (amount of heterogeneity accounted for):            3.22%
+
+Test for Residual Heterogeneity: 
+QE(df = 84) = 148.1050, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 0.9881, p-val = 0.3202
+
+Model Results:
+
+         estimate      se    zval    pval    ci.lb   ci.ub   
+intrcpt    0.0996  0.0678  1.4692  0.1418  -0.0333  0.2325   
+sc.chal    0.1380  0.1388  0.9940  0.3202  -0.1341  0.4101   
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+Warning message:
+In rma(yi = yi, sei = sei, mods = ~sc.chal, method = "REML") :
+  Studies with NAs omitted from model fitting.
+> 
+> ### Meta-analysis with f. EXPERIENCE AND EXPERTISE OF REPLICATION TEAM
+> rma(yi = yi, sei = sei, mods = ~ sc.expe2, method = "REML")
+
+Mixed-Effects Model (k = 85; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0137 (SE = 0.0058)
+tau (square root of estimated tau^2 value):             0.1170
+I^2 (residual heterogeneity / unaccounted variability): 54.65%
+H^2 (unaccounted variability / sampling variability):   2.21
+R^2 (amount of heterogeneity accounted for):            18.27%
+
+Test for Residual Heterogeneity: 
+QE(df = 83) = 171.6006, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 6.9067, p-val = 0.0086
+
+Model Results:
+
+          estimate      se    zval    pval    ci.lb   ci.ub    
+intrcpt     0.0233  0.0572  0.4073  0.6838  -0.0889  0.1355    
+sc.expe2    0.4923  0.1873  2.6281  0.0086   0.1251  0.8594  **
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+Warning message:
+In rma(yi = yi, sei = sei, mods = ~sc.expe2, method = "REML") :
+  Studies with NAs omitted from model fitting.
+> 
+> ### Meta-analysis with g. SELF-ASSESSED QUALITY OF REPLICATION
+> rma(yi = yi, sei = sei, mods = ~ sc.self, method = "REML")
+
+Mixed-Effects Model (k = 87; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0155 (SE = 0.0061)
+tau (square root of estimated tau^2 value):             0.1244
+I^2 (residual heterogeneity / unaccounted variability): 46.66%
+H^2 (unaccounted variability / sampling variability):   1.87
+R^2 (amount of heterogeneity accounted for):            3.00%
+
+Test for Residual Heterogeneity: 
+QE(df = 85) = 156.6194, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 0.8267, p-val = 0.3632
+
+Model Results:
+
+         estimate      se     zval    pval    ci.lb   ci.ub   
+intrcpt    0.2823  0.1330   2.1228  0.0338   0.0217  0.5429  *
+sc.self   -0.1961  0.2157  -0.9092  0.3632  -0.6189  0.2267   
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
+Warning message:
+In rma(yi = yi, sei = sei, mods = ~sc.self, method = "REML") :
+  Studies with NAs omitted from model fitting.
+> 
+> ##############################
+> ### Meta-analyses per pair ###
+> ##############################
+> 
+> ### How often is the null hypotheses rejected in the meta-analysis
+> in.ci <- es.meta <- se.meta <- ci.lb.meta <- ci.ub.meta <- pval.meta <- numeric()
+> 
+> for(i in 1:length(final$fis.o)) {
++   tmp <- rma(yi = c(final$fis.o[i], final$fis.r[i]), sei = c(final$sei.o[i], final$sei.r[i]), method = "FE")
++   es.meta[i] <- tmp$b[1]
++   se.meta[i] <- tmp$se
++   ci.lb.meta[i] <- tmp$ci.lb
++   ci.ub.meta[i] <- tmp$ci.ub
++   pval.meta[i] <- tmp$pval
++   
++   if(tmp$pval < 0.05) { in.ci[i] <- 1
++   } else { in.ci[i] <- 0 }
++ }
+> 
+> sum(in.ci)/length(in.ci) # Proportion of times the null hypothesis of no effect is rejected
+[1] 0.7246377
+> 
+> ### Create data frame
+> tab <- data.frame(ID = final$ID, fis.o = final$fis.o, sei.o = final$sei.o, pval.o = final$pval.o, fis.r = final$fis.r, sei.r = final$sei.r, 
++                   pval.r = final$pval.r, diff = final$yi, es.meta = es.meta, se.meta = se.meta, ci.lb.meta = ci.lb.meta, ci.ub.meta = ci.ub.meta, pval.meta = pval.meta)
+> 
+> ### Check how often effect size original study is within CI of meta-analysis
+> in.ci.meta <- numeric()
+> 
+> for(i in 1:length(final$fis.o)) {
++   
++   if(final$fis.o[i] > ci.lb.meta[i] & final$fis.o[i] < ci.ub.meta[i]) {
++     in.ci.meta[i] <- TRUE
++   } else { in.ci.meta[i] <- FALSE }
++   
++ }
+> 
+> sum(in.ci.meta)/length(in.ci.meta) # Proportion of times the original study is within the CI of meta-analysis
+[1] 0.6086957
+> 
+> ############################################################
+> ### How often is original study within CI of replication ###
+> ############################################################
+> 
+> ### Create confidence interval for replications
+> ci.lb <- final$fis.r-qnorm(.975)*final$sei.r
+> ci.ub <- final$fis.r+qnorm(.975)*final$sei.r
+> 
+> in.ci <- numeric()
+> 
+> for(i in 1:length(final$fis.r)) {
++   
++   if (final$fis.o[i] > ci.lb[i] & final$fis.o[i] < ci.ub[i]) {
++     in.ci[i] <- TRUE
++   } else { in.ci[i] <- FALSE }
++   
++ }
+> 
+> sum(in.ci)/length(in.ci) # Proportion of times the original study is within the CI of the replication
+[1] 0.4202899
+> 
+> ### Predicting how often effect size of original study is within CI of replication
+> overlap <- numeric()
+> points <- 1000000
+> p <- 1:points/(points+1)
+> 
+> for (i in 1:length(final$N.r)) {
++   zu <- qnorm(p,0,1/sqrt(final$N.r[i]-3)) + qnorm(.975)/sqrt(final$N.r[i]-3)
++   zl <- zu - 2*qnorm(.975)/sqrt(final$N.r[i]-3)
++   overlap[i] <- mean(pnorm(zu,0,1/sqrt(final$N.o[i]-3))) - mean(pnorm(zl,0,1/sqrt(final$N.o[i]-3)))
++ }
+> overlap
+ [1] 0.7230489 0.8342246 0.8033464 0.7929864 0.7818304 0.7976371 0.9344699
+ [8] 0.8303252 0.7941837 0.6996958 0.8787363 0.8208099 0.9130317 0.8365067
+[15] 0.7193794 0.6749298 0.7292801 0.8312130 0.8342246 0.8342246 0.7758322
+[22] 0.6949578 0.7344564 0.7000259 0.8508379 0.7121914 0.9050646 0.7820982
+[29] 0.7385099 0.7306008 0.6582552 0.7484706 0.8942939 0.8383796 0.7823072
+[36] 0.8427805 0.8342246 0.8540522 0.7179258 0.3265906 0.8005429 0.7529083
+[43] 0.8894029 0.7320969 0.8342246 0.7928042 0.8342246 0.9224120 0.8551690
+[50] 0.7916176 0.7914959 0.7051984 0.7397986 0.7038225 0.7726095 0.7387346
+[57] 0.5331224 0.7392696 0.8944217 0.8593898 0.8002104 0.7926131 0.6684134
+[64] 0.8342246 0.9271337 0.7960785 0.7061323 0.8342246 0.8086667
+> mean(overlap)
+[1] 0.7831435
+> 
