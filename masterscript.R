@@ -329,31 +329,31 @@ legend(x=.6,y=.0,legend=c('Both nonsignificant',
        col = c("black", "black", "black", "blue", "black"),box.lwd=0)
 
 # R2
-xr2 <- x1 * x1
-yr2 <- y1 * y1
-
-plot(y = yr2, x = xr2, xlab = "Effect size r (original)",
-     ylab = "Effect size r (replication)", col = "white", ylim = c(0,1), xlim = c(0,1))
-points(y = yr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
-       x = xr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
-points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
-       x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
-points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
-       x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
-lines(x = seq(0, 1, .001), y = seq(0, 1, .001), type = 'l')
-
-r2 <- lm(yr2 ~ xr2)
-lines(loess.smooth(x = xr2, y = yr2), lty = 2)
-curve(expr = (r2$coefficients[1] + r2$coefficients[2] * x), from = 0, to = 1, add = TRUE, col = "blue")
-
-legend(x=.6,y=.2,legend=c('Both nonsignificant',
-                          'Original significant',
-                          'Both significant',
-                          'Repl. predicted by orig.',
-                          'Loess curve'),
-       cex=1,
-       lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
-       col = c("black", "black", "black", "blue", "black"),box.lwd=0)
+# xr2 <- x1 * x1
+# yr2 <- y1 * y1
+# 
+# plot(y = yr2, x = xr2, xlab = "Effect size r (original)",
+#      ylab = "Effect size r (replication)", col = "white", ylim = c(0,1), xlim = c(0,1))
+# points(y = yr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
+#        x = xr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
+# points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
+#        x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
+# points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
+#        x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
+# lines(x = seq(0, 1, .001), y = seq(0, 1, .001), type = 'l')
+# 
+# r2 <- lm(yr2 ~ xr2)
+# lines(loess.smooth(x = xr2, y = yr2), lty = 2)
+# curve(expr = (r2$coefficients[1] + r2$coefficients[2] * x), from = 0, to = 1, add = TRUE, col = "blue")
+# 
+# legend(x=.6,y=.2,legend=c('Both nonsignificant',
+#                           'Original significant',
+#                           'Both significant',
+#                           'Repl. predicted by orig.',
+#                           'Loess curve'),
+#        cex=1,
+#        lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
+#        col = c("black", "black", "black", "blue", "black"),box.lwd=0)
 dev.off()
 
 png('effecthis.png', height = 900, width = 1200)
