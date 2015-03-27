@@ -11,6 +11,8 @@ setwd(wd)
 MASTER <- read.csv('tilburg data.csv')
 # source functions
 source('functions.r')
+library(Hmisc)
+
 # ALL ANALYSES INCLUDE PAIRWISE SELECTION.
 
 #-----------------------------
