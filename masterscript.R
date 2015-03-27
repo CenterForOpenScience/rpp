@@ -1,4 +1,3 @@
-
 # wd <- "SET WORKING DIRECTORY HERE"
 wd <- "C:/Users/chjh/Dropbox/projects/2014rpp/master"
 
@@ -172,7 +171,7 @@ FisherMethod(x = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)],
              alpha = .05)
 
 # Distribution p-values
-png('Fig1PDFp.png', width = 900, height = 900)
+pdf('pvalue distributions.pdf', onefile = TRUE, width = 11, height = 9.2)
 #PDF
 plot(density(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
      lty=1,
@@ -194,9 +193,7 @@ legend(x=.4,y=4,legend=c(paste('Original p-values, k = ',
        cex=1,
        lty=c(1,1), bty = 'n',
        col = c("grey","black"),box.lwd=0)
-dev.off()
 
-png('Fig1CDFp.png', width = 900, height = 900)
 # CDF
 plot(ecdf(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
      lty=1,
@@ -298,7 +295,7 @@ prop <- sum(temp[!is.na(temp)])/length(temp[!is.na(temp)])
 binom.test(x = sum(temp[!is.na(temp)]), n = length(temp[!is.na(temp)]),
            p = .5,alternative = "two.sided")
 
-png('effect plots.png', width=900, height = 900)
+pdf('effect plots.pdf', width = 11.2, height = 9, onefile = TRUE)
 # Effect replication and original
 plot(y = MASTER$T_r..R., x = MASTER$T_r..O., xlab = "Effect size r (original)",
      ylab = "Effect size r (replication)", col = "white")
@@ -329,35 +326,31 @@ legend(x=.6,y=.0,legend=c('Both nonsignificant',
        col = c("black", "black", "black", "blue", "black"),box.lwd=0)
 
 # R2
-# xr2 <- x1 * x1
-# yr2 <- y1 * y1
-# 
-# plot(y = yr2, x = xr2, xlab = "Effect size r (original)",
-#      ylab = "Effect size r (replication)", col = "white", ylim = c(0,1), xlim = c(0,1))
-# points(y = yr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
-#        x = xr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
-# points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
-#        x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
-# points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
-#        x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
-# lines(x = seq(0, 1, .001), y = seq(0, 1, .001), type = 'l')
-# 
-# r2 <- lm(yr2 ~ xr2)
-# lines(loess.smooth(x = xr2, y = yr2), lty = 2)
-# curve(expr = (r2$coefficients[1] + r2$coefficients[2] * x), from = 0, to = 1, add = TRUE, col = "blue")
-# 
-# legend(x=.6,y=.2,legend=c('Both nonsignificant',
-#                           'Original significant',
-#                           'Both significant',
-#                           'Repl. predicted by orig.',
-#                           'Loess curve'),
-#        cex=1,
-#        lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
-#        col = c("black", "black", "black", "blue", "black"),box.lwd=0)
-dev.off()
+xr2 <- x1 * x1
+yr2 <- y1 * y1
 
-png('effecthis.png', height = 900, width = 1200)
-par(mfrow = c(1,2))
+plot(y = yr2, x = xr2, xlab = "Effect size r (original)",
+     ylab = "Effect size r (replication)", col = "white", ylim = c(0,1), xlim = c(0,1))
+points(y = yr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
+       x = xr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
+points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
+       x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
+points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
+       x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
+lines(x = seq(0, 1, .001), y = seq(0, 1, .001), type = 'l')
+
+r2 <- lm(yr2 ~ xr2)
+lines(loess.smooth(x = xr2, y = yr2), lty = 2)
+curve(expr = (r2$coefficients[1] + r2$coefficients[2] * x), from = 0, to = 1, add = TRUE, col = "blue")
+
+legend(x=.6,y=.2,legend=c('Both nonsignificant',
+                          'Original significant',
+                          'Both significant',
+                          'Repl. predicted by orig.',
+                          'Loess curve'),
+       cex=1,
+       lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
+       col = c("black", "black", "black", "blue", "black"),box.lwd=0)
 # Histogram effects 
 hist1 <- hist(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=15)
 hist2 <- hist(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=20)
@@ -523,7 +516,6 @@ st.pres <- stand(ave.pres, option = option)
 st.impa.1st <- stand(MASTER$Citation.Count..1st.author..O., option = option)
 
 ### Standardizing "Citation count, senior author (O)"
-### NOG CHECKEN!
 st.impa.sen <- stand(MASTER$Citation.count..senior.author..O., option = option)
 
 ### Creating scale
@@ -627,7 +619,7 @@ sei <- sqrt(1/(N.o-3) + 1/(N.r-3))
 
 df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
                  d.JEP, d.PSCog, d.PSSoc, d.PSOth, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self)
-df <- df[-149, ] ### Remove duplicate
+df[149, ] <- NA ### Remove duplicate
 
 ### Select: F(df1 = 1, df2), t, and r
 sub <- subset(df, (df$stat == "F" & df$df1 == 1) | df$stat == "t" | df$stat == "r")
@@ -635,12 +627,249 @@ sub <- subset(df, (df$stat == "F" & df$df1 == 1) | df$stat == "t" | df$stat == "
 ### Remove rows when NA on yi
 final <- sub[!is.na(sub$yi) & !is.na(sub$sei), ]
 
+####################
+### Tables Brian ###
+####################
+
+### Load metafor package
+library(metafor)
+
+### Meta-analytic mean and sd of the estimate combining per pair the original study and replication 
+est <- pval <- numeric()
+
+for(i in 1:length(final$fis.o)) {
+  tmp <- rma(yi = c(final$fis.o[i], final$fis.r[i]), sei = c(final$sei.o[i], final$sei.r[i]), method = "FE")
+  est[i] <- tmp$b[1]
+  if (tmp$pval < 0.05) { pval[i] <- TRUE
+  } else { pval[i] <- FALSE }
+}
+
+mean(est)
+sd(est)
+sum(pval)/length(pval) # Proportion of statistically significant studies
+
+### Per discipline
+mean(est[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
+mean(est[final$d.JEP == 1])
+mean(est[final$d.PSSoc == 1])
+mean(est[final$d.PSCog == 1])
+mean(est[final$d.PSOth == 1])
+
+sd(est[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
+sd(est[final$d.JEP == 1])
+sd(est[final$d.PSSoc == 1])
+sd(est[final$d.PSCog == 1])
+sd(est[final$d.PSOth == 1])
+
+sum(pval[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])/length(pval[final$d.JEP == 0 
+                                                                                                       & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
+sum(pval[final$d.JEP == 1])/length(pval[final$d.JEP == 1])
+sum(pval[final$d.PSSoc == 1])/length(pval[final$d.PSSoc == 1])
+sum(pval[final$d.PSCog == 1])/length(pval[final$d.PSCog == 1])
+sum(pval[final$d.PSOth == 1])/length(pval[final$d.PSOth == 1])
+
+### How often is original study within CI of replication
+### Create confidence interval for replications
+ci.lb <- final$fis.r-qnorm(.975)*final$sei.r
+ci.ub <- final$fis.r+qnorm(.975)*final$sei.r
+
+in.ci <- numeric()
+
+for(i in 1:length(final$fis.r)) {
+  
+  if (final$fis.o[i] > ci.lb[i] & final$fis.o[i] < ci.ub[i]) {
+    in.ci[i] <- TRUE
+  } else { in.ci[i] <- FALSE }
+  
+}
+
+sum(in.ci)/length(in.ci) # Proportion of times the original study is within the CI of the replication
+
+### Per discipline
+sum(in.ci[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])/length(in.ci[final$d.JEP == 0 
+                                                                                                         & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
+sum(in.ci[final$d.JEP == 1])/length(in.ci[final$d.JEP == 1])
+sum(in.ci[final$d.PSSoc == 1])/length(in.ci[final$d.PSSoc == 1])
+sum(in.ci[final$d.PSCog == 1])/length(in.ci[final$d.PSCog == 1])
+sum(in.ci[final$d.PSOth == 1])/length(in.ci[final$d.PSOth == 1])
+
+### Predicting how often effect size of original study is within CI of replication
+overlap <- numeric()
+points <- 1000000
+p <- 1:points/(points+1)
+
+for (i in 1:length(final$N.r)) {
+  zu <- qnorm(p,0,1/sqrt(final$N.r[i]-3)) + qnorm(.975)/sqrt(final$N.r[i]-3)
+  zl <- zu - 2*qnorm(.975)/sqrt(final$N.r[i]-3)
+  overlap[i] <- mean(pnorm(zu,0,1/sqrt(final$N.o[i]-3))) - mean(pnorm(zl,0,1/sqrt(final$N.o[i]-3)))
+}
+overlap
+mean(overlap)
+
+#################################################################################
+### Meta-analyses based on differences between original study and replication ###
+#################################################################################
+
+### Meta-analysis of null model
+res <- rma(yi = final$yi, sei = final$sei, method = "REML")
+res
+# png("C:/Users/S787802/Desktop/Funnel RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
+funnel(res, main = "Funnel plot based on difference original and replication study")
+# dev.off()
+
+### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE as moderator (JPSP is reference category)
+rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+
+### Meta-analysis with sei.o as moderator
+rma(yi = final$yi, sei = final$sei, mods = ~ final$sei.o, method = "REML")
+
+### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE and sei.o as moderators (JPSP is reference category)
+rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o, method = "REML")
+
+### Meta-analysis with b. IMPORTANCE OF THE EFFECT as moderator
+rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.impo, method = "REML")
+
+### Meta-analysis with c. SURPRISING EFFECT as moderator
+rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.surp, method = "REML")
+
+### Meta-analysis with d. EXPERIENCE AND EXPERTISE OF ORIGINAL TEAM as moderator
+rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.expe1, method = "REML")
+
+### Meta-analysis with e. CHALLENGE OF CONDUCTING REPLICATION as moderator
+rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.chal, method = "REML")
+
+### Meta-analysis with f. EXPERIENCE AND EXPERTISE OF REPLICATION TEAM
+rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.expe2, method = "REML")
+
+### Meta-analysis with g. SELF-ASSESSED QUALITY OF REPLICATION
+rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.self, method = "REML")
+
+####################################################
+### Meta-analyses based on only original studies ###
+####################################################
+
+### Meta-analysis of null model
+res <- rma(yi = final$fis.o, sei = final$sei.o, method = "REML")
+# png("C:/Users/S787802/Desktop/Funnel original RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
+funnel(res, main = "Funnel plot based on original studies")
+# dev.off()
+
+### Meta-analysis with se in original study as moderator
+rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o, method = "REML")
+
+### Meta-analysis with se in original study and dummy variables for journal and discipline (JPSP is reference category)
+rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+
+#######################################################
+### Meta-analyses based on only replication studies ###
+#######################################################
+
+### Meta-analysis of null model
+res <- rma(yi = final$fis.r, sei = final$sei.r, method = "REML")
+# png("C:/Users/S787802/Desktop/Funnel replication RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
+funnel(res, main = "Funnel plot based on replication studies")
+# dev.off()
+
+### Meta-analysis with se in replication study as moderator
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r, method = "REML")
+
+### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category)
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+
+##############################
+### Meta-analyses per pair ###
+##############################
+
+### How often is the null hypotheses rejected in the meta-analysis
+in.ci <- es.meta <- se.meta <- ci.lb.meta <- ci.ub.meta <- pval.meta <- numeric()
+
+for(i in 1:length(final$fis.o)) {
+  tmp <- rma(yi = c(final$fis.o[i], final$fis.r[i]), sei = c(final$sei.o[i], final$sei.r[i]), method = "FE")
+  es.meta[i] <- tmp$b[1]
+  se.meta[i] <- tmp$se
+  ci.lb.meta[i] <- tmp$ci.lb
+  ci.ub.meta[i] <- tmp$ci.ub
+  pval.meta[i] <- tmp$pval
+  
+  if(tmp$pval < 0.05) { in.ci[i] <- 1
+  } else { in.ci[i] <- 0 }
+}
+
+sum(in.ci)/length(in.ci) # Proportion of times the null hypothesis of no effect is rejected
+
+### Create data frame
+tab <- data.frame(ID = final$ID, fis.o = final$fis.o, sei.o = final$sei.o, pval.o = final$pval.o, fis.r = final$fis.r, sei.r = final$sei.r, 
+                  pval.r = final$pval.r, diff = final$yi, es.meta = es.meta, se.meta = se.meta, ci.lb.meta = ci.lb.meta, ci.ub.meta = ci.ub.meta, pval.meta = pval.meta)
+
+### Check how often effect size original study is within CI of meta-analysis
+in.ci.meta <- numeric()
+
+for(i in 1:length(final$fis.o)) {
+  
+  if(final$fis.o[i] > ci.lb.meta[i] & final$fis.o[i] < ci.ub.meta[i]) {
+    in.ci.meta[i] <- TRUE
+  } else { in.ci.meta[i] <- FALSE }
+  
+}
+
+sum(in.ci.meta)/length(in.ci.meta) # Proportion of times the original study is within the CI of meta-analysis
+
+############################################################
+### How often is original study within CI of replication ###
+############################################################
+
+### Create confidence interval for replications
+ci.lb <- final$fis.r-qnorm(.975)*final$sei.r
+ci.ub <- final$fis.r+qnorm(.975)*final$sei.r
+
+in.ci <- numeric()
+
+for(i in 1:length(final$fis.r)) {
+  
+  if (final$fis.o[i] > ci.lb[i] & final$fis.o[i] < ci.ub[i]) {
+    in.ci[i] <- TRUE
+  } else { in.ci[i] <- FALSE }
+  
+}
+
+sum(in.ci)/length(in.ci) # Proportion of times the original study is within the CI of the replication
+
+### Predicting how often effect size of original study is within CI of replication
+overlap <- numeric()
+points <- 1000000
+p <- 1:points/(points+1)
+
+for (i in 1:length(final$N.r)) {
+  zu <- qnorm(p,0,1/sqrt(final$N.r[i]-3)) + qnorm(.975)/sqrt(final$N.r[i]-3)
+  zl <- zu - 2*qnorm(.975)/sqrt(final$N.r[i]-3)
+  overlap[i] <- mean(pnorm(zu,0,1/sqrt(final$N.o[i]-3))) - mean(pnorm(zl,0,1/sqrt(final$N.o[i]-3)))
+}
+overlap
+mean(overlap)
+
 #######################################
 ### Correlations between moderators ###
 #######################################
 
-### Option 1 for standardizing moderators
-cor(data.frame(final$fis.o, final$fis.r, final$yi, final$sc.imp, final$sc.surp, final$sc.expe1, final$sc.chal, final$sc.expe2, final$sc.self))
+### Load package for correlation table
+library(Hmisc)
+
+### Create variable with meta-analysis estimate with NAs
+es.meta.all <- vector(length = nrow(df))
+s <- 1
+for(i in 1:max(final$ID)) {
+  if (i == final$ID[s]) {
+    es.meta.all[i] <- es.meta[s]
+    s <- s + 1
+  } else {
+    es.meta.all[i] <- NA
+  }
+}
+
+### Create matrix for correlation table
+mat <- cbind(df$fis.o, df$fis.r, df$yi, es.meta.all, df$sc.imp, df$sc.surp, df$sc.expe1, df$sc.chal, df$sc.expe2, df$sc.self)
+colnames(mat) <- c("fis.o", "fis.r", "diff", "es.meta", "importance", "surprising", "experience.O", "challenge", "experience.R", "quality")
+rcorr(mat, type = "pearson")
 
 ### Option 2 for standardizing moderators
 option <- 2
@@ -736,164 +965,9 @@ sc.self <- (st.impl + st.data + st.repl + st.diff)/4
 ### Select the same studies as with the other option for standardizing
 df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
                  d.JEP, d.PSCog, d.PSSoc, d.PSOth, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self)
-df <- df[-149, ] ### Remove duplicate
+df[149, ] <- NA ### Remove duplicate
 
-### Select: F(df1 = 1, df2), t, and r
-sub <- subset(df, (df$stat == "F" & df$df1 == 1) | df$stat == "t" | df$stat == "r")
-
-### Remove rows when NA on yi
-final <- sub[!is.na(sub$yi) & !is.na(sub$sei), ]
-
-### Create correlation table for option 2
-cor(data.frame(final$fis.o, final$fis.r, final$yi, final$sc.imp, final$sc.surp, final$sc.expe1, final$sc.chal, final$sc.expe2, final$sc.self))
-
-####################
-### Tables Brian ###
-####################
-
-### Load metafor package
-library(metafor)
-
-### Meta-analytic mean and sd of the estimate combining per pair the original study and replication 
-est <- pval <- numeric()
-
-for(i in 1:length(final$fis.o)) {
-  tmp <- rma(yi = c(final$fis.o[i], final$fis.r[i]), sei = c(final$sei.o[i], final$sei.r[i]), method = "FE")
-  est[i] <- tmp$b[1]
-  if (tmp$pval < 0.05) { pval[i] <- TRUE
-  } else { pval[i] <- FALSE }
-}
-
-mean(est)
-sd(est)
-sum(pval)/length(pval) # Proportion of statistically significant studies
-
-#################################################################################
-### Meta-analyses based on differences between original study and replication ###
-#################################################################################
-
-### Meta-analysis of null model
-res <- rma(yi = final$yi, sei = final$sei, method = "REML")
-res
-# png("C:/Users/S787802/Desktop/Funnel RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
-funnel(res, main = "Funnel plot based on difference original and replication study")
-# dev.off()
-
-### Meta-analysis of only original studies
-res <- rma(yi = final$fis.o, sei = final$sei.o, method = "REML")
-# png("C:/Users/S787802/Desktop/Funnel original RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
-funnel(res, main = "Funnel plot based on original studies")
-# dev.off()
-
-### Meta-analysis of only original studies with se in original study as moderator
-rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o, method = "REML")
-
-### Meta-analysis of only replication studies
-res <- rma(yi = final$fis.r, sei = final$sei.r, method = "REML")
-# png("C:/Users/S787802/Desktop/Funnel replication RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
-funnel(res, main = "Funnel plot based on replication studies")
-# dev.off()
-
-### Meta-analysis of only replication studies with se in replication study as moderator
-rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r, method = "REML")
-
-### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE as moderator
-rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
-
-### Meta-analysis with sei.o as moderator
-rma(yi = final$yi, sei = final$sei, mods = ~ final$sei.o, method = "REML")
-
-### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE and sei.o as moderators
-rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o, method = "REML")
-
-### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE, sei.o, and its interaction as moderators
-# rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o, final$d.JEP*final$sei.o + final$d.PSCog*final$sei.o + final$d.PSSoc*final$sei.o + final$d.PSoth*final$sei.o, method = "REML")
-
-### Meta-analysis with b. IMPORTANCE OF THE EFFECT as moderator
-rma(yi = yi, sei = sei, mods = ~ sc.impo, method = "REML")
-
-### Meta-analysis with c. SURPRISING EFFECT as moderator
-rma(yi = yi, sei = sei, mods = ~ sc.surp, method = "REML")
-
-### Meta-analysis with d. EXPERIENCE AND EXPERTISE OF ORIGINAL TEAM as moderator
-rma(yi = yi, sei = sei, mods = ~ sc.expe1, method = "REML")
-
-### Meta-analysis with e. CHALLENGE OF CONDUCTING REPLICATION as moderator
-rma(yi = yi, sei = sei, mods = ~ sc.chal, method = "REML")
-
-### Meta-analysis with f. EXPERIENCE AND EXPERTISE OF REPLICATION TEAM
-rma(yi = yi, sei = sei, mods = ~ sc.expe2, method = "REML")
-
-### Meta-analysis with g. SELF-ASSESSED QUALITY OF REPLICATION
-rma(yi = yi, sei = sei, mods = ~ sc.self, method = "REML")
-
-##############################
-### Meta-analyses per pair ###
-##############################
-
-### How often is the null hypotheses rejected in the meta-analysis
-in.ci <- es.meta <- se.meta <- ci.lb.meta <- ci.ub.meta <- pval.meta <- numeric()
-
-for(i in 1:length(final$fis.o)) {
-  tmp <- rma(yi = c(final$fis.o[i], final$fis.r[i]), sei = c(final$sei.o[i], final$sei.r[i]), method = "FE")
-  es.meta[i] <- tmp$b[1]
-  se.meta[i] <- tmp$se
-  ci.lb.meta[i] <- tmp$ci.lb
-  ci.ub.meta[i] <- tmp$ci.ub
-  pval.meta[i] <- tmp$pval
-  
-  if(tmp$pval < 0.05) { in.ci[i] <- 1
-  } else { in.ci[i] <- 0 }
-}
-
-sum(in.ci)/length(in.ci) # Proportion of times the null hypothesis of no effect is rejected
-
-### Create data frame
-tab <- data.frame(ID = final$ID, fis.o = final$fis.o, sei.o = final$sei.o, pval.o = final$pval.o, fis.r = final$fis.r, sei.r = final$sei.r, 
-                  pval.r = final$pval.r, diff = final$yi, es.meta = es.meta, se.meta = se.meta, ci.lb.meta = ci.lb.meta, ci.ub.meta = ci.ub.meta, pval.meta = pval.meta)
-
-### Check how often effect size original study is within CI of meta-analysis
-in.ci.meta <- numeric()
-
-for(i in 1:length(final$fis.o)) {
-  
-  if(final$fis.o[i] > ci.lb.meta[i] & final$fis.o[i] < ci.ub.meta[i]) {
-    in.ci.meta[i] <- TRUE
-  } else { in.ci.meta[i] <- FALSE }
-  
-}
-
-sum(in.ci.meta)/length(in.ci.meta) # Proportion of times the original study is within the CI of meta-analysis
-
-############################################################
-### How often is original study within CI of replication ###
-############################################################
-
-### Create confidence interval for replications
-ci.lb <- final$fis.r-qnorm(.975)*final$sei.r
-ci.ub <- final$fis.r+qnorm(.975)*final$sei.r
-
-in.ci <- numeric()
-
-for(i in 1:length(final$fis.r)) {
-  
-  if (final$fis.o[i] > ci.lb[i] & final$fis.o[i] < ci.ub[i]) {
-    in.ci[i] <- TRUE
-  } else { in.ci[i] <- FALSE }
-  
-}
-
-sum(in.ci)/length(in.ci) # Proportion of times the original study is within the CI of the replication
-
-### Predicting how often effect size of original study is within CI of replication
-overlap <- numeric()
-points <- 1000000
-p <- 1:points/(points+1)
-
-for (i in 1:length(final$N.r)) {
-  zu <- qnorm(p,0,1/sqrt(final$N.r[i]-3)) + qnorm(.975)/sqrt(final$N.r[i]-3)
-  zl <- zu - 2*qnorm(.975)/sqrt(final$N.r[i]-3)
-  overlap[i] <- mean(pnorm(zu,0,1/sqrt(final$N.o[i]-3))) - mean(pnorm(zl,0,1/sqrt(final$N.o[i]-3)))
-}
-overlap
-mean(overlap)
+### Create matrix for correlation table
+mat <- cbind(df$fis.o, df$fis.r, df$yi, es.meta.all, df$sc.imp, df$sc.surp, df$sc.expe1, df$sc.chal, df$sc.expe2, df$sc.self)
+colnames(mat) <- c("fis.o", "fis.r", "diff", "es.meta", "importance", "surprising", "experience.O", "challenge", "experience.R", "quality")
+rcorr(mat, type = "pearson")
