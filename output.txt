@@ -1,3 +1,24 @@
+
+R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet"
+Copyright (C) 2014 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
 > # wd <- "SET WORKING DIRECTORY HERE"
 > wd <- "C:/Users/chjh/Dropbox/projects/2014rpp/master"
 > 
@@ -252,8 +273,8 @@ Error: unexpected ')' in "            alternative="two.sided")"
 +        lty=c(1,1), bty = 'n',
 +        col = c("grey","black"),box.lwd=0)
 > dev.off()
-windows 
-      2 
+null device 
+          1 
 > 
 > # Significance per journal
 > 
@@ -475,8 +496,8 @@ probability of success
 +        col = c("grey","black"),box.lwd=0)
 > 
 > dev.off()
-windows 
-      2 
+null device 
+          1 
 > 
 > #----------------------
 > 
@@ -730,6 +751,8 @@ In log((1 + ri.o)/(1 - ri.o)) : NaNs produced
 > 
 > ### Load metafor package
 > library(metafor)
+Loading 'metafor' package (version 1.9-5). For an overview 
+and introduction to the package please type: help(metafor).
 > 
 > ### Meta-analytic mean and sd of the estimate combining per pair the original study and replication 
 > est <- pval <- numeric()
@@ -741,35 +764,38 @@ In log((1 + ri.o)/(1 - ri.o)) : NaNs produced
 +   } else { pval[i] <- FALSE }
 + }
 > 
-> mean(est)
-[1] 0.3557107
-> sd(est)
-[1] 0.2922269
+> ### Transforming Fisher z values into raw correlations
+> cor <- (exp(2*est)-1)/(exp(2*est)+1)
+> 
+> mean(cor)
+[1] 0.3147714
+> sd(cor)
+[1] 0.2220229
 > sum(pval)/length(pval) # Proportion of statistically significant studies
 [1] 0.7246377
 > 
 > ### Per discipline
-> mean(est[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
-[1] 0.4501184
-> mean(est[final$d.JEP == 1])
-[1] 0.1383082
-> mean(est[final$d.PSSoc == 1])
-[1] 0.5869262
-> mean(est[final$d.PSCog == 1])
-[1] 0.3387301
-> mean(est[final$d.PSOth == 1])
-[1] 0.4892555
+> mean(cor[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
+[1] 0.3981203
+> mean(cor[final$d.JEP == 1])
+[1] 0.1365969
+> mean(cor[final$d.PSSoc == 1])
+[1] 0.4823046
+> mean(cor[final$d.PSCog == 1])
+[1] 0.3009298
+> mean(cor[final$d.PSOth == 1])
+[1] 0.4287256
 > 
-> sd(est[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
-[1] 0.273113
-> sd(est[final$d.JEP == 1])
-[1] 0.07571888
-> sd(est[final$d.PSSoc == 1])
-[1] 0.3893692
-> sd(est[final$d.PSCog == 1])
-[1] 0.2923507
-> sd(est[final$d.PSOth == 1])
-[1] 0.2997472
+> sd(cor[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
+[1] 0.2126138
+> sd(cor[final$d.JEP == 1])
+[1] 0.07324937
+> sd(cor[final$d.PSSoc == 1])
+[1] 0.2111774
+> sd(cor[final$d.PSCog == 1])
+[1] 0.2280135
+> sd(cor[final$d.PSOth == 1])
+[1] 0.235538
 > 
 > sum(pval[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])/length(pval[final$d.JEP == 0 
 +                                                                                                        & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
