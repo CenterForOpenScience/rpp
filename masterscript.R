@@ -646,22 +646,25 @@ for(i in 1:length(final$fis.o)) {
   } else { pval[i] <- FALSE }
 }
 
-mean(est)
-sd(est)
+### Transforming Fisher z values into raw correlations
+cor <- (exp(2*est)-1)/(exp(2*est)+1)
+
+mean(cor)
+sd(cor)
 sum(pval)/length(pval) # Proportion of statistically significant studies
 
 ### Per discipline
-mean(est[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
-mean(est[final$d.JEP == 1])
-mean(est[final$d.PSSoc == 1])
-mean(est[final$d.PSCog == 1])
-mean(est[final$d.PSOth == 1])
+mean(cor[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
+mean(cor[final$d.JEP == 1])
+mean(cor[final$d.PSSoc == 1])
+mean(cor[final$d.PSCog == 1])
+mean(cor[final$d.PSOth == 1])
 
-sd(est[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
-sd(est[final$d.JEP == 1])
-sd(est[final$d.PSSoc == 1])
-sd(est[final$d.PSCog == 1])
-sd(est[final$d.PSOth == 1])
+sd(cor[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
+sd(cor[final$d.JEP == 1])
+sd(cor[final$d.PSSoc == 1])
+sd(cor[final$d.PSCog == 1])
+sd(cor[final$d.PSOth == 1])
 
 sum(pval[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])/length(pval[final$d.JEP == 0 
                                                                                                        & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])
