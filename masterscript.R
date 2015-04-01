@@ -620,7 +620,7 @@ sei <- sqrt(1/(N.o-3) + 1/(N.r-3))
 #######################################
 
 df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
-                 d.JEP, d.PSCog, d.PSSoc, d.PSOth, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self)
+                 d.JEP, d.PSCog, d.PSSoc, d.PSOth, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self, power.r = as.numeric(levels(MASTER$Power..R.))[MASTER$Power..R.])
 df[149, ] <- NA ### Remove duplicate
 
 ### Select: F(df1 = 1, df2), t, and r
@@ -672,6 +672,42 @@ sum(pval[final$d.JEP == 1])/length(pval[final$d.JEP == 1])
 sum(pval[final$d.PSSoc == 1])/length(pval[final$d.PSSoc == 1])
 sum(pval[final$d.PSCog == 1])/length(pval[final$d.PSCog == 1])
 sum(pval[final$d.PSOth == 1])/length(pval[final$d.PSOth == 1])
+
+### Subset of data with all cases which were replicated
+tmp <- subset(df, is.na(df$fis.r) == FALSE)
+summary(tmp$N.o)
+summary(tmp$N.r)
+mean(tmp$power.r, na.rm = TRUE)
+
+### Subset of data with all cases published in JPSP
+tmp.JPSP <- subset(tmp, tmp$d.JEP == 0 & tmp$d.PSSoc == 0 & tmp$d.PSCog == 0 & tmp$d.PSOth == 0)
+summary(tmp.JPSP$N.o)
+summary(tmp.JPSP$N.r)
+mean(tmp.JPSP$power.r, na.rm = TRUE)
+
+### Subset of data with all cases published in JEP
+tmp.JEP <- subset(tmp, tmp$d.JEP == 1)
+summary(tmp.JEP$N.o)
+summary(tmp.JEP$N.r)
+mean(tmp.JEP$power.r, na.rm = TRUE)
+
+### Subset of data with all cases published in PSSoc
+tmp.PSSoc <- subset(tmp, tmp$d.PSSoc == 1)
+summary(tmp.PSSoc$N.o)
+summary(tmp.PSSoc$N.r)
+mean(tmp.PSSoc$power.r, na.rm = TRUE)
+
+### Subset of data with all cases published in PSCog
+tmp.PSCog <- subset(tmp, tmp$d.PSCog == 1)
+summary(tmp.PSCog$N.o)
+summary(tmp.PSCog$N.r)
+mean(tmp.PSCog$power.r, na.rm = TRUE)
+
+### Subset of data with all cases published in PSOth
+tmp.PSOth <- subset(tmp, tmp$d.PSOth == 1)
+summary(tmp.PSOth$N.o)
+summary(tmp.PSOth$N.r)
+mean(tmp.PSOth$power.r, na.rm = TRUE)
 
 ### How often is original study within CI of replication
 ### Create confidence interval for replications
@@ -755,6 +791,7 @@ rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.self, method = "REML")
 
 ### Meta-analysis of null model
 res <- rma(yi = final$fis.o, sei = final$sei.o, method = "REML")
+res
 # png("C:/Users/S787802/Desktop/Funnel original RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
 funnel(res, main = "Funnel plot based on original studies")
 # dev.off()
@@ -762,8 +799,25 @@ funnel(res, main = "Funnel plot based on original studies")
 ### Meta-analysis with se in original study as moderator
 rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o, method = "REML")
 
+### Meta-analysis with se in original study as moderator with "ML" as estimator for tau2 (model comparison)
+res0 <- rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o, method = "ML")
+res0
+
 ### Meta-analysis with se in original study and dummy variables for journal and discipline (JPSP is reference category)
 rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+
+### Meta-analysis with se in original study and dummy variables for journal and discipline (JPSP is reference category) with "ML" as estimator for tau2 (model comparison)
+res1 <- rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "ML")
+res1
+
+### Comparing models with and without discipline
+anova(res0, res1)
+
+### Meta-analysis with dummy variables for journal and discipline (JPSP is reference category)
+rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+
+### Meta-analysis with se in original study, dummy variables for journal and discipline (JPSP is reference category), and its interactions as moderators
+rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o*final$d.JEP + final$sei.o*final$d.PSSoc + final$sei.o*final$d.PSOth, method = "REML")
 
 #######################################################
 ### Meta-analyses based on only replication studies ###
@@ -771,6 +825,7 @@ rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + fi
 
 ### Meta-analysis of null model
 res <- rma(yi = final$fis.r, sei = final$sei.r, method = "REML")
+res
 # png("C:/Users/S787802/Desktop/Funnel replication RPP.png", width = 900, height = 900, res = 200, pointsize = 5)
 funnel(res, main = "Funnel plot based on replication studies")
 # dev.off()
@@ -778,8 +833,28 @@ funnel(res, main = "Funnel plot based on replication studies")
 ### Meta-analysis with se in replication study as moderator
 rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r, method = "REML")
 
+### Meta-analysis with se in replication study as moderator with "ML" as estimator for tau2 (model comparison)
+res0 <- rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r, method = "ML")
+res0
+
+### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category)
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+
+### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category) with "ML" as estimator for tau2 (model comparison)
+res1 <- rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "ML")
+res1
+
+### Comparing models with and without discipline
+anova(res0, res1)
+
 ### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category)
 rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+
+### Meta-analysis with dummy variables for journal and discipline (JPSP is reference category)
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+
+### Meta-analysis with se in replication study, dummy variables for journal and discipline (JPSP is reference category), and its interactions as moderators
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.r*final$d.JEP + final$sei.r*final$d.PSSoc + final$sei.r*final$d.PSOth, method = "REML")
 
 ##############################
 ### Meta-analyses per pair ###
@@ -874,6 +949,11 @@ for(i in 1:max(final$ID)) {
 ### Create matrix for correlation table
 mat <- cbind(df$fis.o, df$fis.r, df$yi, es.meta.all, df$sc.imp, df$sc.surp, df$sc.expe1, df$sc.chal, df$sc.expe2, df$sc.self)
 colnames(mat) <- c("fis.o", "fis.r", "diff", "es.meta", "importance", "surprising", "experience.O", "challenge", "experience.R", "quality")
+
+### Subset of only the replicated studies
+mat <- subset(mat, is.na(df$fis.r) == FALSE)
+
+### Create table with correlations
 rcorr(mat, type = "pearson")
 
 ### Option 2 for standardizing moderators
@@ -975,4 +1055,9 @@ df[149, ] <- NA ### Remove duplicate
 ### Create matrix for correlation table
 mat <- cbind(df$fis.o, df$fis.r, df$yi, es.meta.all, df$sc.imp, df$sc.surp, df$sc.expe1, df$sc.chal, df$sc.expe2, df$sc.self)
 colnames(mat) <- c("fis.o", "fis.r", "diff", "es.meta", "importance", "surprising", "experience.O", "challenge", "experience.R", "quality")
+
+### Subset of only the replicated studies
+mat <- subset(mat, is.na(df$fis.r) == FALSE)
+
+### Create table with correlations
 rcorr(mat, type = "pearson")
