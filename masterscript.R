@@ -25,14 +25,14 @@ jour <- numeric()
 
 for(i in 1:nrow(MASTER)) {
   if(as.character(MASTER$Journal..O.[i]) == "JEPLMC") {
-    jour[i] <- 2
-  } else if(as.character(MASTER$Journal..O.[i]) == "JPSP") {
     jour[i] <- 1
+  } else if(as.character(MASTER$Journal..O.[i]) == "JPSP") {
+    jour[i] <- 2
   } else if(as.character(MASTER$Journal..O.[i]) == "PS") {
     if(as.character(MASTER$Discipline..O.[i]) == "Cognitive") {
-      jour[i] <- 4
-    } else if(as.character(MASTER$Discipline..O.[i]) == "Social") {
       jour[i] <- 3
+    } else if(as.character(MASTER$Discipline..O.[i]) == "Social") {
+      jour[i] <- 4
     } else { jour[i] <- 5 }
   }
   else { jour[i] <- NA }
@@ -83,7 +83,8 @@ cat("\014")
 readline("Paste into column E, then press ENTER key")
 
 # Per journal 
-for(journal in sort(unique(jour))){
+for(journal in c(2,1,4,3,5)){
+
   sel <- MASTER[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.) & jour == journal,]
   
   # Column B
@@ -848,7 +849,7 @@ res1
 anova(res0, res1)
 
 ### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category)
-rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
 
 ### Meta-analysis with dummy variables for journal and discipline (JPSP is reference category)
 rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
