@@ -385,12 +385,13 @@ legend(x=0,y=.8,legend=c('Both nonsignificant',
        lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
        col = c("black", "black", "black", "blue", "black"),box.lwd=0)
 # Histogram effects 
+par(mfrow=c(1,2))
 hist1 <- hist(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=15)
 hist2 <- hist(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=20)
 plot(hist1, xlim = c(-.6, 1.2), ylim = c(0, 50), xlab = "Effect size r",
      main = "Effect histograms")
 plot(hist2, add = TRUE, col = addTrans("grey",150))
-legend(x = .7, y = 25,
+legend(x = .45, y = 25,
        leg=c(paste("Original, k = ",
                    length(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])),
              paste("Replication, k = ",
@@ -412,7 +413,7 @@ plot(ecdf(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]),
      cex.lab=.7,
      col = "grey")
 lines(ecdf(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))
-legend(x=.6,y=.5,legend=c(paste("Original, k = ",
+legend(x=.45,y=.5,legend=c(paste("Original, k = ",
                                 length(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])),
                           paste("Replication, k = ",
                                 length(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))),
