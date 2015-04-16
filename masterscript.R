@@ -135,8 +135,8 @@ for(journal in c(2,1,4,3,5)){
 # Written by CHJ Hartgerink
 
 #  McNemar test
-tab <- table(MASTER$T_sign..O.[!is.na(MASTER$T_sign..O.) & !is.na(MASTER$T_sign..R.)],
-             MASTER$T_sign..R.[!is.na(MASTER$T_sign..O.) & !is.na(MASTER$T_sign..R.)])
+tab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R)],
+             MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R)])
 
 mcnemarchi <- (tab[1,2]-tab[2,1])^2/(tab[1,2]+tab[2,1])
 mcnemarp <- pchisq(q = mcnemarchi, df = 1, lower.tail = FALSE)
@@ -223,44 +223,61 @@ dev.off()
 # Significance per journal
 
 # Table significance, per journal
-d11 <- sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "JPSP"] <= .05)
-d11perc <- d11 / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "JPSP"])
-d12 <- sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "JEPLMC"] <= .05)
-d12perc <- d12 / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "JEPLMC"])
-d13 <- sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "PS"] <= .05)
-d13perc <- d13 / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & MASTER$Journal..O. == "PS"])
 
-d21 <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JPSP"] <= .05)
-d21perc <- d21 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JPSP"])
-d22 <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JEPLMC"] <= .05)
-d22perc <- d22 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JEPLMC"])
-d23 <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "PS"] <= .05)
-d23perc <- d23 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "PS"])
-
-d21cond <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JPSP" & 
-                                       MASTER$T_pval_USE..O. <= .05] <= .05)
-d21perccond <- d21 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JPSP" & 
-                                                    MASTER$T_pval_USE..O. <= .05])
-d22cond <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JEPLMC" &
-                                       MASTER$T_pval_USE..O. <= .05] <= .05)
-d22perccond <- d22 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "JEPLMC" &
-                                                    MASTER$T_pval_USE..O. <= .05])
-d23cond <- sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "PS" &
-                                       MASTER$T_pval_USE..O. <= .05] <= .05)
-d23perccond <- d23 / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.) & MASTER$Journal..O. == "PS" &
-                                                    MASTER$T_pval_USE..O. <= .05])
+# JEPLMC
+JEPLMCtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 1],
+             MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 1])
+# JPSP
+JPSPtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 2],
+      MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 2])
+# PS Cognitive
+PScogtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 3],
+      MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 3])
+# PS Social
+PSsoctab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 4],
+      MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 4])
+# PS other
+PSothtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 5],
+      MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 5])
 
 labels <- c("Original", "Replication", "Replication | sig original")
 
-col1 <- c(d11, d21, d21cond)
-col1perc <- c(d11perc, d21perc, d21perccond)
-col2 <- c(d12, d22, d22cond)
-col2perc <- c(d12perc, d22perc, d22perccond)
-col3 <- c(d13, d23, d23cond)
-col3perc <- c(d13perc, d23perc, d23perccond)
+JPSP <- c(sum(JPSPtab[2,]),
+           sum(JPSPtab[,2]),
+           sum(JPSPtab[2,2]))
+JPSPperc <- c(sum(JPSPtab[2,])/sum(JPSPtab),
+               sum(JPSPtab[,2])/sum(JPSPtab),
+               sum(JPSPtab[2,2])/sum(JPSPtab[2,]))
 
-cbind(labels, col1, col1perc, col2, col2perc, col3, col3perc)
+JEPLMC <- c(sum(JEPLMCtab[2,]),
+             sum(JEPLMCtab[,2]),
+             sum(JEPLMCtab[2,2]))
+JEPLMCperc <- c(sum(JEPLMCtab[2,])/sum(JEPLMCtab),
+                 sum(JEPLMCtab[,2])/sum(JEPLMCtab),
+                 sum(JEPLMCtab[2,2])/sum(JEPLMCtab[2,]))
 
+PScog <- c(sum(PScogtab[1,]), # Only significant effects in original
+            sum(PScogtab[,2]),
+            sum(PScogtab[1,2]))
+PScogperc <- c(sum(PScogtab[1,])/sum(PScogtab),
+                sum(PScogtab[,2])/sum(PScogtab),
+                sum(PScogtab[1,2])/sum(PScogtab[1,]))
+
+PSsoc <- c(sum(PSsoctab[2,]),
+           sum(PSsoctab[,2]),
+           sum(PSsoctab[2,2]))
+PSsocperc <- c(sum(PSsoctab[2,])/sum(PSsoctab),
+               sum(PSsoctab[,2])/sum(PSsoctab),
+               sum(PSsoctab[2,2])/sum(PSsoctab[2,]))
+
+PSoth <- c(sum(PSothtab[1,]), # Only significant effects in original
+           sum(PSothtab[,2]),
+           sum(PSothtab[1,2]))
+PSothperc <- c(sum(PSothtab[1,])/sum(PSothtab),
+               sum(PSothtab[,2])/sum(PSothtab),
+               sum(PSothtab[1,2])/sum(PSothtab[1,]))
+
+cbind(labels, JPSP, JPSPperc, JEPLMC, JEPLMCperc, PScog, PScogperc, PSsoc, PSsocperc, PSoth, PSothperc)
 #---------------
 
 # Effect size distributions
@@ -273,6 +290,11 @@ length(MASTER$T_r..R.[!is.na(MASTER$T_r..R.)])
 
 # Number of pairs
 sum(!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.))
+
+# Spearman correlation original and replicated effect sizes
+cor(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
+    MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
+    method = "spearman")
 
 # Dependent t-test effects (r values)
 t.test(x = MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
@@ -293,7 +315,7 @@ sd(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
 mean(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])-mean(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
 
 # Binomial test to see if replicated effect is larger than original
-temp <- MASTER$T_Comparison.effects..R.O.
+temp <- MASTER$T_O_larger
 prop <- sum(temp[!is.na(temp)])/length(temp[!is.na(temp)])
 binom.test(x = sum(temp[!is.na(temp)]), n = length(temp[!is.na(temp)]),
            p = .5,alternative = "two.sided")
@@ -301,14 +323,21 @@ binom.test(x = sum(temp[!is.na(temp)]), n = length(temp[!is.na(temp)]),
 pdf('effect plots.pdf', width = 11.2, height = 9, onefile = TRUE)
 # Effect replication and original
 plot(y = MASTER$T_r..R., x = MASTER$T_r..O., xlab = "Effect size r (original)",
-     ylab = "Effect size r (replication)", col = "white")
+     ylab = "Effect size r (replication)", col = "white", xlim = c(-.3, 1), ylim = c(-.3, 1),
+     frame.plot=F,
+     xaxs="i",
+     yaxs="i"
+)
 points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
-       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
+       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], 
+       pch = 4, col = 1)
 points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
-       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
+       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
+       pch = 21, col = 10)
 points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
-       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
-lines(x = seq(0, 1, .001), y = seq(0, 1, .001), type = 'l')
+       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], 
+       pch = 10, col = 3)
+lines(x = seq(-.5, 2, .0001), y = seq(-.5, 2, .0001), type = 'l')
 
 # Regression line
 x1 <- MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]
@@ -317,16 +346,17 @@ y1 <- MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]
 # Linear
 xx <- lm(y1 ~ x1)
 lines(loess.smooth(x = x1, y = y1), lty = 2)
-curve(expr = (xx$coefficients[1] + xx$coefficients[2] * x), from = -10, to = 10, add = TRUE, col = "blue")
+curve(expr = (xx$coefficients[1] + xx$coefficients[2] * x), from = min(x1),
+      to = max(x1), add = TRUE, col = "blue")
 
-legend(x=.6,y=.0,legend=c('Both nonsignificant',
+legend(x=-.2,y=.8,legend=c('Both nonsignificant',
                           'Original significant',
                           'Both significant',
                           'Repl. predicted by orig.',
                           'Loess curve'),
        cex=1,
        lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
-       col = c("black", "black", "black", "blue", "black"),box.lwd=0)
+       col = c("black", 10, 3, "blue", "black"), box.lwd=0)
 
 # R2
 xr2 <- x1 * x1
@@ -346,7 +376,7 @@ r2 <- lm(yr2 ~ xr2)
 lines(loess.smooth(x = xr2, y = yr2), lty = 2)
 curve(expr = (r2$coefficients[1] + r2$coefficients[2] * x), from = 0, to = 1, add = TRUE, col = "blue")
 
-legend(x=.6,y=.2,legend=c('Both nonsignificant',
+legend(x=0,y=.8,legend=c('Both nonsignificant',
                           'Original significant',
                           'Both significant',
                           'Repl. predicted by orig.',
