@@ -1,0 +1,142 @@
+> # wd <- "SET WORKING DIRECTORY HERE"
+> wd <- "C:/Users/chjh/Dropbox/projects/2014rpp/master"
+> 
+> ######################################################################################
+> # Master script Tilburg University Analyses                                          #
+> # Responsible for this file: CHJ Hartgerink (c.h.j.hartgerink@tilburguniversity.edu) #
+> ######################################################################################
+> 
+> setwd(wd)
+> # Read in Tilburg data
+> MASTER <- read.csv('tilburg data.csv')
+> # source functions
+> source('functions.r')
+> library(Hmisc)
+> 
+> # ALL ANALYSES INCLUDE PAIRWISE SELECTION.
+> 
+> #-----------------------------
+> 
+> # Writing out data for table
+> # https://docs.google.com/spreadsheets/d/16aqIekNerZcflSJwM7dOiXnN24-KvZqaa3eTg4js41U/edit#gid=0
+> # Columns B-E
+> ### Recode "Publishing journal and subdiscipline"
+> jour <- numeric()
+> 
+> for(i in 1:nrow(MASTER)) {
++   if(as.character(MASTER$Journal..O.[i]) == "JEPLMC") {
++     jour[i] <- 1
++   } else if(as.character(MASTER$Journal..O.[i]) == "JPSP") {
++     jour[i] <- 2
++   } else if(as.character(MASTER$Journal..O.[i]) == "PS") {
++     if(as.character(MASTER$Discipline..O.[i]) == "Cognitive") {
++       jour[i] <- 3
++     } else if(as.character(MASTER$Discipline..O.[i]) == "Social") {
++       jour[i] <- 4
++     } else { jour[i] <- 5 }
++   }
++   else { jour[i] <- NA }
++ }
+> 
+> # Overall 
+> sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R),]
+> 
+> # Column B
+> # Relations tested
+> reltest <- dim(sel)[1]
+> # Relations both significant
+> relsig <- sum((sel$T_sign_O) & (sel$T_sign_R), na.rm = TRUE)
+> cat(
++   paste0("Column B Overall ",
++     round(relsig, 0),
++     " / ",
++     round(reltest, 0)
++   )
++ )
+Column B Overall 35 / 100> 
+> # Column C
+> # Percent
+> cat(paste0("Column C overall ", round((relsig / reltest), 2)))
+Column C overall 0.35> 
+> # Column D
+> # Mean
+> temp1 <- mean(sel$T_r..O., na.rm = TRUE)
+> # SD
+> temp2 <- sd(sel$T_r..O., na.rm = TRUE)
+> 
+> cat(paste0("Column D overall ", round(temp1, 2), " (", round(temp2, 2), ")"))
+Column D overall 0.39 (0.19)> 
+> # Column E
+> # Mean
+> temp1 <- mean(sel$T_r..R., na.rm = TRUE)
+> # SD
+> temp2 <- sd(sel$T_r..R., na.rm = TRUE)
+> 
+> cat(paste0("Column F overall ", round(temp1, 2), " (", round(temp2, 2), ")"))
+Column F overall 0.2 (0.25)> 
+> 
+> # Per journal 
+> journals <- c("JEPLMC", "JPSP", "PS Cognitive", "PS social", "PS other")
+> for(journal in c(2,1,4,3,5)){
++ 
++   sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == journal,]
++   
++   # Column B
++   # Relations tested
++   reltest <- dim(sel)[1]
++   # Relations both significant
++   relsig <- sum((sel$T_sign_O) & (sel$T_sign_R), na.rm = TRUE)
++ cat(
++     paste0("Column B ", journals[journal], " ",
++       round(relsig, 0),
++       " / ",
++       round(reltest, 0)
++     )
++   )
++ cat("\n")
++   
++   # Column C
++   # Percent
++   cat(paste0("Column C ", journals[journal], " ",
++ as.character(round((relsig / reltest), 2))))
++ cat("\n")
++   
++   # Column D
++   # Mean
++   temp1 <- mean(sel$T_r..O., na.rm = TRUE)
++   # SD
++   temp2 <- sd(sel$T_r..O., na.rm = TRUE)
++   
++   cat(paste0("Column D ", journals[journal], " ",
++ round(temp1, 2), " (", round(temp2, 2), ")"))
++     cat("\n")
++   # Column F
++   # Mean
++   temp1 <- mean(sel$T_r..R., na.rm = TRUE)
++   # SD
++   temp2 <- sd(sel$T_r..R., na.rm = TRUE)
++   
++   cat(paste0("Column F ", journals[journal], " ",round(temp1, 2), " (", round(temp2, 2), ")"))
++ cat("\n")
++ }
+Column B JPSP 7 / 32
+Column C JPSP 0.22
+Column D JPSP 0.28 (0.1)
+Column F JPSP 0.07 (0.1)
+Column B JEPLMC 13 / 28
+Column C JEPLMC 0.46
+Column D JEPLMC 0.46 (0.18)
+Column F JEPLMC 0.27 (0.24)
+Column B PS social 7 / 24
+Column C PS social 0.29
+Column D PS social 0.37 (0.21)
+Column F PS social 0.21 (0.29)
+Column B PS Cognitive 7 / 10
+Column C PS Cognitive 0.7
+Column D PS Cognitive 0.53 (0.23)
+Column F PS Cognitive 0.36 (0.24)
+Column B PS other 1 / 6
+Column C PS other 0.17
+Column D PS other 0.52 (0.13)
+Column F PS other 0.14 (0.44)
+> 

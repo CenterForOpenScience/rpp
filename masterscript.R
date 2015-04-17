@@ -39,28 +39,24 @@ for(i in 1:nrow(MASTER)) {
 }
 
 # Overall 
-sel <- MASTER[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.),]
+sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R),]
 
 # Column B
 # Relations tested
 reltest <- dim(sel)[1]
 # Relations both significant
-relsig <- sum((sel$T_pval_USE..O.) <= .05 & (sel$T_pval_USE..R. <= .05), na.rm = TRUE)
-writeClipboard(
-  paste0(
+relsig <- sum((sel$T_sign_O) & (sel$T_sign_R), na.rm = TRUE)
+cat(
+  paste0("Column B Overall ",
     round(relsig, 0),
     " / ",
     round(reltest, 0)
   )
 )
-cat("\014")
-readline("Paste into column B, then press ENTER key")
 
 # Column C
 # Percent
-writeClipboard(as.character(round((relsig / reltest), 2)))
-cat("\014")
-readline("Paste into column C, then press ENTER key")
+cat(paste0("Column C overall ", round((relsig / reltest), 2)))
 
 # Column D
 # Mean
@@ -68,9 +64,7 @@ temp1 <- mean(sel$T_r..O., na.rm = TRUE)
 # SD
 temp2 <- sd(sel$T_r..O., na.rm = TRUE)
 
-writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
-cat("\014")
-readline("Paste into column D, then press ENTER key")
+cat(paste0("Column D overall ", round(temp1, 2), " (", round(temp2, 2), ")"))
 
 # Column E
 # Mean
@@ -78,35 +72,34 @@ temp1 <- mean(sel$T_r..R., na.rm = TRUE)
 # SD
 temp2 <- sd(sel$T_r..R., na.rm = TRUE)
 
-writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
-cat("\014")
-readline("Paste into column E, then press ENTER key")
+cat(paste0("Column F overall ", round(temp1, 2), " (", round(temp2, 2), ")"))
+
 
 # Per journal 
+journals <- c("JEPLMC", "JPSP", "PS Cognitive", "PS social", "PS other")
 for(journal in c(2,1,4,3,5)){
 
-  sel <- MASTER[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.) & jour == journal,]
+  sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == journal,]
   
   # Column B
   # Relations tested
   reltest <- dim(sel)[1]
   # Relations both significant
-  relsig <- sum((sel$T_pval_USE..O.) <= .05 & (sel$T_pval_USE..R. <= .05), na.rm = TRUE)
-  writeClipboard(
-    paste0(
+  relsig <- sum((sel$T_sign_O) & (sel$T_sign_R), na.rm = TRUE)
+	cat(
+    paste0("Column B ", journals[journal], " ",
       round(relsig, 0),
       " / ",
       round(reltest, 0)
     )
   )
-  cat("\014")
-  readline("Paste into column B, then press ENTER key")
+cat("\n")
   
   # Column C
   # Percent
-  writeClipboard(as.character(round((relsig / reltest) * 100, 0)))
-  cat("\014")
-  readline("Paste into column C, then press ENTER key")
+  cat(paste0("Column C ", journals[journal], " ",
+as.character(round((relsig / reltest), 2))))
+cat("\n")
   
   # Column D
   # Mean
@@ -114,19 +107,17 @@ for(journal in c(2,1,4,3,5)){
   # SD
   temp2 <- sd(sel$T_r..O., na.rm = TRUE)
   
-  writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
-  cat("\014")
-  readline("Paste into column D, then press ENTER key")
-  
-  # Column E
+  cat(paste0("Column D ", journals[journal], " ",
+round(temp1, 2), " (", round(temp2, 2), ")"))
+    cat("\n")
+  # Column F
   # Mean
   temp1 <- mean(sel$T_r..R., na.rm = TRUE)
   # SD
   temp2 <- sd(sel$T_r..R., na.rm = TRUE)
   
-  writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
-  cat("\014")
-  readline("Paste into column E, then press ENTER key")
+  cat(paste0("Column F ", journals[journal], " ",round(temp1, 2), " (", round(temp2, 2), ")"))
+cat("\n")
 }
 
 #---------------
@@ -158,15 +149,15 @@ summary(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pv
 
 # Percent significant and nonsignificant for original studies
 # Significant
-sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)] <= .05) / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)])
+sum(tab[2,])/sum(tab)
 # Nonsignificant
-sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)] > .05) / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)])
+sum(tab[1,])/sum(tab)
 
 # Percent significant and nonsignificant for replication studies
 # Significant
-sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)] <= .05) / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)])
+sum(tab[,2])/sum(tab)
 # Nonsignificant
-sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)] > .05) / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)])
+sum(tab[1,])/sum(tab)
 
 # Deviation from uniformity in nonsignificant replication studies
 FisherMethod(x = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)],
@@ -230,15 +221,9 @@ JEPLMCtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sig
 # JPSP
 JPSPtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 2],
       MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 2])
-# PS Cognitive
-PScogtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 3],
-      MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 3])
-# PS Social
-PSsoctab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 4],
-      MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 4])
-# PS other
-PSothtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 5],
-      MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 5])
+# PS
+PStab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & (jour == 3 | jour == 4 | jour == 5)],
+      MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & (jour == 3 | jour == 4 | jour == 5)])
 
 labels <- c("Original", "Replication", "Replication | sig original")
 
@@ -256,28 +241,15 @@ JEPLMCperc <- c(sum(JEPLMCtab[2,])/sum(JEPLMCtab),
                  sum(JEPLMCtab[,2])/sum(JEPLMCtab),
                  sum(JEPLMCtab[2,2])/sum(JEPLMCtab[2,]))
 
-PScog <- c(sum(PScogtab[1,]), # Only significant effects in original
-            sum(PScogtab[,2]),
-            sum(PScogtab[1,2]))
-PScogperc <- c(sum(PScogtab[1,])/sum(PScogtab),
-                sum(PScogtab[,2])/sum(PScogtab),
-                sum(PScogtab[1,2])/sum(PScogtab[1,]))
+PS <- c(sum(PStab[2,]),
+            sum(PStab[,2]),
+            sum(PStab[2,2]))
+PSperc <- c(sum(PStab[2,])/sum(PStab),
+                sum(PStab[,2])/sum(PStab),
+                sum(PStab[2,2])/sum(PStab[2,]))
 
-PSsoc <- c(sum(PSsoctab[2,]),
-           sum(PSsoctab[,2]),
-           sum(PSsoctab[2,2]))
-PSsocperc <- c(sum(PSsoctab[2,])/sum(PSsoctab),
-               sum(PSsoctab[,2])/sum(PSsoctab),
-               sum(PSsoctab[2,2])/sum(PSsoctab[2,]))
 
-PSoth <- c(sum(PSothtab[1,]), # Only significant effects in original
-           sum(PSothtab[,2]),
-           sum(PSothtab[1,2]))
-PSothperc <- c(sum(PSothtab[1,])/sum(PSothtab),
-               sum(PSothtab[,2])/sum(PSothtab),
-               sum(PSothtab[1,2])/sum(PSothtab[1,]))
-
-cbind(labels, JPSP, JPSPperc, JEPLMC, JEPLMCperc, PScog, PScogperc, PSsoc, PSsocperc, PSoth, PSothperc)
+cbind(labels, JPSP, JPSPperc, JEPLMC, JEPLMCperc, PS, PSperc)
 #---------------
 
 # Effect size distributions

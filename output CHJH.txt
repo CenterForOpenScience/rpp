@@ -39,78 +39,67 @@
 + }
 > 
 > # Overall 
-> sel <- MASTER[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.),]
+> sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R),]
 > 
 > # Column B
 > # Relations tested
 > reltest <- dim(sel)[1]
 > # Relations both significant
-> relsig <- sum((sel$T_pval_USE..O.) <= .05 & (sel$T_pval_USE..R. <= .05), na.rm = TRUE)
-> writeClipboard(
-+   paste0(
+> relsig <- sum((sel$T_sign_O) & (sel$T_sign_R), na.rm = TRUE)
+> cat(
++   paste0("Column B Overall ",
 +     round(relsig, 0),
 +     " / ",
 +     round(reltest, 0)
 +   )
 + )
-> cat("\014")
-> readline("Paste into column B, then press ENTER key")
-Paste into column B, then press ENTER key
-[1] ""
+Column B Overall 35 / 100> 
 > # Column C
 > # Percent
-> writeClipboard(as.character(round((relsig / reltest), 2)))
-> cat("\014")
-> readline("Paste into column C, then press ENTER key")
-Paste into column C, then press ENTER key
-[1] ""
+> cat(paste0("Column C overall ", round((relsig / reltest), 2)))
+Column C overall 0.35> 
 > # Column D
 > # Mean
 > temp1 <- mean(sel$T_r..O., na.rm = TRUE)
 > # SD
 > temp2 <- sd(sel$T_r..O., na.rm = TRUE)
 > 
-> writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
-> cat("\014")
-> readline("Paste into column D, then press ENTER key")
-Paste into column D, then press ENTER key
-[1] ""
+> cat(paste0("Column D overall ", round(temp1, 2), " (", round(temp2, 2), ")"))
+Column D overall 0.39 (0.19)> 
 > # Column E
 > # Mean
 > temp1 <- mean(sel$T_r..R., na.rm = TRUE)
 > # SD
 > temp2 <- sd(sel$T_r..R., na.rm = TRUE)
 > 
-> writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
-> cat("\014")
-> readline("Paste into column E, then press ENTER key")
-Paste into column E, then press ENTER key
-[1] ""
+> cat(paste0("Column F overall ", round(temp1, 2), " (", round(temp2, 2), ")"))
+Column F overall 0.2 (0.25)> 
+> 
 > # Per journal 
+> journals <- c("JEPLMC", "JPSP", "PS Cognitive", "PS social", "PS other")
 > for(journal in c(2,1,4,3,5)){
 + 
-+   sel <- MASTER[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.) & jour == journal,]
++   sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == journal,]
 +   
 +   # Column B
 +   # Relations tested
 +   reltest <- dim(sel)[1]
 +   # Relations both significant
-+   relsig <- sum((sel$T_pval_USE..O.) <= .05 & (sel$T_pval_USE..R. <= .05), na.rm = TRUE)
-+   writeClipboard(
-+     paste0(
++   relsig <- sum((sel$T_sign_O) & (sel$T_sign_R), na.rm = TRUE)
++ cat(
++     paste0("Column B ", journals[journal], " ",
 +       round(relsig, 0),
 +       " / ",
 +       round(reltest, 0)
 +     )
 +   )
-+   cat("\014")
-+   readline("Paste into column B, then press ENTER key")
++ cat("\n")
 +   
 +   # Column C
 +   # Percent
-+   writeClipboard(as.character(round((relsig / reltest) * 100, 0)))
-+   cat("\014")
-+   readline("Paste into column C, then press ENTER key")
++   cat(paste0("Column C ", journals[journal], " ",
++ as.character(round((relsig / reltest), 2))))
++ cat("\n")
 +   
 +   # Column D
 +   # Mean
@@ -118,44 +107,79 @@ Paste into column E, then press ENTER key
 +   # SD
 +   temp2 <- sd(sel$T_r..O., na.rm = TRUE)
 +   
-+   writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
-+   cat("\014")
-+   readline("Paste into column D, then press ENTER key")
-+   
-+   # Column E
++   cat(paste0("Column D ", journals[journal], " ",
++ round(temp1, 2), " (", round(temp2, 2), ")"))
++     cat("\n")
++   # Column F
 +   # Mean
 +   temp1 <- mean(sel$T_r..R., na.rm = TRUE)
 +   # SD
 +   temp2 <- sd(sel$T_r..R., na.rm = TRUE)
 +   
-+   writeClipboard(paste0(round(temp1, 2), " (", round(temp2, 2), ")"))
-+   cat("\014")
-+   readline("Paste into column E, then press ENTER key")
++   cat(paste0("Column F ", journals[journal], " ",round(temp1, 2), " (", round(temp2, 2), ")"))
++ cat("\n")
 + }
-Paste into column B, then press ENTER key
-Paste into column C, then press ENTER key#---------------
-Paste into column D, then press ENTER key
-Paste into column E, then press ENTER key# P-value analyses
-Paste into column B, then press ENTER key# Written by CHJ Hartgerink
-Paste into column C, then press ENTER key
-Paste into column D, then press ENTER key#  McNemar test
-Paste into column E, then press ENTER keytab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R)],
-Paste into column B, then press ENTER key             MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R)])
-Paste into column C, then press ENTER key
-Paste into column D, then press ENTER keymcnemarchi <- (tab[1,2]-tab[2,1])^2/(tab[1,2]+tab[2,1])
-Paste into column E, then press ENTER keymcnemarp <- pchisq(q = mcnemarchi, df = 1, lower.tail = FALSE)
-Paste into column B, then press ENTER key
-Paste into column C, then press ENTER key# Dependent t-test p-values
-Paste into column D, then press ENTER keyt.test(x = MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
-Paste into column E, then press ENTER key       y = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
-Paste into column B, then press ENTER key       paired = TRUE)
-Paste into column C, then press ENTER key
-Paste into column D, then press ENTER key# Wilcoxon signed-rank test p-values
-Paste into column E, then press ENTER keywilcox.test(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
->             MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
-Error: unexpected ',' in "            MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],"
->             alternative="two.sided")
-Error: unexpected ')' in "            alternative="two.sided")"
+Column B JPSP 7 / 32
+Column C JPSP 0.22
+Column D JPSP 0.28 (0.1)
+Column F JPSP 0.07 (0.1)
+Column B JEPLMC 13 / 28
+Column C JEPLMC 0.46
+Column D JEPLMC 0.46 (0.18)
+Column F JEPLMC 0.27 (0.24)
+Column B PS social 7 / 24
+Column C PS social 0.29
+Column D PS social 0.37 (0.21)
+Column F PS social 0.21 (0.29)
+Column B PS Cognitive 7 / 10
+Column C PS Cognitive 0.7
+Column D PS Cognitive 0.53 (0.23)
+Column F PS Cognitive 0.36 (0.24)
+Column B PS other 1 / 6
+Column C PS other 0.17
+Column D PS other 0.52 (0.13)
+Column F PS other 0.14 (0.44)
+> 
+> #---------------
+> 
+> # P-value analyses
+> # Written by CHJ Hartgerink
+> 
+> #  McNemar test
+> tab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R)],
++              MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R)])
+> 
+> mcnemarchi <- (tab[1,2]-tab[2,1])^2/(tab[1,2]+tab[2,1])
+> mcnemarp <- pchisq(q = mcnemarchi, df = 1, lower.tail = FALSE)
+> 
+> # Dependent t-test p-values
+> t.test(x = MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
++        y = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
++        paired = TRUE)
+
+        Paired t-test
+
+data:  MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)] and MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]
+t = -8.2165, df = 98, p-value = 8.736e-13
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -0.3402255 -0.2078530
+sample estimates:
+mean of the differences 
+             -0.2740393 
+
+> 
+> # Wilcoxon signed-rank test p-values
+> wilcox.test(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
++             MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
++             alternative="two.sided")
+
+        Wilcoxon rank sum test with continuity correction
+
+data:  MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)] and MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]
+W = 2406, p-value = 6.162e-10
+alternative hypothesis: true location shift is not equal to 0
+
 > 
 > sd(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
 [1] 0.1028656
@@ -170,19 +194,19 @@ Error: unexpected ')' in "            alternative="two.sided")"
 > 
 > # Percent significant and nonsignificant for original studies
 > # Significant
-> sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)] <= .05) / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)])
-[1] 0.9230769
+> sum(tab[2,])/sum(tab)
+[1] 0.97
 > # Nonsignificant
-> sum(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)] > .05) / length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.)])
-[1] 0.07692308
+> sum(tab[1,])/sum(tab)
+[1] 0.03
 > 
 > # Percent significant and nonsignificant for replication studies
 > # Significant
-> sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)] <= .05) / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)])
-[1] 0.3535354
+> sum(tab[,2])/sum(tab)
+[1] 0.36
 > # Nonsignificant
-> sum(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)] > .05) / length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)])
-[1] 0.6464646
+> sum(tab[1,])/sum(tab)
+[1] 0.03
 > 
 > # Deviation from uniformity in nonsignificant replication studies
 > FisherMethod(x = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)],
@@ -250,15 +274,9 @@ null device
 > # JPSP
 > JPSPtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 2],
 +       MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 2])
-> # PS Cognitive
-> PScogtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 3],
-+       MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 3])
-> # PS Social
-> PSsoctab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 4],
-+       MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 4])
-> # PS other
-> PSothtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 5],
-+       MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 5])
+> # PS
+> PStab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & (jour == 3 | jour == 4 | jour == 5)],
++       MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & (jour == 3 | jour == 4 | jour == 5)])
 > 
 > labels <- c("Original", "Replication", "Replication | sig original")
 > 
@@ -276,40 +294,23 @@ null device
 +                  sum(JEPLMCtab[,2])/sum(JEPLMCtab),
 +                  sum(JEPLMCtab[2,2])/sum(JEPLMCtab[2,]))
 > 
-> PScog <- c(sum(PScogtab[1,]), # Only significant effects in original
-+             sum(PScogtab[,2]),
-+             sum(PScogtab[1,2]))
-> PScogperc <- c(sum(PScogtab[1,])/sum(PScogtab),
-+                 sum(PScogtab[,2])/sum(PScogtab),
-+                 sum(PScogtab[1,2])/sum(PScogtab[1,]))
+> PS <- c(sum(PStab[2,]),
++             sum(PStab[,2]),
++             sum(PStab[2,2]))
+> PSperc <- c(sum(PStab[2,])/sum(PStab),
++                 sum(PStab[,2])/sum(PStab),
++                 sum(PStab[2,2])/sum(PStab[2,]))
 > 
-> PSsoc <- c(sum(PSsoctab[2,]),
-+            sum(PSsoctab[,2]),
-+            sum(PSsoctab[2,2]))
-> PSsocperc <- c(sum(PSsoctab[2,])/sum(PSsoctab),
-+                sum(PSsoctab[,2])/sum(PSsoctab),
-+                sum(PSsoctab[2,2])/sum(PSsoctab[2,]))
 > 
-> PSoth <- c(sum(PSothtab[1,]), # Only significant effects in original
-+            sum(PSothtab[,2]),
-+            sum(PSothtab[1,2]))
-> PSothperc <- c(sum(PSothtab[1,])/sum(PSothtab),
-+                sum(PSothtab[,2])/sum(PSothtab),
-+                sum(PSothtab[1,2])/sum(PSothtab[1,]))
-> 
-> cbind(labels, JPSP, JPSPperc, JEPLMC, JEPLMCperc, PScog, PScogperc, PSsoc, PSsocperc, PSoth, PSothperc)
+> cbind(labels, JPSP, JPSPperc, JEPLMC, JEPLMCperc, PS, PSperc)
      labels                       JPSP JPSPperc            JEPLMC
 [1,] "Original"                   "31" "0.96875"           "27"  
 [2,] "Replication"                "7"  "0.21875"           "13"  
 [3,] "Replication | sig original" "7"  "0.225806451612903" "13"  
-     JEPLMCperc          PScog PScogperc PSsoc PSsocperc           PSoth
-[1,] "0.964285714285714" "10"  "1"       "23"  "0.958333333333333" "6"  
-[2,] "0.464285714285714" "7"   "0.7"     "8"   "0.333333333333333" "1"  
-[3,] "0.481481481481481" "7"   "0.7"     "7"   "0.304347826086957" "1"  
-     PSothperc          
-[1,] "1"                
-[2,] "0.166666666666667"
-[3,] "0.166666666666667"
+     JEPLMCperc          PS   PSperc             
+[1,] "0.964285714285714" "39" "0.975"            
+[2,] "0.464285714285714" "16" "0.4"              
+[3,] "0.481481481481481" "15" "0.384615384615385"
 > #---------------
 > 
 > # Effect size distributions
