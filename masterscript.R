@@ -499,21 +499,10 @@ fac.diff <- factor(MASTER$Difficulty.of.implimentation..R., levels = c("Extremel
 ###########################################
 
 ### Function for standardizing variables
-stand <- function(x, max, min, option) {
-  
-  if(option == 1) {
-    res <- (x-mean(x, na.rm = TRUE))/sd(x, na.rm = TRUE)
-  }
-  
-  if(option == 2) {
-    res <- (x - min)/(max-min)
-  }
-  
+stand <- function(x) {
+  res <- (x-mean(x, na.rm = TRUE))/sd(x, na.rm = TRUE)
   return(res)
 }
-
-### OPTION 1 FOR STANDARDIZING ###
-option <- 1
 
 # a. PUBLISHING JOURNAL AND SUBDISCIPLINE
 
@@ -527,10 +516,10 @@ d.PSOth <- ifelse(jour == 5, 1, 0)
 # b. IMPORTANCE OF THE EFFECT
 
 ### Standardizing "Citation count, paper (O)"
-st.impa <- stand(MASTER$Citation.count..paper..O., option = option)
+st.impa <- stand(MASTER$Citation.count..paper..O.)
 
 ### Standardizing "Exciting/important effect"
-st.exci <- stand(as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.], option = option)
+st.exci <- stand(as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.])
 
 ### Creating scale
 sc.impo <- (st.impa + st.exci)/2
@@ -538,19 +527,19 @@ sc.impo <- (st.impa + st.exci)/2
 # c. SURPRISING EFFECT
 
 ### Standardizing "Surprising effect" and creating scale
-sc.surp <- stand(as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.], option = option)
+sc.surp <- stand(as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.])
 
 # d. EXPERIENCE AND EXPERTISE OF ORIGINAL TEAM
 
 ### Taking the average and then standardizing "Institution prestige of 1st author and senior author" 
 ave.pres <- (MASTER$Institution.prestige..1st.author..O.+MASTER$Institution.prestige..senior.author..O.)/2
-st.pres <- stand(ave.pres, option = option)
+st.pres <- stand(ave.pres)
 
 ### Standardizing "Citation Count, 1st author (O)"
-st.impa.1st <- stand(MASTER$Citation.Count..1st.author..O., option = option)
+st.impa.1st <- stand(MASTER$Citation.Count..1st.author..O.)
 
 ### Standardizing "Citation count, senior author (O)"
-st.impa.sen <- stand(MASTER$Citation.count..senior.author..O., option = option)
+st.impa.sen <- stand(MASTER$Citation.count..senior.author..O.)
 
 ### Creating scale
 sc.expe1 <- (st.pres + st.impa.1st + st.impa.sen)/3
@@ -558,13 +547,13 @@ sc.expe1 <- (st.pres + st.impa.1st + st.impa.sen)/3
 # e. CHALLENGE OF CONDUCTING REPLICATION
 
 ### Standardizing "Perceived expertise required"
-st.expe <- stand(as.numeric(fac.expe), option = option)
+st.expe <- stand(as.numeric(fac.expe))
 
 ### Standardizing "Perceived opportunity for expectancy biases"
-st.oppo.expe <- stand(as.numeric(fac.oppo.expe), option = option)
+st.oppo.expe <- stand(as.numeric(fac.oppo.expe))
 
 ### Standardizing "Perceived opportunity for impact of lack of diligence"
-st.oppo.dili <- stand(as.numeric(fac.oppo.dili), option = option)
+st.oppo.dili <- stand(as.numeric(fac.oppo.dili))
 
 ### Create scale
 sc.chal <- (st.expe + st.oppo.expe + st.oppo.dili)/3
@@ -572,25 +561,25 @@ sc.chal <- (st.expe + st.oppo.expe + st.oppo.dili)/3
 # f. EXPERIENCE AND EXPERTISE OF REPLICATION TEAM
 
 ### Standardizing "Position of senior member of replication team"
-st.posi <- stand(as.numeric(fac.posi), option = option)
+st.posi <- stand(as.numeric(fac.posi))
 
 ### Standardizing "Highest degree of replication team's senior member"
-st.degr <- stand(as.numeric(fac.degr), option = option)
+st.degr <- stand(as.numeric(fac.degr))
 
 ### Standardizing "Replication team domain expertise"
-st.doma <- stand(as.numeric(fac.doma), option = option)
+st.doma <- stand(as.numeric(fac.doma))
 
 ### Standardizing "Replication team method expertise"
-st.meth <- stand(as.numeric(fac.meth), option = option)
+st.meth <- stand(as.numeric(fac.meth))
 
 ### Standardizing "Replication team senior member's total publications"
-st.publ <- stand(MASTER$Total.publications..R., option = option)
+st.publ <- stand(MASTER$Total.publications..R.)
 
 ### Standardizing "Replication team senior member's total publications and total number of peer-reviewed articles"
-st.peer <- stand(MASTER$Peer.reviewed.articles..R., option = option)
+st.peer <- stand(MASTER$Peer.reviewed.articles..R.)
 
 ### Standardizing "Replication team senior member's total citations"
-st.cita <- stand(MASTER$Citations..R., option = option)
+st.cita <- stand(MASTER$Citations..R.)
 
 ### Create scale
 sc.expe2 <- (st.posi + st.degr + st.doma + st.meth + st.publ + st.cita)/6
@@ -598,16 +587,16 @@ sc.expe2 <- (st.posi + st.degr + st.doma + st.meth + st.publ + st.cita)/6
 # g. SELF-ASSESSED QUALITY OF REPLICATION
 
 ### Standardizing "Self-assessed quality of replication"
-st.impl <- stand(as.numeric(fac.impl), option = option)
+st.impl <- stand(as.numeric(fac.impl))
 
 ### Standardizing "Self-assessed data collection quality of replication"
-st.data <- stand(as.numeric(fac.data), option = option)
+st.data <- stand(as.numeric(fac.data))
 
 ### Standardizing "Self-assessed replication similarity to original"
-st.repl <- stand(as.numeric(fac.repl), option = option)
+st.repl <- stand(as.numeric(fac.repl))
 
 ### Standardizing "Self-assessed difficulty of implementation"
-st.diff <- stand(as.numeric(fac.diff), option = option)
+st.diff <- stand(as.numeric(fac.diff))
 
 ### Create a scale
 sc.self <- (st.impl + st.data + st.repl + st.diff)/4
@@ -653,7 +642,7 @@ sei <- sqrt(1/(N.o-3) + 1/(N.r-3))
 
 df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
                  d.JEP, d.PSCog, d.PSSoc, d.PSOth, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self, power.r = as.numeric(levels(MASTER$Power..R.))[MASTER$Power..R.])
-df[149, ] <- NA ### Remove duplicate
+df[df$ID == 149, ] <- NA ### Remove duplicate
 
 ### Select: F(df1 = 1, df2), t, and r
 sub <- subset(df, (df$stat == "F" & df$df1 == 1) | df$stat == "t" | df$stat == "r")
@@ -765,19 +754,6 @@ sum(in.ci[final$d.JEP == 1])/length(in.ci[final$d.JEP == 1])
 sum(in.ci[final$d.PSSoc == 1])/length(in.ci[final$d.PSSoc == 1])
 sum(in.ci[final$d.PSCog == 1])/length(in.ci[final$d.PSCog == 1])
 sum(in.ci[final$d.PSOth == 1])/length(in.ci[final$d.PSOth == 1])
-
-### Predicting how often effect size of original study is within CI of replication
-overlap <- numeric()
-points <- 1000000
-p <- 1:points/(points+1)
-
-for (i in 1:length(final$N.r)) {
-  zu <- qnorm(p,0,1/sqrt(final$N.r[i]-3)) + qnorm(.975)/sqrt(final$N.r[i]-3)
-  zl <- zu - 2*qnorm(.975)/sqrt(final$N.r[i]-3)
-  overlap[i] <- mean(pnorm(zu,0,1/sqrt(final$N.o[i]-3))) - mean(pnorm(zl,0,1/sqrt(final$N.o[i]-3)))
-}
-overlap
-mean(overlap)
 
 #################################################################################
 ### Meta-analyses based on differences between original study and replication ###
@@ -926,25 +902,9 @@ for(i in 1:length(final$fis.o)) {
 
 sum(in.ci.meta)/length(in.ci.meta) # Proportion of times the original study is within the CI of meta-analysis
 
-############################################################
-### How often is original study within CI of replication ###
-############################################################
-
-### Create confidence interval for replications
-ci.lb <- final$fis.r-qnorm(.975)*final$sei.r
-ci.ub <- final$fis.r+qnorm(.975)*final$sei.r
-
-in.ci <- numeric()
-
-for(i in 1:length(final$fis.r)) {
-  
-  if (final$fis.o[i] > ci.lb[i] & final$fis.o[i] < ci.ub[i]) {
-    in.ci[i] <- TRUE
-  } else { in.ci[i] <- FALSE }
-  
-}
-
-sum(in.ci)/length(in.ci) # Proportion of times the original study is within the CI of the replication
+######################################################################################
+### Predicting how often effect size of original study is within CI of replication ###
+######################################################################################
 
 ### Predicting how often effect size of original study is within CI of replication
 overlap <- numeric()
@@ -986,110 +946,4 @@ colnames(mat) <- c("fis.o", "fis.r", "diff", "es.meta", "importance", "surprisin
 mat <- subset(mat, is.na(df$fis.r) == FALSE)
 
 ### Create table with correlations
-rcorr(mat, type = "pearson")
-
-### Option 2 for standardizing moderators
-option <- 2
-
-# b. IMPORTANCE OF THE EFFECT
-
-### Standardizing "Citation count, paper (O)"
-st.impa <- stand(MASTER$Citation.count..paper..O., max = max(MASTER$Citation.count..paper..O., na.rm = TRUE), min = min(MASTER$Citation.count..paper..O., na.rm = TRUE), option = option)
-
-### Standardizing "Exciting/important effect"
-st.exci <- stand(as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.], max = 6, min = 1, option = option)
-
-### Creating scale
-sc.impo <- (st.impa + st.exci)/2
-
-# c. SURPRISING EFFECT
-
-### Standardizing "Surprising effect" and creating scale
-sc.surp <- stand(as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.], max = 6, min = 1, option = option)
-
-# d. EXPERIENCE AND EXPERTISE OF ORIGINAL TEAM
-
-### Taking the average and then standardizing "Institution prestige of 1st author and senior author" 
-ave.pres <- (MASTER$Institution.prestige..1st.author..O.+MASTER$Institution.prestige..senior.author..O.)/2
-st.pres <- stand(ave.pres, min = 2, max = 10, option = option)
-
-### Standardizing "Citation Count, 1st author (O)"
-st.impa.1st <- stand(MASTER$Citation.Count..1st.author..O., max = max(MASTER$Citation.Count..1st.author..O., na.rm = TRUE), min = min(MASTER$Citation.Count..1st.author..O., na.rm = TRUE), option = option)
-
-### Standardizing "Citation count, senior author (O)"
-st.impa.sen <- stand(MASTER$Citation.count..senior.author..O., max = max(MASTER$Citation.count..senior.author..O., na.rm = TRUE), min = min(MASTER$Citation.count..senior.author..O., na.rm = TRUE), option = option)
-
-### Creating scale
-sc.expe1 <- (st.pres + st.impa.1st + st.impa.sen)/3
-
-# e. CHALLENGE OF CONDUCTING REPLICATION
-
-### Standardizing "Perceived expertise required"
-st.expe <- stand(as.numeric(fac.expe), max = 1, min = 5, option = option)
-
-### Standardizing "Perceived opportunity for expectancy biases"
-st.oppo.expe <- stand(as.numeric(fac.oppo.expe), max = 4, min = 1, option = option)
-
-### Standardizing "Perceived opportunity for impact of lack of diligence"
-st.oppo.dili <- stand(as.numeric(fac.oppo.dili), max = 4, min = 1, option = option)
-
-### Create scale
-sc.chal <- (st.expe + st.oppo.expe + st.oppo.dili)/3
-
-# f. EXPERIENCE AND EXPERTISE OF REPLICATION TEAM
-
-### Standardizing "Position of senior member of replication team"
-st.posi <- stand(as.numeric(fac.posi), max = 7, min = 1, option = option)
-
-### Standardizing "Highest degree of replication team's senior member"
-st.degr <- stand(as.numeric(fac.degr), max = 6, min = 1, option = option)
-
-### Standardizing "Replication team domain expertise"
-st.doma <- stand(as.numeric(fac.doma), max = 5, min = 1, option = option)
-
-### Standardizing "Replication team method expertise"
-st.meth <- stand(as.numeric(fac.meth), max = 5, min = 1, option = option)
-
-### Standardizing "Replication team senior member's total publications"
-st.publ <- stand(MASTER$Total.publications..R., max = max(MASTER$Total.publications..R., na.rm = TRUE), min = min(MASTER$Total.publications..R., na.rm = TRUE), option = option)
-
-### Standardizing "Replication team senior member's total publications and total number of peer-reviewed articles"
-st.peer <- stand(MASTER$Peer.reviewed.articles..R., max = max(MASTER$Peer.reviewed.articles..R., na.rm = TRUE), min = min(MASTER$Peer.reviewed.articles..R., na.rm = TRUE), option = option)
-
-### Standardizing "Replication team senior member's total citations"
-st.cita <- stand(MASTER$Citations..R., max = max(MASTER$Citations..R., na.rm = TRUE), min = min(MASTER$Citations..R., na.rm = TRUE), option = option)
-
-### Create scale
-sc.expe2 <- (st.posi + st.degr + st.doma + st.meth + st.publ + st.cita)/6
-
-# g. SELF-ASSESSED QUALITY OF REPLICATION
-
-### Standardizing "Self-assessed quality of replication"
-st.impl <- stand(as.numeric(fac.impl), max = 6, min = 1, option = option)
-
-### Standardizing "Self-assessed data collection quality of replication"
-st.data <- stand(as.numeric(fac.data), max = 7, min = 1, option = option)
-
-### Standardizing "Self-assessed replication similarity to original"
-st.repl <- stand(as.numeric(fac.repl), max = 7, min = 1, option = option)
-
-### Standardizing "Self-assessed difficulty of implementation"
-st.diff <- stand(as.numeric(fac.diff), max = 6, min = 1, option = option)
-
-### Create a scale
-sc.self <- (st.impl + st.data + st.repl + st.diff)/4
-
-### Select the same studies as with the other option for standardizing
-df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
-                 d.JEP, d.PSCog, d.PSSoc, d.PSOth, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self)
-df[149, ] <- NA ### Remove duplicate
-
-### Create matrix for correlation table
-mat <- cbind(df$fis.o, df$fis.r, df$yi, es.meta.all, df$sc.imp, df$sc.surp, df$sc.expe1, df$sc.chal, df$sc.expe2, df$sc.self)
-colnames(mat) <- c("fis.o", "fis.r", "diff", "es.meta", "importance", "surprising", "experience.O", "challenge", "experience.R", "quality")
-
-### Subset of only the replicated studies
-mat <- subset(mat, is.na(df$fis.r) == FALSE)
-
-### Create table with correlations
-rcorr(mat, type = "pearson")
+rcorr(mat, type = "spearman")
