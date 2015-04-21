@@ -1,1 +1,23 @@
-5
+> 
+> JPSPtab
+   
+     0  1
+  0  1  0
+  1 24  7
+> JEPLMCtab
+   
+     0  1
+  0  1  0
+  1 14 13
+> PStab
+   
+     0  1
+  0  0  1
+  1 24 15
+> 
+> cbind(labels, JPSP, JPSPperc, JEPLMC, JEPLMCperc, PS, PSperc)
+     labels                       JPSP JPSPperc            JEPLMC JEPLMCperc          PS   PSperc             
+[1,] "Original"                   "31" "0.96875"           "27"   "0.964285714285714" "39" "0.975"            
+[2,] "Replication"                "7"  "0.21875"           "13"   "0.464285714285714" "16" "0.4"              
+[3,] "Replication | sig original" "7"  "0.225806451612903" "13"   "0.481481481481481" "15" "0.384615384615385"
+> 
