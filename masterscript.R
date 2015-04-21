@@ -1,5 +1,5 @@
 # wd <- "SET WORKING DIRECTORY HERE"
-wd <- "C:/Users/chjh/Dropbox/projects/2014rpp/master"
+wd <- "C:/Users/Chris/Dropbox/projects/2014rpp/master"
 
 ######################################################################################
 # Master script Tilburg University Analyses                                          #
@@ -300,14 +300,16 @@ plot(y = MASTER$T_r..R., x = MASTER$T_r..O., xlab = "Effect size r (original)",
      xaxs="i",
      yaxs="i"
 )
-points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
-       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], 
+abline(v=0, col = "grey")
+abline(h=0, col = "grey")
+points(y = MASTER$T_r..R.[MASTER$T_sign_O == 0 & MASTER$T_sign_R == 0],
+       x = MASTER$T_r..O.[MASTER$T_sign_O == 0 & MASTER$T_sign_R == 0], 
        pch = 4, col = 1)
-points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
-       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
+points(y = MASTER$T_r..R.[MASTER$T_sign_O == 1 & MASTER$T_sign_R == 0],
+       x = MASTER$T_r..O.[MASTER$T_sign_O == 1 & MASTER$T_sign_R == 0],
        pch = 21, col = 10)
-points(y = MASTER$T_r..R.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
-       x = MASTER$T_r..O.[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], 
+points(y = MASTER$T_r..R.[MASTER$T_sign_O == 1 & MASTER$T_sign_R == 1],
+       x = MASTER$T_r..O.[MASTER$T_sign_O == 1 & MASTER$T_sign_R == 1], 
        pch = 10, col = 3)
 lines(x = seq(-.5, 2, .0001), y = seq(-.5, 2, .0001), type = 'l')
 
