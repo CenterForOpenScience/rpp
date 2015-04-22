@@ -632,7 +632,6 @@ pval.r <- pnorm(fis.r, sd = sei.r, lower.tail = FALSE)
 ### Standard error of difference score
 sei <- sqrt(1/(N.o-3) + 1/(N.r-3))
 
-
 #######################################
 ### Coverage F(>1,df2) and Chi2     ###
 #######################################
@@ -856,7 +855,6 @@ chi2.o <- 4.51
 chi2.r <- 1.57
 pchisq(chi2.r,1,chi2.o-1)
 
-
 #######################################
 ### Select studies for the analyses ###
 #######################################
@@ -948,53 +946,67 @@ summary(tmp$N.r.tab)
 
 ### Subset of complete data JPSP
 tmp.JPSP <- subset(tmp, tmp$d.JEP == 0 & tmp$d.PSSoc == 0 & tmp$d.PSCog == 0 & tmp$d.PSOth == 0)
-summary(tmp.JPSP$N.o)
-summary(tmp.JPSP$N.r)
+summary(tmp.JPSP$N.o.tab)
+summary(tmp.JPSP$N.r.tab)
 
 ### Subset of complete data JEP
 tmp.JEP <- subset(tmp, tmp$d.JEP == 1)
-summary(tmp.JEP$N.o)
-summary(tmp.JEP$N.r)
+summary(tmp.JEP$N.o.tab)
+summary(tmp.JEP$N.r.tab)
 
 ### Subset of complete data PSSoc
 tmp.PSSoc <- subset(tmp, tmp$d.PSSoc == 1)
-summary(tmp.PSSoc$N.o)
-summary(tmp.PSSoc$N.r)
+summary(tmp.PSSoc$N.o.tab)
+summary(tmp.PSSoc$N.r.tab)
 
 ### Subset of complete data PSCog
 tmp.PSCog <- subset(tmp, tmp$d.PSCog == 1)
-summary(tmp.PSCog$N.o)
-summary(tmp.PSCog$N.r)
+summary(tmp.PSCog$N.o.tab)
+summary(tmp.PSCog$N.r.tab)
 
 ### Subset of comlete data PSOth
 tmp.PSOth <- subset(tmp, tmp$d.PSOth == 1)
-summary(tmp.PSOth$N.o)
-summary(tmp.PSOth$N.r)
+summary(tmp.PSOth$N.o.tab)
+summary(tmp.PSOth$N.r.tab)
 
+### "original effect size within replication 95% CI"
 ### How often is original study within CI of replication
 ### Create confidence interval for replications
-ci.lb <- final$fis.r-qnorm(.975)*final$sei.r
-ci.ub <- final$fis.r+qnorm(.975)*final$sei.r
+ci.lb <- fis.r-qnorm(.975)*sei.r
+ci.ub <- fis.r+qnorm(.975)*sei.r
 
-in.ci <- numeric()
+tmp <- in.ci <- rep(NA, length(ci.lb))
 
-for(i in 1:length(final$fis.r)) {
+for(i in 1:length(fis.r)) {
   
-  if (final$fis.o[i] > ci.lb[i] & final$fis.o[i] < ci.ub[i]) {
-    in.ci[i] <- TRUE
-  } else { in.ci[i] <- FALSE }
+  if (is.na(fis.o[i]) == TRUE) {
+    tmp[i] <- NA
+  } else if (any(is.na(c(ci.lb[i], ci.ub[i])) == TRUE)) {
+    tmp[i] <- NA
+  } else if (fis.o[i] > ci.lb[i] & fis.o[i] < ci.ub[i]) {
+    tmp[i] <- TRUE
+  } else { tmp[i] <- FALSE }
   
 }
 
-(sum(in.ci)+2)/(length(in.ci)+2) # Proportion of times the original study is within the CI of the replication plus two for the studies with odds ratios
+### Select only studies with test statistic t or F and df1 = 1
+dat <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., tmp)
+sub <- subset(dat, (dat$stat == "F" & dat$df1 == 1) | dat$stat == "t" | dat$stat == "r")
+in.ci[sub$ID] <- sub$tmp
 
-### Per discipline
-(sum(in.ci[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])+1)/(length(in.ci[final$d.JEP == 0 # Plus one because of one odds ratio (ID = 84)
-                                                                                                              & final$d.PSSoc == 0 & final$d.PSCog == 0 & final$d.PSOth == 0])+1)
-sum(in.ci[final$d.JEP == 1])/length(in.ci[final$d.JEP == 1])
-(sum(in.ci[final$d.PSSoc == 1])+1)/(length(in.ci[final$d.PSSoc == 1])+1) # Plus one because of one odds ratio (ID = 165)
-sum(in.ci[final$d.PSCog == 1])/length(in.ci[final$d.PSCog == 1])
-sum(in.ci[final$d.PSOth == 1])/length(in.ci[final$d.PSOth == 1])
+### Store results for other statistics
+in.ci[c(22,43,46,64,132,140,143)] <- FALSE
+in.ci[c(12,13,17,50,55,80,86,117,139,142,73,84,104,165)] <- TRUE
+
+noNA <- in.ci[is.na(in.ci) == FALSE] # Remove NAs
+sum(noNA)/length(noNA) # How often original study is within CI of replication
+
+# How often original study is within CI of replication: per journal and discipline
+sum(in.ci[df$d.JEP == 0 & df$d.PSSoc == 0 & df$d.PSCog == 0 & df$d.PSOth == 0], na.rm = TRUE)/sum(is.na(in.ci[df$d.JEP == 0 & df$d.PSSoc == 0 & df$d.PSCog == 0 & df$d.PSOth == 0]) == FALSE)
+sum(in.ci[df$d.JEP == 1], na.rm = TRUE)/sum(is.na(in.ci[df$d.JEP == 1]) == FALSE)
+sum(in.ci[df$d.PSSoc == 1], na.rm = TRUE)/sum(is.na(in.ci[df$d.PSSoc == 1]) == FALSE)
+sum(in.ci[df$d.PSCog == 1], na.rm = TRUE)/sum(is.na(in.ci[df$d.PSCog == 1]) == FALSE)
+sum(in.ci[df$d.PSOth == 1], na.rm = TRUE)/sum(is.na(in.ci[df$d.PSOth == 1]) == FALSE)
 
 ### Two meta-analyses per pair for odds ratios
 ### Study 84
@@ -1224,16 +1236,18 @@ rcorr(mat, type = "spearman")
 # T_pval_USE..R is used to create a subset of replicated studies
 
 ### Variables in the columns
-rows <- cbind(MASTER$T_pval_USE..O., MASTER$T_r..O., MASTER$T_N..O., df$sc.surp, df$sc.expe1, df$power.r, MASTER$T_N_R_for_tables, df$sc.chal, df$sc.expe2, df$sc.self, MASTER$T_pval_USE..R)
-colnames(rows) <- c("p-value", "Effect size", "Original sample size", "Surprising effect", "Experience and expertise of team O", "Power", 
-                    "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
+rows <- cbind(MASTER$T_pval_USE..O., MASTER$T_r..O., MASTER$T_N_O_for_tables, df$sc.impo, df$sc.surp, df$sc.expe1, MASTER$T_pval_USE..R, MASTER$T_r..O., df$power.r, 
+              MASTER$T_N_R_for_tables, df$sc.chal, df$sc.expe2, df$sc.self, MASTER$T_pval_USE..R)
+colnames(rows) <- c("p-value", "Original Effect size", "Original sample size", "Importance of effect", "Surprising effect", "Experience and expertise of team O", "Replication p-value",
+                    "Replication Effect size", "Power", "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
 
 ### "Replications p < 0.05 in original direction (all signicant replication studies are in the same direction as the original study)"
-mat <- cbind(MASTER$T_sign_R, rows)
-colnames(mat) <- c("rep.dir", "p-value", "Effect size", "Original sample size", "Surprising effect", "Experience and expertise of team O", "Power", 
-                   "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
+rep.dir <- ifelse(MASTER$T_sign_O == 0, yes = NA, no = MASTER$T_sign_R)
+mat <- cbind(rep.dir, rows)
+colnames(mat) <- c("rep.dir", "p-value", "Original Effect size", "Original sample size", "Importance of effect", "Surprising effect", "Experience and expertise of team O", "Replication p-value",
+                   "Replication Effect size", "Power", "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -12) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1241,19 +1255,17 @@ rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and selec
 es.dif <- df$fis.o - df$fis.r
 
 mat <- cbind(es.dif, rows)
-colnames(mat) <- c("Effect Size Difference", "p-value", "Effect size", "Original sample size", "Surprising effect", "Experience and expertise of team O", "Power", 
-                   "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
-
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -12) # Select only the replicated studies
+colnames(mat) <- c("Effect size Difference", "p-value", "Original Effect size", "Original sample size", "Importance of effect", "Surprising effect", "Experience and expertise of team O", "Replication p-value",
+                   "Replication Effect size", "Power", "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
 ### "Meta-analytic estimate" (Fisher z)
 mat <- cbind(es.meta.all, rows)
-colnames(mat) <- c("Meta-analytic estimate", "p-value", "Effect size", "Original sample size", "Surprising effect", "Experience and expertise of team O", "Power", 
-                   "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
-
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -12) # Select only the replicated studies
+colnames(mat) <- c("Meta-analytic estimate", "p-value", "Original Effect size", "Original sample size", "Importance of effect", "Surprising effect", "Experience and expertise of team O", "Replication p-value",
+                   "Replication Effect size", "Power", "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1287,10 +1299,10 @@ in.ci[c(22,43,46,64,132,140,143)] <- FALSE
 in.ci[c(12,13,17,50,55,80,86,117,139,142,73,84,104,165)] <- TRUE
 
 mat <- cbind(in.ci, rows)
-colnames(mat) <- c("Original in CI", "p-value", "Effect size", "Original sample size", "Surprising effect", "Experience and expertise of team O", "Power", 
-                   "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
+colnames(mat) <- c("Original in CI", "p-value", "Original Effect size", "Original sample size", "Importance of effect", "Surprising effect", "Experience and expertise of team O", "Replication p-value",
+                   "Replication Effect size", "Power", "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -12) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1302,10 +1314,9 @@ for (i in 1:length(levels(MASTER$Replicate..R.)[MASTER$Replicate..R.])) {
 }
 
 mat <- cbind(replic, rows)
-colnames(mat) <- c("Did it replicate?", "p-value", "Effect size", "Original sample size", "Surprising effect", "Experience and expertise of team O", "Power", 
-                   "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
-
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -12) # Select only the replicated studies
+colnames(mat) <- c("Did it replicate?", "p-value", "Original Effect size", "Original sample size", "Importance of effect", "Surprising effect", "Experience and expertise of team O", "Replication p-value",
+                   "Replication Effect size", "Power", "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1313,10 +1324,10 @@ rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and selec
 ##### TABLE 3 BRIAN #####
 #########################
 
-mat <- cbind(MASTER$T_sign_R, es.dif, es.meta.all, replic, in.ci, MASTER$T_pval_USE..R)
+mat <- cbind(rep.dir, es.dif, es.meta.all, in.ci, replic, MASTER$T_pval_USE..R)
 colnames(mat) <- c("rep.dir", "Effect Size Difference", "Meta-analytic estimate", "Original in CI", "Did it replicate?", "sub")
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -6) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r # Create table with correlations
 
@@ -1333,10 +1344,11 @@ dat <- data.frame(Original.effect.size = MASTER$T_r..O., Original.pvalue = MASTE
                   oppo.dili = as.numeric(fac.oppo.dili), surp.res = as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.],
                   exci.res = as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.], sub = MASTER$T_pval_USE..R.)
 
-sub <- subset(dat, is.na(dat$sub) == FALSE, select = -16) # Select only the replicated studies
+sub <- subset(dat, is.na(dat$sub) == FALSE, select = -ncol(dat)) # Select only the replicated studies
 
 ### Descriptives
-summary(sub) 
+summary(sub)
+apply(dat, 2, sd, na.rm = TRUE) # Standard deviations
 
 ### Variables in the columns
 rows <- cbind(MASTER$T_r..O., MASTER$T_pval_USE..O., MASTER$T_N..O., MASTER$Institution.prestige..1st.author..O., MASTER$Institution.prestige..senior.author..O.,
@@ -1348,11 +1360,11 @@ colnames(rows) <- c("Original.effect.size", "Original.pvalue", "Original.sample.
                     "Cit.impact", "concep.repl", "dir.repl", "expe.req", "oppo.expec.bias", "oppo.dili", "surp.res", "exci.res", "sub") 
 
 ### "Replications p < 0.05 in original direction (all signicant replication studies are in the same direction as the original study)"
-mat <- cbind(MASTER$T_sign_R, rows)
+mat <- cbind(rep.dir, rows)
 colnames(mat) <- c("rep.dir", "Original.effect.size", "Original.pvalue", "Original.sample.size", "Inst.1st.author", "Inst.sen.author", "Cit.1st.author", "Cit.sen.author",
                    "Cit.impact", "concep.repl", "dir.repl", "expe.req", "oppo.expec.bias", "oppo.dili", "surp.res", "exci.res", "sub") 
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -17) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1361,7 +1373,7 @@ mat <- cbind(es.dif, rows)
 colnames(mat) <- c("es.dif", "Original.effect.size", "Original.pvalue", "Original.sample.size", "Inst.1st.author", "Inst.sen.author", "Cit.1st.author", "Cit.sen.author",
                    "Cit.impact", "concep.repl", "dir.repl", "expe.req", "oppo.expec.bias", "oppo.dili", "surp.res", "exci.res", "sub") 
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -17) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1370,7 +1382,7 @@ mat <- cbind(es.meta.all, rows)
 colnames(mat) <- c("Meta-analytic estimate", "Original.effect.size", "Original.pvalue", "Original.sample.size", "Inst.1st.author", "Inst.sen.author", "Cit.1st.author", "Cit.sen.author",
                    "Cit.impact", "concep.repl", "dir.repl", "expe.req", "oppo.expec.bias", "oppo.dili", "surp.res", "exci.res", "sub") 
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -17) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1379,7 +1391,7 @@ mat <- cbind(in.ci, rows)
 colnames(mat) <- c("Original in CI", "Original.effect.size", "Original.pvalue", "Original.sample.size", "Inst.1st.author", "Inst.sen.author", "Cit.1st.author", "Cit.sen.author",
                    "Cit.impact", "concep.repl", "dir.repl", "expe.req", "oppo.expec.bias", "oppo.dili", "surp.res", "exci.res", "sub") 
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -17) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1388,7 +1400,7 @@ mat <- cbind(replic, rows)
 colnames(mat) <- c("Did it replicate?", "Original.effect.size", "Original.pvalue", "Original.sample.size", "Inst.1st.author", "Inst.sen.author", "Cit.1st.author", "Cit.sen.author",
                    "Cit.impact", "concep.repl", "dir.repl", "expe.req", "oppo.expec.bias", "oppo.dili", "surp.res", "exci.res", "sub") 
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -17) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1401,26 +1413,27 @@ dat <- data.frame(Inst.1st.author = MASTER$Institution.prestige..1st.author..R.,
                   Cit.1st.author = MASTER$Citation.count..1st.author..R., Cit.senior.author = MASTER$Citation.count..senior.author..R., position = as.numeric(fac.posi),
                   degree = as.numeric(fac.degr), total.publ = MASTER$Total.publications..R., domain = as.numeric(fac.doma), method = as.numeric(fac.meth),
                   imple = as.numeric(fac.impl), data.coll = as.numeric(fac.data), repl.sim = as.numeric(fac.repl), diff.impl = as.numeric(fac.diff),
-                  repl.N = MASTER$T_N..R, power.R = MASTER$Power..R., sur.out = as.numeric(fac.sur.out), sub = MASTER$T_pval_USE..R.)
+                  repl.N = MASTER$T_N_R_for_tables, power.R = as.numeric(levels(MASTER$Power..R.))[MASTER$Power..R.], sur.out = as.numeric(fac.sur.out), sub = MASTER$T_pval_USE..R.)
 
-sub <- subset(dat, is.na(dat$sub) == FALSE, select = -17) # Select only the replicated studies
+sub <- subset(dat, is.na(dat$sub) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 ### Descriptives
 summary(sub) 
+apply(dat, 2, sd, na.rm = TRUE) # Standard deviations
 
 ### Variables in the columns
 rows <- cbind(MASTER$Institution.prestige..1st.author..R., MASTER$Institution.prestige..senior.author..R., MASTER$Citation.count..1st.author..R., MASTER$Citation.count..senior.author..R., 
               as.numeric(fac.posi), as.numeric(fac.degr), MASTER$Total.publications..R., as.numeric(fac.doma), as.numeric(fac.meth), as.numeric(fac.impl), as.numeric(fac.data), 
-              as.numeric(fac.repl), as.numeric(fac.diff), MASTER$T_N..R, MASTER$Power..R., as.numeric(fac.sur.out), MASTER$T_pval_USE..R.)
+              as.numeric(fac.repl), as.numeric(fac.diff), MASTER$T_N_R_for_tables, as.numeric(levels(MASTER$Power..R.))[MASTER$Power..R.], as.numeric(fac.sur.out), MASTER$T_pval_USE..R.)
 colnames(rows) <- c("Inst.1st.author", "Inst.senior.author", "Cit.1st.author", "Cit.senior.author", "position", "degree", "total.publ", "domain", "method", "imple", "data.coll", 
                     "repl.sim", "diff.impl", "repl.N", "power.R", "sur.out", "sub")
 
 ### "Replications p < 0.05 in original direction (all signicant replication studies are in the same direction as the original study)"
-mat <- cbind(MASTER$T_sign_R, rows)
+mat <- cbind(rep.dir, rows)
 colnames(mat) <- c("rep.dir", "Inst.1st.author", "Inst.senior.author", "Cit.1st.author", "Cit.senior.author", "position", "degree", "total.publ", "domain", "method", "imple", "data.coll", 
                    "repl.sim", "diff.impl", "repl.N", "power.R", "sur.out", "sub")
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -18) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1429,7 +1442,7 @@ mat <- cbind(es.dif, rows)
 colnames(mat) <- c("es.dif", "Inst.1st.author", "Inst.senior.author", "Cit.1st.author", "Cit.senior.author", "position", "degree", "total.publ", "domain", "method", "imple", "data.coll", 
                    "repl.sim", "diff.impl", "repl.N", "power.R", "sur.out", "sub")
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -18) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1438,7 +1451,7 @@ mat <- cbind(es.meta.all, rows)
 colnames(mat) <- c("es.meta.all", "Inst.1st.author", "Inst.senior.author", "Cit.1st.author", "Cit.senior.author", "position", "degree", "total.publ", "domain", "method", "imple", "data.coll", 
                    "repl.sim", "diff.impl", "repl.N", "power.R", "sur.out", "sub")
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -18) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1447,7 +1460,7 @@ mat <- cbind(in.ci, rows)
 colnames(mat) <- c("Original in CI", "Inst.1st.author", "Inst.senior.author", "Cit.1st.author", "Cit.senior.author", "position", "degree", "total.publ", "domain", "method", "imple", "data.coll", 
                    "repl.sim", "diff.impl", "repl.N", "power.R", "sur.out", "sub")
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -18) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
 
@@ -1456,6 +1469,6 @@ mat <- cbind(replic, rows)
 colnames(mat) <- c("Did it replicate?", "Inst.1st.author", "Inst.senior.author", "Cit.1st.author", "Cit.senior.author", "position", "degree", "total.publ", "domain", "method", "imple", "data.coll", 
                    "repl.sim", "diff.impl", "repl.N", "power.R", "sur.out", "sub")
 
-sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -18) # Select only the replicated studies
+sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
