@@ -1,5 +1,5 @@
 # wd <- "SET WORKING DIRECTORY HERE"
-wd <- "D:/Dropbox/Werk/Onderzoek/Reproducibility project"
+wd <- "C:/Users/Chris/Dropbox/projects/2014rpp/master"
 
 ######################################################################################
 # Master script Tilburg University Analyses                                          #
