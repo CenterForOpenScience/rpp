@@ -1,6 +1,3 @@
-# wd <- "SET WORKING DIRECTORY HERE"
-wd <- "C:/Users/Chris/Dropbox/projects/2014rpp/master"
-
 ######################################################################################
 # Master script Tilburg University Analyses                                          #
 # Responsible for this file: CHJ Hartgerink (c.h.j.hartgerink@tilburguniversity.edu) # 
@@ -8,7 +5,7 @@ wd <- "C:/Users/Chris/Dropbox/projects/2014rpp/master"
 #                            MALM van Assen (m.a.l.m.vanassen@tilburguniversity.edu) #
 ######################################################################################
 
-setwd(wd)
+setwd(choose.dir())
 # Read in Tilburg data
 MASTER <- read.csv('Copy of tilburg data 37 final.csv', sep = ";")[1:167, ]
 # source functions
