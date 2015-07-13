@@ -163,32 +163,9 @@ FisherMethod(x = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)],
              id = 1,
              alpha = .05)
 
-# Distribution p-values
-pdf('pvalue distributions.pdf', onefile = TRUE, width = 11, height = 9.2)
-#PDF
-plot(density(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
-     lty=1,
-     frame.plot=F, 
-     main="P-value distributions (PDF)",
-     xlim=c(0,1),
-     xaxs="i",
-     yaxs="i",
-     xlab="P-value",
-     ylab = "Density",
-     cex.axis=.6,
-     cex.lab=.7,
-     col = "grey")
-abline(v = .05, lty = 2)
-lines(density(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))
-legend(x=.4,y=4,legend=c(paste('Original p-values, k = ',
-                               length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])),
-                         paste('Replication p-values, k = ',
-                               length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))),
-       cex=1,
-       lty=c(1,1), bty = 'n',
-       col = c("grey","black"),box.lwd=0)
-
-# CDF
+# CDF P-values
+setEPS()
+postscript("figures/figure s1.eps", width = 7, height = 8) # change file name
 plot(ecdf(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
      lty=1,
      frame.plot=F, 
@@ -212,10 +189,34 @@ legend(x=.5,y=.3,legend=c(paste('Original p-values, k = ',
        col = c("grey","black"),box.lwd=0)
 dev.off()
 
+# PDF P-values
+setEPS()
+postscript("figures/figure s2.eps", width = 7, height = 8) # change file name
+plot(density(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
+     lty=1,
+     frame.plot=F, 
+     main="P-value distributions (PDF)",
+     xlim=c(0,1),
+     xaxs="i",
+     yaxs="i",
+     xlab="P-value",
+     ylab = "Density",
+     cex.axis=.6,
+     cex.lab=.7,
+     col = "grey")
+abline(v = .05, lty = 2)
+lines(density(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))
+legend(x=.4,y=7,legend=c(paste('Original p-values, k = ',
+                               length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])),
+                         paste('Replication p-values, k = ',
+                               length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))),
+       cex=1,
+       lty=c(1,1), bty = 'n',
+       col = c("grey","black"),box.lwd=0)
+dev.off()
+
 # Significance per journal
-
 # Table significance, per journal
-
 # JEPLMC
 JEPLMCtab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 1],
                    MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == 1])
@@ -293,8 +294,49 @@ prop <- sum(temp[!is.na(temp)])/length(temp[!is.na(temp)])
 binom.test(x = sum(temp[!is.na(temp)]), n = length(temp[!is.na(temp)]), 
            p = .5, alternative = "two.sided")
 
-pdf('effect plots.pdf', width = 11.2, height = 9, onefile = TRUE)
-# Effect replication and original
+
+setEPS()
+postscript("figures/figure s3.eps", width = 11, height = 7) # change file name
+# Histogram effects 
+par(mfrow=c(1,2))
+hist1 <- hist(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=15)
+hist2 <- hist(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=20)
+plot(hist1, xlim = c(-.6, 1.2), ylim = c(0, 50), xlab = "Effect size r",
+     main = "Effect histograms")
+plot(hist2, add = TRUE, col = "grey")
+legend(x = .4, y = 25,
+       leg=c(paste("Original, k = ",
+                   length(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])),
+             paste("Replication, k = ",
+                   length(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))),
+       fill=c("white", "grey"),
+       bty = 'n')
+
+# CDF effects
+plot(ecdf(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]),
+     lty=1,
+     frame.plot=F, 
+     main="Cumulative effect distributions",
+     xlim=c(0,1),
+     xaxs="i",
+     yaxs="i",
+     xlab="Correlation coefficient",
+     ylab = "Cumulative density",
+     cex.axis=.6,
+     cex.lab=.7,
+     col = "grey")
+lines(ecdf(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))
+legend(x=.45,y=.5,legend=c(paste("Original, k = ",
+                                 length(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])),
+                           paste("Replication, k = ",
+                                 length(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))),
+       cex=1,
+       lty=c(1,1), bty = 'n',
+       col = c("grey","black"),box.lwd=0)
+dev.off()
+
+setEPS()
+postscript("figures/figure s4.eps", width = 7, height = 8) # change file name
 plot(y = MASTER$T_r..R., x = MASTER$T_r..O., xlab = "Effect size r (original)",
      ylab = "Effect size r (replication)", col = "white", xlim = c(-.3, 1), ylim = c(-.3, 1),
      frame.plot=F,
@@ -332,70 +374,6 @@ legend(x=-.2,y=.8,legend=c('Both nonsignificant',
        cex=1,
        lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
        col = c("black", 10, 3, "blue", "black"), box.lwd=0)
-
-# R2
-xr2 <- x1 * x1
-yr2 <- y1 * y1
-
-plot(y = yr2, x = xr2, xlab = "Effect size r (original)",
-     ylab = "Effect size r (replication)", col = "white", ylim = c(0,1), xlim = c(0,1))
-points(y = yr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05],
-       x = xr2[MASTER$T_pval_USE..O. > .05 & MASTER$T_pval_USE..R. > .05], pch = 4)
-points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05],
-       x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. > .05], pch = 21)
-points(y = yr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05],
-       x = xr2[MASTER$T_pval_USE..O. <= .05 & MASTER$T_pval_USE..R. <= .05], pch = 10)
-lines(x = seq(0, 1, .001), y = seq(0, 1, .001), type = 'l')
-
-r2 <- lm(yr2 ~ xr2)
-lines(loess.smooth(x = xr2, y = yr2), lty = 2)
-curve(expr = (r2$coefficients[1] + r2$coefficients[2] * x), from = 0, to = 1, add = TRUE, col = "blue")
-
-legend(x=0,y=.8,legend=c('Both nonsignificant',
-                         'Original significant',
-                         'Both significant',
-                         'Repl. predicted by orig.',
-                         'Loess curve'),
-       cex=1,
-       lty=c(0, 0, 0, 1, 2), bty = 'n', pch = c(4, 21, 10, NA, NA),
-       col = c("black", "black", "black", "blue", "black"),box.lwd=0)
-# Histogram effects 
-par(mfrow=c(1,2))
-hist1 <- hist(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=15)
-hist2 <- hist(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=20)
-plot(hist1, xlim = c(-.6, 1.2), ylim = c(0, 50), xlab = "Effect size r",
-     main = "Effect histograms")
-plot(hist2, add = TRUE, col = addTrans("grey",150))
-legend(x = .45, y = 25,
-       leg=c(paste("Original, k = ",
-                   length(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])),
-             paste("Replication, k = ",
-                   length(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))),
-       fill=c("white", "grey"),
-       bty = 'n')
-
-# CDF effects
-plot(ecdf(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]),
-     lty=1,
-     frame.plot=F, 
-     main="Cumulative effect distributions",
-     xlim=c(0,1),
-     xaxs="i",
-     yaxs="i",
-     xlab="Correlation coefficient",
-     ylab = "Cumulative density",
-     cex.axis=.6,
-     cex.lab=.7,
-     col = "grey")
-lines(ecdf(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))
-legend(x=.45,y=.5,legend=c(paste("Original, k = ",
-                                 length(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])),
-                           paste("Replication, k = ",
-                                 length(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)]))),
-       cex=1,
-       lty=c(1,1), bty = 'n',
-       col = c("grey","black"),box.lwd=0)
-
 dev.off()
 
 #----------------------
