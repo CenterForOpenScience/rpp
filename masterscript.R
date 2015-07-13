@@ -178,6 +178,7 @@ plot(density(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER
      cex.axis=.6,
      cex.lab=.7,
      col = "grey")
+abline(v = .05, lty = 2)
 lines(density(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))
 legend(x=.4,y=4,legend=c(paste('Original p-values, k = ',
                                length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])),
@@ -200,6 +201,7 @@ plot(ecdf(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_
      cex.axis=.6,
      cex.lab=.7,
      col = "grey")
+abline(v = .05, lty = 2)
 lines(ecdf(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))
 legend(x=.5,y=.3,legend=c(paste('Original p-values, k = ',
                                 length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])),
