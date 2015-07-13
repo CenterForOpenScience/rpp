@@ -11,6 +11,7 @@ MASTER <- read.csv('Copy of tilburg data 37 final.csv', sep = ";")[1:167, ]
 # source functions
 source('functions.r')
 library(Hmisc)
+library(metafor)
 
 # ALL ANALYSES INCLUDE PAIRWISE SELECTION.
 
@@ -1010,7 +1011,10 @@ rma(yi = c(logodds1, logodds2), vi = c(var1, var2), method = "FE")
 res <- rma(yi = final$yi, sei = final$sei, method = "REML")
 res
 # pdf("C:/Users/S787802/Desktop/Funnel RPP.pdf", width = 11.2, height = 9, onefile = TRUE)
+setEPS()
+postscript("figures/figure s7.eps", width = 7, height = 8) # change file name
 funnel(res, main = "Funnel plot based on difference original and replication study")
+dev.off()
 
 ### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE as moderator (JPSP is reference category)
 rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
@@ -1057,7 +1061,11 @@ rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.self, method = "REML")
 ### Meta-analysis of null model
 res <- rma(yi = final$fis.o, sei = final$sei.o, method = "REML")
 res
+
+setEPS()
+postscript("figures/figure s5.eps", width = 7, height = 8) # change file name
 funnel(res, main = "Funnel plot based on original studies")
+dev.off()
 
 ### Meta-analysis with se in original study as moderator
 rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o, method = "REML")
@@ -1089,8 +1097,11 @@ rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + fi
 ### Meta-analysis of null model
 res <- rma(yi = final$fis.r, sei = final$sei.r, method = "REML")
 res
+
+setEPS()
+postscript("figures/figure s6.eps", width = 7, height = 8) # change file name
 funnel(res, main = "Funnel plot based on replication studies")
-# dev.off()
+dev.off()
 
 ### Meta-analysis with se in replication study as moderator
 rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r, method = "REML")
@@ -1177,9 +1188,6 @@ mean(overlap)
 #######################################
 ### Correlations between moderators ###
 #######################################
-
-### Load package for correlation table
-library(Hmisc)
 
 ### Create variable with meta-analysis estimate with NAs
 es.meta.all <- vector(length = nrow(df))
