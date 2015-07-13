@@ -7,7 +7,7 @@
 
 setwd(choose.dir())
 # Read in Tilburg data
-MASTER <- read.csv('Copy of tilburg data 37 final.csv', sep = ";")[1:167, ]
+MASTER <- read.csv('rpp_data.csv', sep = ";")[1:167, ]
 # source functions
 source('functions.r')
 library(Hmisc)
