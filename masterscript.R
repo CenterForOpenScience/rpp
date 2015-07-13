@@ -7,7 +7,7 @@
 
 setwd(choose.dir())
 # Read in Tilburg data
-MASTER <- read.csv('Copy of tilburg data 37 final.csv', sep = ";")[1:167, ]
+MASTER <- read.csv('rpp_data.csv', sep = ";")[1:167, ]
 # source functions
 source('functions.r')
 library(Hmisc)
@@ -853,9 +853,6 @@ final <- sub[!is.na(sub$yi) & !is.na(sub$sei), ]
 ### Tables Brian ###
 ####################
 
-### Load metafor package
-library(metafor)
-
 ### Meta-analytic mean and sd of the estimate combining per pair the original study and replication 
 est <- pval <- numeric()
 
@@ -1010,14 +1007,14 @@ rma(yi = c(logodds1, logodds2), vi = c(var1, var2), method = "FE")
 ### Meta-analysis of null model
 res <- rma(yi = final$yi, sei = final$sei, method = "REML")
 res
-# pdf("C:/Users/S787802/Desktop/Funnel RPP.pdf", width = 11.2, height = 9, onefile = TRUE)
+
 setEPS()
 postscript("figures/figure s7.eps", width = 7, height = 8) # change file name
 funnel(res, main = "Funnel plot based on difference original and replication study")
 dev.off()
 
 ### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE as moderator (JPSP is reference category)
-rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
 
 ### Meta-analysis with sei.o as moderator
 rma(yi = final$yi, sei = final$sei, mods = ~ final$sei.o, method = "REML")
@@ -1027,10 +1024,10 @@ res0 <- rma(yi = final$yi, sei = final$sei, mods = ~ final$sei.o, method = "ML")
 res0
 
 ### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE and sei.o as moderators (JPSP is reference category)
-rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o, method = "REML")
+rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$sei.o, method = "REML")
 
 ### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE and sei.o as moderators (JPSP is reference category) with "ML" as estimator for tau2 (model comparison)
-res1 <- rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o, method = "ML")
+res1 <- rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$sei.o, method = "ML")
 res1
 
 ### Comparing models with and without discipline
@@ -1075,20 +1072,20 @@ res0 <- rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o, method = 
 res0
 
 ### Meta-analysis with se in original study and dummy variables for journal and discipline (JPSP is reference category)
-rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
 
 ### Meta-analysis with se in original study and dummy variables for journal and discipline (JPSP is reference category) with "ML" as estimator for tau2 (model comparison)
-res1 <- rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "ML")
+res1 <- rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "ML")
 res1
 
 ### Comparing models with and without discipline
 anova(res0, res1)
 
 ### Meta-analysis with dummy variables for journal and discipline (JPSP is reference category)
-rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
 
 ### Meta-analysis with se in original study, dummy variables for journal and discipline (JPSP is reference category), and its interactions as moderators
-rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.o*final$d.JEP + final$sei.o*final$d.PSSoc + final$sei.o*final$d.PSOth, method = "REML")
+rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$sei.o*final$d.JEP + final$sei.o*final$d.PSSoc, method = "REML")
 
 #######################################################
 ### Meta-analyses based on only replication studies ###
@@ -1111,23 +1108,23 @@ res0 <- rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r, method = 
 res0
 
 ### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category)
-rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
 
 ### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category) with "ML" as estimator for tau2 (model comparison)
-res1 <- rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "ML")
+res1 <- rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "ML")
 res1
 
 ### Comparing models with and without discipline
 anova(res0, res1)
 
 ### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category)
-rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
 
 ### Meta-analysis with dummy variables for journal and discipline (JPSP is reference category)
-rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth, method = "REML")
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
 
 ### Meta-analysis with se in replication study, dummy variables for journal and discipline (JPSP is reference category), and its interactions as moderators
-rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$d.PSOth + final$sei.r*final$d.JEP + final$sei.r*final$d.PSSoc + final$sei.r*final$d.PSOth, method = "REML")
+rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$sei.r*final$d.JEP + final$sei.r*final$d.PSSoc, method = "REML")
 
 ##############################
 ### Meta-analyses per pair ###
