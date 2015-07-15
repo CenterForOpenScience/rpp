@@ -16,11 +16,6 @@ library(metafor)
 # ALL ANALYSES INCLUDE PAIRWISE SELECTION.
 
 #-----------------------------
-
-# Writing out data for table
-# https://docs.google.com/spreadsheets/d/16aqIekNerZcflSJwM7dOiXnN24-KvZqaa3eTg4js41U/edit#gid=0
-# Columns B-E
-### Recode "Publishing journal and subdiscipline"
 jour <- numeric()
 
 for(i in 1:nrow(MASTER)) {
@@ -37,184 +32,31 @@ for(i in 1:nrow(MASTER)) {
   }
   else { jour[i] <- NA }
 }
+#-----------------------------
 
-# Overall 
-sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R), ]
-
-# Column B
-# Relations tested
-reltest <- dim(sel)[1]
-# Relations both significant
-relsig <- sum((sel$T_sign_O) & (sel$T_sign_R), na.rm = TRUE)
-cat(
-  paste0("Column B Overall ",
-         round(relsig, 0),
-         " / ",
-         round(reltest, 0)
-  )
-)
-
-# Column C
-# Percent
-cat(paste0("Column C overall ", round((relsig / reltest), 2)))
-
-# Column D
-# Mean
-temp1 <- mean(sel$T_r..O., na.rm = TRUE)
-# SD
-temp2 <- sd(sel$T_r..O., na.rm = TRUE)
-
-cat(paste0("Column D overall ", round(temp1, 2), " (", round(temp2, 2), ")"))
-
-# Column E
-# Mean
-temp1 <- mean(sel$T_r..R., na.rm = TRUE)
-# SD
-temp2 <- sd(sel$T_r..R., na.rm = TRUE)
-
-cat(paste0("Column F overall ", round(temp1, 2), " (", round(temp2, 2), ")"))
-
-
-# Per journal 
-journals <- c("JEPLMC", "JPSP", "PS Cognitive", "PS social", "PS other")
-for(journal in c(2,1,4,3,5)){
-  
-  sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == journal,]
-  
-  # Column B
-  # Relations tested
-  reltest <- dim(sel)[1]
-  # Relations both significant
-  relsig <- sum((sel$T_sign_O) & (sel$T_sign_R), na.rm = TRUE)
-  cat(
-    paste0("Column B ", journals[journal], " ",
-           round(relsig, 0),
-           " / ",
-           round(reltest, 0)
-    )
-  )
-  cat("\n")
-  
-  # Column C
-  # Percent
-  cat(paste0("Column C ", journals[journal], " ",
-             as.character(round((relsig / reltest), 2))))
-  cat("\n")
-  
-  # Column D
-  # Mean
-  temp1 <- mean(sel$T_r..O., na.rm = TRUE)
-  # SD
-  temp2 <- sd(sel$T_r..O., na.rm = TRUE)
-  
-  cat(paste0("Column D ", journals[journal], " ",
-             round(temp1, 2), " (", round(temp2, 2), ")"))
-  cat("\n")
-  # Column F
-  # Mean
-  temp1 <- mean(sel$T_r..R., na.rm = TRUE)
-  # SD
-  temp2 <- sd(sel$T_r..R., na.rm = TRUE)
-  
-  cat(paste0("Column F ", journals[journal], " ",round(temp1, 2), " (", round(temp2, 2), ")"))
-  cat("\n")
-}
-
-#---------------
-
-# P-value analyses
+########################
+# Preliminary analyses #
+########################
 # Written by CHJ Hartgerink
 
-#  McNemar test
+#  Table S1
 tab <- table(MASTER$T_sign_O[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R)],
              MASTER$T_sign_R[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R)])
+tab
+
+#######################################################################
+# Evaluating replication effect against null hypothesis of no effect. #
+#######################################################################
+# Written by CHJ Hartgerink
+
+# Percent significant for original studies
+sum(tab[2,])/sum(tab)
+# Percent significant for replication studies
+sum(tab[,2])/sum(tab)
 
 mcnemarchi <- (tab[1,2]-tab[2,1])^2/(tab[1,2]+tab[2,1])
 mcnemarp <- pchisq(q = mcnemarchi, df = 1, lower.tail = FALSE)
-
-# Dependent t-test p-values
-t.test(x = MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
-       y = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
-       paired = TRUE)
-
-# Wilcoxon signed-rank test p-values
-wilcox.test(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
-            MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
-            alternative="two.sided")
-
-sd(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
-summary(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
-sd(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
-summary(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
-
-# Percent significant and nonsignificant for original studies
-# Significant
-sum(tab[2,])/sum(tab)
-# Nonsignificant
-sum(tab[1,])/sum(tab)
-
-# Percent significant and nonsignificant for replication studies
-# Significant
-sum(tab[,2])/sum(tab)
-# Nonsignificant
-sum(tab[1,])/sum(tab)
-
-# Deviation from uniformity in nonsignificant replication studies
-FisherMethod(x = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)],
-             id = 1,
-             alpha = .05)
-
-# CDF P-values
-setEPS()
-postscript("figures/figure s1.eps", width = 7, height = 8) # change file name
-plot(ecdf(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
-     lty=1,
-     frame.plot=F, 
-     main="P-value distributions (CDF)",
-     xlim=c(0,1),
-     xaxs="i",
-     yaxs="i",
-     xlab="P-value",
-     ylab = "Density",
-     cex.axis=.6,
-     cex.lab=.7,
-     col = "grey")
-abline(v = .05, lty = 2)
-lines(ecdf(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))
-legend(x=.5,y=.3,legend=c(paste('Original p-values, k = ',
-                                length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])),
-                          paste('Replication p-values, k = ',
-                                length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))),
-       cex=1,
-       lty=c(1,1), bty = 'n',
-       col = c("grey","black"),box.lwd=0)
-dev.off()
-
-# PDF P-values
-setEPS()
-postscript("figures/figure s2.eps", width = 7, height = 8) # change file name
-plot(density(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
-     lty=1,
-     frame.plot=F, 
-     main="P-value distributions (PDF)",
-     xlim=c(0,1),
-     xaxs="i",
-     yaxs="i",
-     xlab="P-value",
-     ylab = "Density",
-     cex.axis=.6,
-     cex.lab=.7,
-     col = "grey")
-abline(v = .05, lty = 2)
-lines(density(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))
-legend(x=.4,y=7,legend=c(paste('Original p-values, k = ',
-                               length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])),
-                         paste('Replication p-values, k = ',
-                               length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))),
-       cex=1,
-       lty=c(1,1), bty = 'n',
-       col = c("grey","black"),box.lwd=0)
-dev.off()
+mcnemarchi; mcnemarp
 
 # Significance per journal
 # Table significance, per journal
@@ -253,41 +95,109 @@ PSperc <- c(sum(PStab[2,])/sum(PStab),
 
 
 cbind(labels, JPSP, JPSPperc, JEPLMC, JEPLMCperc, PS, PSperc)
-#---------------
 
-# Effect size distributions
+# Replication sig | original sig
+35/97
+
+# Deviation from uniformity in nonsignificant replication studies
+FisherMethod(x = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)],
+             id = 1,
+             alpha = .05)
+
+# Means p-value distributions
+mean(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
+mean(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])
+
+# Dependent t-test p-values
+t.test(x = MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
+       y = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
+       paired = TRUE)
+
+# Wilcoxon signed-rank test p-values
+wilcox.test(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
+            MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)],
+            alternative="two.sided")
+
+# Quantiles
+summary(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])[c(2, 3, 5)]
+summary(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])[c(2, 3, 5)]
+
+# Figure S1 (CDF PVAL)
+setEPS()
+postscript("figures/figure s1.eps", width = 7, height = 8) # change file name
+plot(ecdf(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
+     lty=1,
+     frame.plot=F, 
+     main="P-value distributions (CDF)",
+     xlim=c(0,1),
+     xaxs="i",
+     yaxs="i",
+     xlab="P-value",
+     ylab = "Density",
+     cex.axis=.6,
+     cex.lab=.7,
+     col = "grey")
+abline(v = .05, lty = 2)
+lines(ecdf(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))
+legend(x=.5,y=.3,legend=c(paste('Original p-values, k = ',
+                                length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])),
+                          paste('Replication p-values, k = ',
+                                length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))),
+       cex=1,
+       lty=c(1,1), bty = 'n',
+       col = c("grey","black"),box.lwd=0)
+dev.off()
+
+# Figure S2 (PDF Pvalues)
+setEPS()
+postscript("figures/figure s2.eps", width = 7, height = 8) # change file name
+plot(density(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
+     lty=1,
+     frame.plot=F, 
+     main="P-value distributions (PDF)",
+     xlim=c(0,1),
+     xaxs="i",
+     yaxs="i",
+     xlab="P-value",
+     ylab = "Density",
+     cex.axis=.6,
+     cex.lab=.7,
+     col = "grey")
+abline(v = .05, lty = 2)
+lines(density(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))
+legend(x=.4,y=7,legend=c(paste('Original p-values, k = ',
+                               length(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)])),
+                         paste('Replication p-values, k = ',
+                               length(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]))),
+       cex=1,
+       lty=c(1,1), bty = 'n',
+       col = c("grey","black"),box.lwd=0)
+dev.off()
+
+####################################################
+# Comparing original and replication effect sizes. #
+####################################################
 # Written by CHJ Hartgerink
-
-# Original effects recomputed
-length(MASTER$T_r..O.[!is.na(MASTER$T_r..O.)])
-# Replication effects recopmuted
-length(MASTER$T_r..R.[!is.na(MASTER$T_r..R.)])
 
 # Number of pairs
 sum(!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.))
 
-# Spearman correlation original and replicated effect sizes
-cor(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
-    MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
-    method = "spearman")
+# Descriptive original studies
+mean(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
+sd(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
+# Descriptive replication studies
+mean(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
+sd(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
 
 # Dependent t-test effects (r values)
 t.test(x = MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
        y = MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
        paired = TRUE)
 
-
 # Wilcox test effects (r values)
 wilcox.test(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
             MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
             alternative="two.sided")
-
-summary(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
-sd(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
-summary(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
-sd(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
-
-mean(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])-mean(MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)])
 
 # Binomial test to see if replicated effect is larger than original
 temp <- MASTER$T_O_larger
@@ -295,6 +205,10 @@ prop <- sum(temp[!is.na(temp)])/length(temp[!is.na(temp)])
 binom.test(x = sum(temp[!is.na(temp)]), n = length(temp[!is.na(temp)]), 
            p = .5, alternative = "two.sided")
 
+# Spearman correlation original and replicated effect sizes
+cor(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
+    MASTER$T_r..R.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
+    method = "spearman")
 
 setEPS()
 postscript("figures/figure s3.eps", width = 11, height = 7) # change file name
@@ -335,6 +249,11 @@ legend(x=.45,y=.5,legend=c(paste("Original, k = ",
        lty=c(1,1), bty = 'n',
        col = c("grey","black"),box.lwd=0)
 dev.off()
+
+##############################################################
+# Evaluating replication effect against original effect size #
+##############################################################
+# Plot by CHJ Hartgerink
 
 setEPS()
 postscript("figures/figure s4.eps", width = 7, height = 8) # change file name
@@ -1208,6 +1127,113 @@ mat <- subset(mat, is.na(df$fis.r) == FALSE)
 ### Create table with correlations
 rcorr(mat, type = "spearman")
 
+###########
+# TABLE 1 #
+# https://docs.google.com/spreadsheets/d/16aqIekNerZcflSJwM7dOiXnN24-KvZqaa3eTg4js41U/edit#gid=0
+###########
+
+### Recode "Publishing journal and subdiscipline"
+jour <- numeric()
+
+for(i in 1:nrow(MASTER)) {
+  if(as.character(MASTER$Journal..O.[i]) == "JEPLMC") {
+    jour[i] <- 1
+  } else if(as.character(MASTER$Journal..O.[i]) == "JPSP") {
+    jour[i] <- 2
+  } else if(as.character(MASTER$Journal..O.[i]) == "PS") {
+    if(as.character(MASTER$Discipline..O.[i]) == "Cognitive") {
+      jour[i] <- 3
+    } else if(as.character(MASTER$Discipline..O.[i]) == "Social") {
+      jour[i] <- 4
+    } else { jour[i] <- 5 }
+  }
+  else { jour[i] <- NA }
+}
+
+# Overall 
+sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R), ]
+
+# Column B
+# Relations tested
+reltest <- dim(sel)[1]
+# Relations both significant
+relsig <- sum((sel$T_sign_O) & (sel$T_sign_R), na.rm = TRUE)
+cat(
+  paste0("Column B Overall ",
+         round(relsig, 0),
+         " / ",
+         round(reltest, 0)
+  )
+)
+
+# Column C
+# Percent
+cat(paste0("Column C overall ", round((relsig / reltest), 2)))
+
+# Column D
+# Mean
+temp1 <- mean(sel$T_r..O., na.rm = TRUE)
+# SD
+temp2 <- sd(sel$T_r..O., na.rm = TRUE)
+
+cat(paste0("Column D overall ", round(temp1, 3), " (", round(temp2, 3), ")"))
+
+# Column F
+# Mean
+temp1 <- mean(sel$T_r..R., na.rm = TRUE)
+# SD
+temp2 <- sd(sel$T_r..R., na.rm = TRUE)
+
+cat(paste0("Column F overall ", round(temp1, 3), " (", round(temp2, 3), ")"))
+
+
+# Per journal 
+journals <- c("JEPLMC", "JPSP", "PS Cognitive", "PS social", "PS other")
+for(journal in c(2,1,4,3,5)){
+  
+  sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == journal,]
+  
+  # Column B
+  # Relations tested
+  reltest <- dim(sel)[1]
+  # Relations both significant
+  relsig <- sum((sel$T_sign_O) & (sel$T_sign_R), na.rm = TRUE)
+  cat(
+    paste0("Column B ", journals[journal], " ",
+           round(relsig, 0),
+           " / ",
+           round(reltest, 0)
+    )
+  )
+  cat("\n")
+  
+  # Column C
+  # Percent
+  cat(paste0("Column C ", journals[journal], " ",
+             as.character(round((relsig / reltest), 2))))
+  cat("\n")
+  
+  # Column D
+  # Mean
+  temp1 <- mean(sel$T_r..O., na.rm = TRUE)
+  # SD
+  temp2 <- sd(sel$T_r..O., na.rm = TRUE)
+  
+  cat(paste0("Column D ", journals[journal], " ",
+             round(temp1, 2), " (", round(temp2, 2), ")"))
+  cat("\n")
+  # Column F
+  # Mean
+  temp1 <- mean(sel$T_r..R., na.rm = TRUE)
+  # SD
+  temp2 <- sd(sel$T_r..R., na.rm = TRUE)
+  
+  cat(paste0("Column F ", journals[journal], " ",round(temp1, 2), " (", round(temp2, 2), ")"))
+  cat("\n")
+}
+
+
+
 #########################
 ##### TABLE 2 BRIAN #####
 #########################
@@ -1454,3 +1480,4 @@ colnames(mat) <- c("Did it replicate?", "Inst.1st.author", "Inst.senior.author",
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
 rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+
