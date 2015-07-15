@@ -39,7 +39,7 @@ for(i in 1:nrow(MASTER)) {
 }
 
 # Overall 
-sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R),]
+sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R), ]
 
 # Column B
 # Relations tested
