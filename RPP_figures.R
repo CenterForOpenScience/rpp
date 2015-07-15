@@ -67,6 +67,14 @@ probs=seq(0,1,.25)
 qtiles <- ldply(unique(df$grpN),function(gr) quantile(round(df$p.value[df$grpN==gr],digits=4),probs,na.rm=T,type=3))
 freqs  <- ldply(unique(df$grpN),function(gr) table(cut(df$p.value[df$grpN==gr],breaks=qtiles[gr,],na.rm=T,include.lowest=T,right=T)))
 labels <- sapply(unique(df$grpN),function(gr)levels(cut(round(df$p.value[df$grpN==gr],digits=4), breaks = qtiles[gr,],na.rm=T,include.lowest=T,right=T)))
+# Check the bins!
+ori           <-cbind(freq=as.numeric(t(freqs[1,])))
+rownames(ori) <- labels[,1]
+ori
+
+rep           <-cbind(freq=as.numeric(t(freqs[2,])))
+rownames(rep) <- labels[,2]
+rep
 
 # Get regular ggplot violin
 g.pv <- ggplot(df,aes(x=grp,y=p.value)) + geom_violin(aes(group=grp),scale="width",color="grey30",fill="grey30",trim=T,adjust=.7)
@@ -84,11 +92,11 @@ g.pv1
 qtiles <- ldply(unique(df$grpN),function(gr) quantile(df$EffectSize[df$grpN==gr],probs,na.rm=T,type=3,include.lowest=T))
 freqs  <- ldply(unique(df$grpN),function(gr) table(cut(df$EffectSize[df$grpN==gr],breaks=qtiles[gr,],na.rm=T,include.lowest=T)))
 # build the base violins
-g.es  <- ggplot(df,aes(x=grp,y=EffectSize)) + geom_violin(aes(group=grpN),scale="width",fill="grey40",color="grey40",trim=T,adjust=.7) 
+g.es  <- ggplot(df,aes(x=grp,y=EffectSize)) + geom_violin(aes(group=grpN),scale="width",fill="grey40",color="grey40",trim=T,adjust=1) 
 # Get the quantiles
 g.es0 <- vioQtile(g.es,qtiles=qtiles,probs=probs) 
 # Garnish
-g.es1 <- g.es0 + ggtitle("B") + xlab("") + ylab("Effect Size") + scale_y_continuous(breaks=c(0,.25,.5,.75,1),limits=c(-.5,1)) + mytheme 
+g.es1 <- g.es0 + ggtitle("B") + xlab("") + ylab("Effect Size") + scale_y_continuous(breaks=c(-.25,-.5,0,.25,.5,.75,1),limits=c(-.5,1)) + mytheme 
 # Save 
 ggsave("RPP_ES.eps",plot=g.es1)
 g.es1
@@ -202,12 +210,13 @@ dev.off()
 
 
 # EFFECT SIZE PLOTS -------------------------------------------------------------
-RPPdata$oriSig <- "Significant"
-RPPdata$oriSig[RPPdata$T.pval.USE.O>=.05] <- "Not Significant"
+RPPdata$oriSig <- "Not Significant"
+# 3 studies claimed significance at .05 < p < .06
+RPPdata$oriSig[RPPdata$T.pval.USE.O<=.06] <- "Significant"
 RPPdata$oriSig <- factor(RPPdata$oriSig)
 
-RPPdata$repSig <- "Significant"
-RPPdata$repSig[RPPdata$T.pval.USE.R>=.05] <- "Not Significant"
+RPPdata$repSig <- "Not Significant"
+RPPdata$repSig[RPPdata$T.pval.USE.R<=.05] <- "Significant"
 RPPdata$repSig <- factor(RPPdata$repSig)
 
 RPPdata$repSig <- factor(RPPdata$repSig)
@@ -224,21 +233,25 @@ scatterP<-
   ggplot(RPPdata,aes(x=T.r.O,y=T.r.R)) +  
   geom_hline(aes(yintercept=0),linetype=2) +
   geom_abline(intercept=0,slope=1,color="Grey60")+
-  geom_point(aes(size=Power.Rn,fill=repSig),color="grey30",shape=21,alpha=.8) + 
+  geom_point(aes(size=Power.Rn,fill=repSig,color=oriSig),shape=21,alpha=.8) + 
   geom_rug(aes(color=oriSig),size=1,sides="b",alpha=.6) + 
   geom_rug(aes(color=repSig),,size=1,sides="l",alpha=.6) + 
   scale_x_continuous(name="Original Effect Size",limits=c(0,1),breaks=c(0,.25,.5,.75,1)) + 
   scale_y_continuous(name="Replication Effect Size",limits=c(-.5,1),breaks=c(-.5,-.25,0,.25,.5,.75,1)) + 
   ggtitle("") + xlab("") + ylab("") + 
   scale_size_continuous(name="Replication Power",range=c(2,9)) + 
-  scale_color_discrete(name="Replication p-value") +
-  scale_fill_discrete(name="Replication p-value") +
+  scale_color_discrete(name="p-value") +
+  scale_fill_discrete(name="p-value") +
   gg.theme("clean") + theme(legend.position=c(.9,.6), plot.margin = unit(c(-2,-1.5,2,2), "lines")) 
   
 
 pdf("RPP_ES_density.pdf",pagecentre=T, width=15,height=12 ,paper = "special")
 grid.arrange(xDense, blankPlot, scatterP, yDense, ncol=2, nrow=2, widths=c(4, 1.4), heights=c(1.4, 4))
 dev.off()
+
+
+
+
 
 
 # Scatter with rug B L
