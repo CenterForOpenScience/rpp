@@ -97,7 +97,7 @@ PSperc <- c(sum(PStab[2,])/sum(PStab),
 cbind(labels, JPSP, JPSPperc, JEPLMC, JEPLMCperc, PS, PSperc)
 
 # Replication sig | original sig
-(7 + 13 + 15) / 97
+33/97
 
 # Deviation from uniformity in nonsignificant replication studies
 FisherMethod(x = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)],
@@ -536,8 +536,8 @@ sei <- sqrt(1/(N.o-3) + 1/(N.r-3))
 tol <- 1e-7
 xm <- 0
  
-df1.or <- df2.or <- F.or <- df1.rep <- df2.rep <- F.rep <- 1:17
-ncp.L <- ncp.U <- ncp.o <- in.ci <- 1:17
+df1.or <- df2.or <- F.or <- df1.rep <- df2.rep <- F.rep <- 1:18
+ncp.L <- ncp.U <- ncp.o <- in.ci <- 1:18
  
 ### study 12
 df1.or[1] <- 2
@@ -675,6 +675,15 @@ df1.rep[17] <- 4
 df2.rep[17] <- 150
 F.rep[17] <- 0.58
  
+### Added later, after reviews, before re-submitting to Science [July 16, 2015]
+### study 25
+df1.or[18] <- 3
+df2.or[18] <- 48
+F.or[18] <- 9.14
+df1.rep[18] <- 3
+df2.rep[18] <- 59
+F.rep[18] <- 5.681
+
 ### loop
 for (i in 1:length(F.or)) {
   df1.o <- df1.or[i]
@@ -754,7 +763,7 @@ pchisq(chi2.r,1,chi2.o-1)
 
 # Written by RCM van Aert
 
-df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
+df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..R.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
                  d.JEP, d.PSCog, d.PSSoc, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self, power.r = as.numeric(levels(MASTER$Power..R.))[MASTER$Power..R.],
                  N.o.tab = MASTER$T_N_O_for_tables, N.r.tab = MASTER$T_N_R_for_tables)
 
@@ -783,6 +792,7 @@ cor <- (exp(2*est)-1)/(exp(2*est)+1)
 
 mean(cor)
 sd(cor)
+sum(pval)
 sum(pval)/(length(pval)+2) # Proportion of statistically significant studies plus two because of two non-significant p-values for odds rations (ID = 84 and 165)
 
 ### Per discipline
