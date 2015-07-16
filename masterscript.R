@@ -535,10 +535,10 @@ sei <- sqrt(1/(N.o-3) + 1/(N.r-3))
 
 tol <- 1e-7
 xm <- 0
- 
+
 df1.or <- df2.or <- F.or <- df1.rep <- df2.rep <- F.rep <- 1:18
 ncp.L <- ncp.U <- ncp.o <- in.ci <- 1:18
- 
+
 ### study 12
 df1.or[1] <- 2
 df2.or[1] <- 92
@@ -546,7 +546,7 @@ F.or[1] <- 3.13
 df1.rep[1] <- 2
 df2.rep[1] <- 232
 F.rep[1] <- 1.63
- 
+
 ### study 13
 df1.or[2] <- 2
 df2.or[2] <- 68
@@ -554,7 +554,7 @@ F.or[2] <- 41.59
 df1.rep[2] <- 2
 df2.rep[2] <- 68
 F.rep[2] <- 41.603
- 
+
 ### study 17
 df1.or[3] <- 2
 df2.or[3] <- 76
@@ -562,7 +562,7 @@ F.or[3] <- 8.67
 df1.rep[3] <- 1.58
 df2.rep[3] <- 72.4
 F.rep[3] <- 19.48
- 
+
 ### study 22
 df1.or[4] <- 3
 df2.or[4] <- 93
@@ -570,7 +570,7 @@ F.or[4] <- 5.23
 df1.rep[4] <- 2.33
 df2.rep[4] <- 90
 F.rep[4] <- 0.38
- 
+
 ### study 43
 df1.or[5] <- 2
 df2.or[5] <- 64
@@ -578,7 +578,7 @@ F.or[5] <- 10.17
 df1.rep[5] <- 2
 df2.rep[5] <- 72
 F.rep[5] <- 1.97
- 
+
 ### study 46
 df1.or[6] <- 21
 df2.or[6] <- 230025
@@ -586,7 +586,7 @@ F.or[6] <- 118.15
 df1.rep[6] <- 21
 df2.rep[6] <- 455304
 F.rep[6] <- 261.93
- 
+
 ### study 50
 df1.or[7] <- 2
 df2.or[7] <- 92
@@ -594,7 +594,7 @@ F.or[7] <- 4.36
 df1.rep[7] <- 2
 df2.rep[7] <- 103
 F.rep[7] <- 2.601
- 
+
 ### study 55
 df1.or[8] <- 2
 df2.or[8] <- 54
@@ -602,7 +602,7 @@ F.or[8] <- 3.19
 df1.rep[8] <- 2
 df2.rep[8] <- 68
 F.rep[8] <- 0.3
- 
+
 ### study 64
 df1.or[9] <- 2
 df2.or[9] <- 76
@@ -610,7 +610,7 @@ F.or[9] <- 21.57
 df1.rep[9] <- 2
 df2.rep[9] <- 65
 F.rep[9] <- 0.865
- 
+
 ### study 80
 df1.or[10] <- 2
 df2.or[10] <- 43
@@ -618,7 +618,7 @@ F.or[10] <- 3.36
 df1.rep[10] <- 2
 df2.rep[10] <- 67
 F.rep[10] <- 1.7
- 
+
 ### study 86
 df1.or[11] <- 2
 df2.or[11] <- 82
@@ -626,7 +626,7 @@ F.or[11] <- 4.05
 df1.rep[11] <- 2
 df2.rep[11] <- 137
 F.rep[11] <- 1.99
- 
+
 ### study 117
 df1.or[12] <- 18
 df2.or[12] <- 660
@@ -634,7 +634,7 @@ F.or[12] <- 16.31
 df1.rep[12] <- 18
 df2.rep[12] <- 660
 F.rep[12] <- 12.98
- 
+
 ### study 132
 df1.or[13] <- 3
 df2.or[13] <- 69
@@ -642,7 +642,7 @@ F.or[13] <- 5.15
 df1.rep[13] <- 1.48
 df2.rep[13] <- 41.458
 F.rep[13] <- 1.401
- 
+
 ### study 139
 df1.or[14] <- 3
 df2.or[14] <- 9
@@ -650,7 +650,7 @@ F.or[14] <- 8.5
 df1.rep[14] <- 3
 df2.rep[14] <- 12
 F.rep[14] <- 13.06
- 
+
 ### study 140
 df1.or[15] <- 2
 df2.or[15] <- 81
@@ -658,7 +658,7 @@ F.or[15] <- 4.97
 df1.rep[15] <- 2
 df2.rep[15] <- 122
 F.rep[15] <- 0.24
- 
+
 ### study 142
 df1.or[16] <- 2
 df2.or[16] <- 162
@@ -666,7 +666,7 @@ F.or[16] <- 192.89
 df1.rep[16] <- 2
 df2.rep[16] <- 174
 F.rep[16] <- 252.83
- 
+
 ### study 143
 df1.or[17] <- 4
 df2.or[17] <- 108
@@ -674,7 +674,7 @@ F.or[17] <- 3.67
 df1.rep[17] <- 4
 df2.rep[17] <- 150
 F.rep[17] <- 0.58
- 
+
 ### Added later, after reviews, before re-submitting to Science [July 16, 2015]
 ### study 25
 df1.or[18] <- 3
@@ -692,66 +692,63 @@ for (i in 1:length(F.or)) {
   df1.r <- df1.rep[i]
   df2.r <- df2.rep[i]
   F.r <- F.rep[i]
-	
+  
   ### ncp lower bound
   if (pf(F.r,df1.r,df2.r,0) < .975)
   {ncp.L[i] <- 0} else
   {
-	x0 <- 0
-	x1 <- df1.r*F.r
-	ym <- 1  
-	while(abs(ym-0.975) > tol) {
-  	xm <- (x0+x1)/2
-  	ym <- pf(F.r,df1.r,df2.r,xm)
-  	if (ym > 0.975) x0 <- xm
-  	if (ym < 0.975) x1 <- xm  
+    x0 <- 0
+    x1 <- df1.r*F.r
+    ym <- 1  
+    while(abs(ym-0.975) > tol) {
+      xm <- (x0+x1)/2
+      ym <- pf(F.r,df1.r,df2.r,xm)
+      if (ym > 0.975) x0 <- xm
+      if (ym < 0.975) x1 <- xm  
+    }
+    ncp.L[i] <- xm
   }
-	ncp.L[i] <- xm
-  }
- 
+  
   ### ncp upper bound
   x0 <- df1.r*F.r
   x1 <- 20*df1.r*F.r
-  print(x0)
-  print(x1)
   ym <- 1  
   while(abs(ym-0.025) > tol) {
-	xm <- (x0+x1)/2
-	ym <- pf(F.r,df1.r,df2.r,xm)
-	if (ym > 0.025) x0 <- xm
-	if (ym < 0.025) x1 <- xm
-	print(xm)
+    xm <- (x0+x1)/2
+    ym <- pf(F.r,df1.r,df2.r,xm)
+    if (ym > 0.025) x0 <- xm
+    if (ym < 0.025) x1 <- xm
   }
   ncp.U[i] <- xm
- 
+  
   ### check if original is in ci of replication
   ncp.o[i] <- F.o*df1.o*(df2.o-2)/df2.o-df1.o
   in.ci[i] <- ( (ncp.L[i] < ncp.o[i]) & (ncp.U[i] > ncp.o[i]) )
 }
- 
+
 cbind(ncp.L,ncp.o,ncp.U,in.ci)
 sum(in.ci)
 mean(in.ci)
- 
+
 ### ch2
 ## if probability calculated with pchisq is between .025
 ## and .975 then the ncp of original is in ci of replication
- 
+
 ## Study 73
 chi2.o <- 3.85
 chi2.r <- 4.8
 pchisq(chi2.r,1,chi2.o-1)
- 
+
 ## Study 84
 chi2.o <- 13.18
 chi2.r <- 7.1
 pchisq(chi2.r,1,chi2.o-1)
- 
+
 ## Study 104
 chi2.o <- 3.83
 chi2.r <- 0.387
 pchisq(chi2.r,1,chi2.o-1)
- 
+
 ## Study 165
 chi2.o <- 4.51
 chi2.r <- 1.57
@@ -807,7 +804,7 @@ sd(cor[final$d.PSSoc == 1])
 sd(cor[final$d.PSCog == 1])
 
 sum(pval[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0])/(length(pval[final$d.JEP == 0 # Plus one because of one odds ratio (ID = 84)
-                                                                                                        & final$d.PSSoc == 0 & final$d.PSCog == 0])+1)
+                                                                                   & final$d.PSSoc == 0 & final$d.PSCog == 0])+1)
 sum(pval[final$d.JEP == 1])/length(pval[final$d.JEP == 1])
 sum(pval[final$d.PSSoc == 1])/(length(pval[final$d.PSSoc == 1])+1) # Plus one because of one odds ratio (ID = 165)
 sum(pval[final$d.PSCog == 1])/length(pval[final$d.PSCog == 1])
