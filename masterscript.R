@@ -754,6 +754,8 @@ chi2.o <- 4.51
 chi2.r <- 1.57
 pchisq(chi2.r,1,chi2.o-1)
 
+(sum(in.ci)+4)/(length(in.ci)+4) # Original study within CI of replication
+
 #######################################
 ### Select studies for the analyses ###
 #######################################
@@ -1265,9 +1267,11 @@ for(i in 1:length(fis.r)) {
 }
 
 ### Select only studies with test statistic t or F and df1 = 1
-dat <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..O.), df1 = MASTER$T_df1..O., tmp)
+dat <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..R.), df1 = MASTER$T_df1..R., tmp)
 sub <- subset(dat, (dat$stat == "F" & dat$df1 == 1) | dat$stat == "t" | dat$stat == "r")
 in.ci[sub$ID] <- sub$tmp
+
+sum(in.ci, na.rm = TRUE) # Number of times the replication study contained the effect size of the original study of the studies were the se could be computed
 
 ### Store results for other statistics
 in.ci[c(22,43,46,64,132,140,143)] <- FALSE
