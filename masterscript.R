@@ -97,7 +97,7 @@ PSperc <- c(sum(PStab[2,])/sum(PStab),
 cbind(labels, JPSP, JPSPperc, JEPLMC, JEPLMCperc, PS, PSperc)
 
 # Replication sig | original sig
-33/97
+35/97
 
 # Deviation from uniformity in nonsignificant replication studies
 FisherMethod(x = MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..R.)],
