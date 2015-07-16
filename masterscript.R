@@ -690,16 +690,13 @@ for (i in 1:length(F.or)) {
   {
 	x0 <- 0
 	x1 <- df1.r*F.r
-	print(x1)
 	ym <- 1  
 	while(abs(ym-0.975) > tol) {
   	xm <- (x0+x1)/2
   	ym <- pf(F.r,df1.r,df2.r,xm)
   	if (ym > 0.975) x0 <- xm
   	if (ym < 0.975) x1 <- xm  
-  	print(xm)
-  	print(ym)
-	}
+  }
 	ncp.L[i] <- xm
   }
  
