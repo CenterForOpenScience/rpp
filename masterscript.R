@@ -1130,7 +1130,7 @@ rcorr(mat, type = "spearman")
 ###########
 
 # Overall 
-sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & !MASTER$ID == 59 & !MASTER$ID == 69 & !MASTER$ID == 77, ]
+sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & MASTER$T_sign_O == 1, ]
 
 # Column B
 # Relations tested
@@ -1170,7 +1170,7 @@ cat(paste0("Column F overall ", round(temp1, 3), " (", round(temp2, 3), ")"))
 journals <- c("JEPLMC", "JPSP", "PS Cognitive", "PS social", "PS other")
 for(journal in c(2,1,4,3,5)){
   
-  sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & jour == journal,]
+  sel <- MASTER[!is.na(MASTER$T_sign_O) & !is.na(MASTER$T_sign_R) & MASTER$T_sign_O == 1 & jour == journal,]
   
   # Column B
   # Relations tested
