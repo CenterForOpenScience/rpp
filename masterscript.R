@@ -764,7 +764,7 @@ pchisq(chi2.r,1,chi2.o-1)
 
 df <- data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..R.), df1 = MASTER$T_df1..O., yi, sei, fis.o, sei.o, N.o, pval.o, fis.r, sei.r, N.r, pval.r, 
                  d.JEP, d.PSCog, d.PSSoc, sc.impo, sc.surp, sc.expe1, sc.chal, sc.expe2, sc.self, power.r = as.numeric(levels(MASTER$Power..R.))[MASTER$Power..R.],
-                 N.o.tab = MASTER$T_N_O_for_tables, N.r.tab = MASTER$T_N_R_for_tables)
+                 N.o.tab = MASTER$T_N_O_for_tables, N.r.tab = MASTER$T_N_R_for_tables, replic = as.character(MASTER$Replicate..R.))
 
 ### Select: F(df1 = 1, df2), t, and r
 sub <- subset(df, (df$stat == "F" & df$df1 == 1) | df$stat == "t" | df$stat == "r")
@@ -812,7 +812,7 @@ sum(pval[final$d.PSSoc == 1])/(length(pval[final$d.PSSoc == 1])+1) # Plus one be
 sum(pval[final$d.PSCog == 1])/length(pval[final$d.PSCog == 1])
 
 ### Subset of data with all cases which were replicated
-tmp <- subset(df, is.na(MASTER$T_pval_USE..R.) == FALSE)
+tmp <- subset(df, is.na(MASTER$T_N_O_for_tables) == FALSE)
 mean(tmp$power.r, na.rm = TRUE)
 
 ### Subset of data with all cases published in JPSP
@@ -855,6 +855,14 @@ summary(tmp.PSSoc$N.r.tab)
 tmp.PSCog <- subset(tmp, tmp$d.PSCog == 1)
 summary(tmp.PSCog$N.o.tab)
 summary(tmp.PSCog$N.r.tab)
+
+### % subjective "yes" to "Did it replicate?"
+tmp <- subset(df, is.na(MASTER$T_N_O_for_tables) == FALSE) # Subset of data with all cases which were replicated
+sum(tmp$replic == "yes")/length(tmp$replic)
+sum(tmp$replic[tmp$d.JEP == 0 & tmp$d.PSSoc == 0 & tmp$d.PSCog == 0] == "yes")/length(tmp$replic[tmp$d.JEP == 0 & tmp$d.PSSoc == 0 & tmp$d.PSCog == 0])
+sum(tmp$replic[tmp$d.JEP == 1] == "yes")/length(tmp$replic[tmp$d.JEP == 1])
+sum(tmp$replic[tmp$d.PSSoc == 1] == "yes")/length(tmp$replic[tmp$d.PSSoc == 1])
+sum(tmp$replic[tmp$d.PSCog == 1] == "yes")/length(tmp$replic[tmp$d.PSCog == 1])
 
 ### "original effect size within replication 95% CI"
 ### How often is original study within CI of replication
