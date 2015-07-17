@@ -1221,7 +1221,7 @@ for(journal in c(2,1,4,3,5)){
 # T_pval_USE..R is used to create a subset of replicated studies
 
 ### Variables in the columns
-rows <- cbind(MASTER$T_pval_USE..O., MASTER$T_r..O., MASTER$T_N_O_for_tables, df$sc.impo, df$sc.surp, df$sc.expe1, MASTER$T_pval_USE..R, MASTER$T_r..O., df$power.r, 
+rows <- cbind(MASTER$T_pval_USE..O., MASTER$T_r..O., MASTER$T_N_O_for_tables, df$sc.impo, df$sc.surp, df$sc.expe1, MASTER$T_pval_USE..R, MASTER$T_r..R., df$power.r, 
               MASTER$T_N_R_for_tables, df$sc.chal, df$sc.expe2, df$sc.self, MASTER$T_pval_USE..R)
 colnames(rows) <- c("p-value", "Original Effect size", "Original sample size", "Importance of effect", "Surprising effect", "Experience and expertise of team O", "Replication p-value",
                     "Replication Effect size", "Power", "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
