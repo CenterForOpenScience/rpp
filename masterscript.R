@@ -1234,7 +1234,7 @@ colnames(mat) <- c("rep.dir", "p-value", "Original Effect size", "Original sampl
 
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
-rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 
 ### "Effect size difference" (Fisher z)
 es.dif <- df$fis.o - df$fis.r
@@ -1244,7 +1244,7 @@ colnames(mat) <- c("Effect size Difference", "p-value", "Original Effect size", 
                    "Replication Effect size", "Power", "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
-rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 
 ### "Meta-analytic estimate" (Fisher z)
 mat <- cbind(es.meta.all, rows)
@@ -1252,7 +1252,7 @@ colnames(mat) <- c("Meta-analytic estimate", "p-value", "Original Effect size", 
                    "Replication Effect size", "Power", "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
-rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 
 ### "original effect size within replication 95% CI"
 ### How often is original study within CI of replication
@@ -1291,7 +1291,7 @@ colnames(mat) <- c("Original in CI", "p-value", "Original Effect size", "Origina
 
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
-rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 
 ### "subjective 'yes' to 'Did it replicate?'"
 replic <- vector(mode = "logical", length = length(levels(MASTER$Replicate..R.)[MASTER$Replicate..R.]))
@@ -1305,7 +1305,7 @@ colnames(mat) <- c("Did it replicate?", "p-value", "Original Effect size", "Orig
                    "Replication Effect size", "Power", "Replication Sample size", "Challenge of conducting replication", "Experience and expertise of team R", "Self-assessed quality of replication", "sub")
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
-rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 
 ##########################
 ##### TABLE S2 BRIAN #####
@@ -1335,7 +1335,7 @@ sub <- subset(dat, is.na(dat$sub) == FALSE, select = -ncol(dat)) # Select only t
 
 ### Descriptives
 summary(sub)
-apply(dat, 2, sd, na.rm = TRUE) # Standard deviations
+round(apply(dat, 2, sd, na.rm = TRUE), 4) # Standard deviations
 
 ### Variables in the columns
 rows <- cbind(MASTER$T_r..O., MASTER$T_pval_USE..O., MASTER$T_N..O., MASTER$Institution.prestige..1st.author..O., MASTER$Institution.prestige..senior.author..O.,
@@ -1353,7 +1353,7 @@ colnames(mat) <- c("rep.dir", "Original.effect.size", "Original.pvalue", "Origin
 
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
-rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 
 ### "Effect size difference" (Fisher z)
 mat <- cbind(es.dif, rows)
@@ -1362,7 +1362,7 @@ colnames(mat) <- c("es.dif", "Original.effect.size", "Original.pvalue", "Origina
 
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
-rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 
 ### "Meta-analytic estimate" (Fisher z)
 mat <- cbind(es.meta.all, rows)
@@ -1371,7 +1371,7 @@ colnames(mat) <- c("Meta-analytic estimate", "Original.effect.size", "Original.p
 
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
-rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 
 ### "original effect size within replication 95% CI"
 mat <- cbind(in.ci, rows)
@@ -1380,7 +1380,7 @@ colnames(mat) <- c("Original in CI", "Original.effect.size", "Original.pvalue", 
 
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
-rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 
 ### "subjective 'yes' to 'Did it replicate?'"
 mat <- cbind(replic, rows)
@@ -1389,7 +1389,7 @@ colnames(mat) <- c("Did it replicate?", "Original.effect.size", "Original.pvalue
 
 sub <- subset(mat, is.na(mat[ , "sub"]) == FALSE, select = -ncol(mat)) # Select only the replicated studies
 
-rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
+round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 
 ##########################
 ##### TABLE S5 BRIAN #####
