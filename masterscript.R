@@ -1338,10 +1338,10 @@ summary(sub)
 round(apply(dat, 2, sd, na.rm = TRUE), 4) # Standard deviations
 
 ### Variables in the columns
-rows <- cbind(MASTER$T_r..O., MASTER$T_pval_USE..O., MASTER$T_N..O., MASTER$Institution.prestige..1st.author..O., MASTER$Institution.prestige..senior.author..O.,
+rows <- cbind(MASTER$T_r..O., MASTER$T_pval_USE..O., MASTER$T_N_O_for_tables, MASTER$Institution.prestige..1st.author..O., MASTER$Institution.prestige..senior.author..O.,
               MASTER$Citation.Count..1st.author..O., MASTER$Citation.count..senior.author..O., MASTER$Citation.count..paper..O., MASTER$Internal.conceptual.replications..O.,
               MASTER$Internal.direct.replications..O., as.numeric(fac.expe), as.numeric(fac.oppo.expe), as.numeric(fac.oppo.dili), 
-              as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.], as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.], MASTER$T_pval_USE..R.)
+              as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.], df$sc.impo, MASTER$T_pval_USE..R.)
 
 colnames(rows) <- c("Original.effect.size", "Original.pvalue", "Original.sample.size", "Inst.1st.author", "Inst.sen.author", "Cit.1st.author", "Cit.sen.author",
                     "Cit.impact", "concep.repl", "dir.repl", "expe.req", "oppo.expec.bias", "oppo.dili", "surp.res", "exci.res", "sub") 

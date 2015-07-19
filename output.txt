@@ -1,20 +1,3 @@
-
-R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
-Copyright (C) 2015 The R Foundation for Statistical Computing
-Platform: x86_64-w64-mingw32/x64 (64-bit)
-
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type 'license()' or 'licence()' for distribution details.
-
-R is a collaborative project with many contributors.
-Type 'contributors()' for more information and
-'citation()' on how to cite R or R packages in publications.
-
-Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for an HTML browser interface to help.
-Type 'q()' to quit R.
-
 > ######################################################################################
 > # Master script Tilburg University Analyses                                          #
 > # Responsible for this file: CHJ Hartgerink (c.h.j.hartgerink@tilburguniversity.edu) # 
@@ -28,23 +11,7 @@ Type 'q()' to quit R.
 > # source functions
 > source('functions.r')
 > library(Hmisc)
-Loading required package: grid
-Loading required package: lattice
-Loading required package: survival
-Loading required package: Formula
-Loading required package: ggplot2
-
-Attaching package: ‘Hmisc’
-
-The following objects are masked from ‘package:base’:
-
-    format.pval, round.POSIXt, trunc.POSIXt, units
-
-Warning messages:
-1: package ‘Hmisc’ was built under R version 3.2.1 
-2: package ‘Formula’ was built under R version 3.2.1 
 > library(metafor)
-Error in library(metafor) : there is no package called ‘metafor’
 > 
 > # ALL ANALYSES INCLUDE PAIRWISE SELECTION.
 > 
@@ -944,48 +911,47 @@ In data.frame(ID = MASTER$ID, stat = as.character(MASTER$T_Test.Statistic..R.), 
 +   if (tmp$pval < 0.05) { pval[i] <- TRUE
 +   } else { pval[i] <- FALSE }
 + }
-Error: could not find function "rma"
 > 
 > ### Transforming Fisher z values into raw correlations
 > cor <- (exp(2*est)-1)/(exp(2*est)+1)
 > 
 > mean(cor)
-[1] NaN
+[1] 0.3094113
 > sd(cor)
-[1] NA
+[1] 0.2232827
 > sum(pval)
-[1] 0
+[1] 51
 > sum(pval)/(length(pval)+2) # Proportion of statistically significant studies plus two because of two non-significant p-values for odds rations (ID = 84 and 165)
-[1] 0
+[1] 0.68
 > 
 > ### Per discipline
 > mean(cor[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0])
-[1] NA
+[1] 0.1381083
 > mean(cor[final$d.JEP == 1])
-[1] NA
+[1] 0.3930916
 > mean(cor[final$d.PSSoc == 1])
-[1] NA
+[1] 0.2858276
 > mean(cor[final$d.PSCog == 1])
-[1] NA
+[1] 0.4639957
 > 
 > sd(cor[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0])
-[1] NA
+[1] 0.08658562
 > sd(cor[final$d.JEP == 1])
-[1] NA
+[1] 0.2088261
 > sd(cor[final$d.PSSoc == 1])
-[1] NA
+[1] 0.2280247
 > sd(cor[final$d.PSCog == 1])
-[1] NA
+[1] 0.2209491
 > 
 > sum(pval[final$d.JEP == 0 & final$d.PSSoc == 0 & final$d.PSCog == 0])/(length(pval[final$d.JEP == 0 # Plus one because of one odds ratio (ID = 84)
 +                                                                                    & final$d.PSSoc == 0 & final$d.PSCog == 0])+1)
-[1] NA
+[1] 0.4285714
 > sum(pval[final$d.JEP == 1])/length(pval[final$d.JEP == 1])
-[1] NA
+[1] 0.8636364
 > sum(pval[final$d.PSSoc == 1])/(length(pval[final$d.PSSoc == 1])+1) # Plus one because of one odds ratio (ID = 165)
-[1] NA
+[1] 0.5789474
 > sum(pval[final$d.PSCog == 1])/length(pval[final$d.PSCog == 1])
-[1] NA
+[1] 0.9230769
 > 
 > ### Subset of data with all cases which were replicated
 > tmp <- subset(df, is.na(MASTER$T_N_O_for_tables) == FALSE)
@@ -1121,7 +1087,20 @@ Error: could not find function "rma"
 > var2 <- 1/231 + 1/352 + 1/213 + 1/350
 > 
 > rma(yi = c(logodds1, logodds2), vi = c(var1, var2), method = "FE")
-Error: could not find function "rma"
+
+Fixed-Effects Model (k = 2)
+
+Test for Heterogeneity: 
+Q(df = 1) = 2.2832, p-val = 0.1308
+
+Model Results:
+
+estimate       se     zval     pval    ci.lb    ci.ub          
+  0.1522   0.1102   1.3817   0.1671  -0.0637   0.3682          
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > # study 165
 > logodds1 <- log((15*21)/(12*8))
@@ -1130,7 +1109,20 @@ Error: could not find function "rma"
 > var2 <- 1/11 + 1/10 + 1/14 + 1/16
 > 
 > rma(yi = c(logodds1, logodds2), vi = c(var1, var2), method = "FE")
-Error: could not find function "rma"
+
+Fixed-Effects Model (k = 2)
+
+Test for Heterogeneity: 
+Q(df = 1) = 5.5721, p-val = 0.0182
+
+Model Results:
+
+estimate       se     zval     pval    ci.lb    ci.ub          
+  0.2418   0.4023   0.6010   0.5479  -0.5468   1.0303          
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > #########################################################################################
 > ### Meta-analyses of difference of effect size between original and replication study ###
@@ -1138,69 +1130,346 @@ Error: could not find function "rma"
 > 
 > ### Meta-analysis of null model
 > res <- rma(yi = final$yi, sei = final$sei, method = "REML")
-Error: could not find function "rma"
 > res
-Error: object 'res' not found
+
+Random-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of total heterogeneity): 0.0223 (SE = 0.0087)
+tau (square root of estimated tau^2 value):      0.1494
+I^2 (total heterogeneity / total variability):   47.83%
+H^2 (total variability / sampling variability):  1.92
+
+Test for Heterogeneity: 
+Q(df = 72) = 152.3932, p-val < .0001
+
+Model Results:
+
+estimate       se     zval     pval    ci.lb    ci.ub          
+  0.2138   0.0283   7.5523   <.0001   0.1583   0.2693      *** 
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > setEPS()
 > postscript("figures/figure s7.eps", width = 7, height = 8) # change file name
 > funnel(res, main = "Funnel plot based on difference original and replication study")
-Error: could not find function "funnel"
 > dev.off()
 null device 
           1 
 > 
 > ### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE as moderator (JPSP is reference category)
 > rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0218 (SE = 0.0088)
+tau (square root of estimated tau^2 value):             0.1477
+I^2 (residual heterogeneity / unaccounted variability): 46.06%
+H^2 (unaccounted variability / sampling variability):   1.85
+R^2 (amount of heterogeneity accounted for):            2.23%
+
+Test for Residual Heterogeneity: 
+QE(df = 69) = 134.2281, p-val < .0001
+
+Test of Moderators (coefficient(s) 2,3,4): 
+QM(df = 3) = 2.4511, p-val = 0.4842
+
+Model Results:
+
+               estimate      se     zval    pval    ci.lb   ci.ub     
+intrcpt          0.2551  0.0474   5.3757  <.0001   0.1621  0.3480  ***
+final$d.JEP     -0.0329  0.0749  -0.4389  0.6607  -0.1796  0.1139     
+final$d.PSCog   -0.0148  0.0993  -0.1493  0.8813  -0.2094  0.1797     
+final$d.PSSoc   -0.1051  0.0695  -1.5128  0.1303  -0.2414  0.0311     
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with sei.o as moderator
 > rma(yi = final$yi, sei = final$sei, mods = ~ final$sei.o, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0193 (SE = 0.0081)
+tau (square root of estimated tau^2 value):             0.1389
+I^2 (residual heterogeneity / unaccounted variability): 43.63%
+H^2 (unaccounted variability / sampling variability):   1.77
+R^2 (amount of heterogeneity accounted for):            13.48%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 131.4557, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 3.5192, p-val = 0.0607
+
+Model Results:
+
+             estimate      se    zval    pval    ci.lb   ci.ub   
+intrcpt        0.1046  0.0632  1.6537  0.0982  -0.0194  0.2285  .
+final$sei.o    0.8494  0.4528  1.8760  0.0607  -0.0380  1.7368  .
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with sei.o as moderator with "ML" as estimator for tau2 (model comparison)
 > res0 <- rma(yi = final$yi, sei = final$sei, mods = ~ final$sei.o, method = "ML")
-Error: could not find function "rma"
 > res0
-Error: object 'res0' not found
+
+Mixed-Effects Model (k = 73; tau^2 estimator: ML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0182 (SE = 0.0077)
+tau (square root of estimated tau^2 value):             0.1350
+I^2 (residual heterogeneity / unaccounted variability): 42.23%
+H^2 (unaccounted variability / sampling variability):   1.73
+R^2 (amount of heterogeneity accounted for):            15.83%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 131.4557, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 3.6703, p-val = 0.0554
+
+Model Results:
+
+             estimate      se    zval    pval    ci.lb   ci.ub   
+intrcpt        0.1030  0.0624  1.6507  0.0988  -0.0193  0.2252  .
+final$sei.o    0.8593  0.4485  1.9158  0.0554  -0.0198  1.7384  .
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE and sei.o as moderators (JPSP is reference category)
 > rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$sei.o, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0184 (SE = 0.0081)
+tau (square root of estimated tau^2 value):             0.1356
+I^2 (residual heterogeneity / unaccounted variability): 41.50%
+H^2 (unaccounted variability / sampling variability):   1.71
+R^2 (amount of heterogeneity accounted for):            17.57%
+
+Test for Residual Heterogeneity: 
+QE(df = 68) = 119.3743, p-val = 0.0001
+
+Test of Moderators (coefficient(s) 2,3,4,5): 
+QM(df = 4) = 6.2896, p-val = 0.1785
+
+Model Results:
+
+               estimate      se     zval    pval    ci.lb   ci.ub   
+intrcpt          0.1517  0.0709   2.1415  0.0322   0.0129  0.2906  *
+final$d.JEP     -0.0728  0.0750  -0.9701  0.3320  -0.2198  0.0743   
+final$d.PSCog   -0.0813  0.1018  -0.7986  0.4245  -0.2809  0.1182   
+final$d.PSSoc   -0.1038  0.0665  -1.5615  0.1184  -0.2340  0.0265   
+final$sei.o      0.9288  0.4940   1.8803  0.0601  -0.0393  1.8970  .
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with a. PUBLISHING JOURNAL AND SUBDISCIPLINE and sei.o as moderators (JPSP is reference category) with "ML" as estimator for tau2 (model comparison)
 > res1 <- rma(yi = final$yi, sei = final$sei, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc + final$sei.o, method = "ML")
-Error: could not find function "rma"
 > res1
-Error: object 'res1' not found
+
+Mixed-Effects Model (k = 73; tau^2 estimator: ML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0156 (SE = 0.0071)
+tau (square root of estimated tau^2 value):             0.1248
+I^2 (residual heterogeneity / unaccounted variability): 37.54%
+H^2 (unaccounted variability / sampling variability):   1.60
+R^2 (amount of heterogeneity accounted for):            28.09%
+
+Test for Residual Heterogeneity: 
+QE(df = 68) = 119.3743, p-val = 0.0001
+
+Test of Moderators (coefficient(s) 2,3,4,5): 
+QM(df = 4) = 7.0751, p-val = 0.1320
+
+Model Results:
+
+               estimate      se     zval    pval    ci.lb   ci.ub   
+intrcpt          0.1480  0.0683   2.1684  0.0301   0.0142  0.2818  *
+final$d.JEP     -0.0747  0.0725  -1.0303  0.3028  -0.2169  0.0674   
+final$d.PSCog   -0.0857  0.0988  -0.8676  0.3856  -0.2793  0.1079   
+final$d.PSSoc   -0.1051  0.0638  -1.6472  0.0995  -0.2301  0.0199  .
+final$sei.o      0.9605  0.4804   1.9993  0.0456   0.0189  1.9021  *
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Comparing models with and without discipline
 > anova(res0, res1)
-Error in anova(res0, res1) : object 'res0' not found
+        df     AIC     BIC    AICc  logLik    LRT   pval       QE  tau^2    R^2
+Full     6 10.6050 24.3477 11.8777  0.6975               119.3743 0.0156       
+Reduced  3  7.4115 14.2828  7.7593 -0.7057 2.8065 0.4224 131.4557 0.0182 14.56%
 > 
 > ### Meta-analysis with b. IMPORTANCE OF THE EFFECT as moderator
 > rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.impo, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0230 (SE = 0.0089)
+tau (square root of estimated tau^2 value):             0.1515
+I^2 (residual heterogeneity / unaccounted variability): 47.98%
+H^2 (unaccounted variability / sampling variability):   1.92
+R^2 (amount of heterogeneity accounted for):            0.00%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 149.1662, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 0.0884, p-val = 0.7662
+
+Model Results:
+
+               estimate      se     zval    pval    ci.lb   ci.ub     
+intrcpt          0.2151  0.0287   7.5038  <.0001   0.1589  0.2713  ***
+final$sc.impo   -0.0115  0.0386  -0.2974  0.7662  -0.0871  0.0642     
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with c. SURPRISING EFFECT as moderator
 > rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.surp, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0228 (SE = 0.0089)
+tau (square root of estimated tau^2 value):             0.1511
+I^2 (residual heterogeneity / unaccounted variability): 48.06%
+H^2 (unaccounted variability / sampling variability):   1.93
+R^2 (amount of heterogeneity accounted for):            0.00%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 151.8851, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 0.1067, p-val = 0.7439
+
+Model Results:
+
+               estimate      se    zval    pval    ci.lb   ci.ub     
+intrcpt          0.2140  0.0285  7.5152  <.0001   0.1582  0.2698  ***
+final$sc.surp    0.0096  0.0295  0.3267  0.7439  -0.0482  0.0675     
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with d. EXPERIENCE AND EXPERTISE OF ORIGINAL TEAM as moderator
 > rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.expe1, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0231 (SE = 0.0090)
+tau (square root of estimated tau^2 value):             0.1520
+I^2 (residual heterogeneity / unaccounted variability): 48.25%
+H^2 (unaccounted variability / sampling variability):   1.93
+R^2 (amount of heterogeneity accounted for):            0.00%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 152.3915, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 0.0020, p-val = 0.9645
+
+Model Results:
+
+                estimate      se     zval    pval    ci.lb   ci.ub     
+intrcpt           0.2143  0.0286   7.5062  <.0001   0.1584  0.2703  ***
+final$sc.expe1   -0.0017  0.0389  -0.0445  0.9645  -0.0779  0.0745     
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with e. CHALLENGE OF CONDUCTING REPLICATION as moderator
 > rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.chal, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0227 (SE = 0.0089)
+tau (square root of estimated tau^2 value):             0.1507
+I^2 (residual heterogeneity / unaccounted variability): 48.09%
+H^2 (unaccounted variability / sampling variability):   1.93
+R^2 (amount of heterogeneity accounted for):            0.00%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 152.1097, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 0.5797, p-val = 0.4464
+
+Model Results:
+
+               estimate      se    zval    pval    ci.lb   ci.ub     
+intrcpt          0.2140  0.0284  7.5261  <.0001   0.1582  0.2697  ***
+final$sc.chal    0.0259  0.0340  0.7614  0.4464  -0.0407  0.0924     
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with f. EXPERIENCE AND EXPERTISE OF REPLICATION TEAM
 > rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.expe2, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0176 (SE = 0.0077)
+tau (square root of estimated tau^2 value):             0.1325
+I^2 (residual heterogeneity / unaccounted variability): 41.63%
+H^2 (unaccounted variability / sampling variability):   1.71
+R^2 (amount of heterogeneity accounted for):            21.33%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 130.5719, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 7.4760, p-val = 0.0063
+
+Model Results:
+
+                estimate      se    zval    pval   ci.lb   ci.ub     
+intrcpt           0.2114  0.0268  7.8949  <.0001  0.1589  0.2638  ***
+final$sc.expe2    0.1347  0.0493  2.7342  0.0063  0.0382  0.2313   **
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with g. SELF-ASSESSED QUALITY OF REPLICATION
 > rma(yi = final$yi, sei = final$sei, mods = ~ final$sc.self, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0220 (SE = 0.0087)
+tau (square root of estimated tau^2 value):             0.1485
+I^2 (residual heterogeneity / unaccounted variability): 47.14%
+H^2 (unaccounted variability / sampling variability):   1.89
+R^2 (amount of heterogeneity accounted for):            1.22%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 144.8736, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 0.4300, p-val = 0.5120
+
+Model Results:
+
+               estimate      se     zval    pval    ci.lb   ci.ub     
+intrcpt          0.2139  0.0282   7.5786  <.0001   0.1586  0.2693  ***
+final$sc.self   -0.0372  0.0568  -0.6557  0.5120  -0.1485  0.0741     
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > #########################################################################################
 > ### Meta-analyses of all original study effects, and of all replication study effects ###
@@ -1208,100 +1477,482 @@ Error: could not find function "rma"
 > 
 > ### Meta-analysis of null model
 > res <- rma(yi = final$fis.o, sei = final$sei.o, method = "REML")
-Error: could not find function "rma"
 > res
-Error: object 'res' not found
+
+Random-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of total heterogeneity): 0.0366 (SE = 0.0095)
+tau (square root of estimated tau^2 value):      0.1913
+I^2 (total heterogeneity / total variability):   73.30%
+H^2 (total variability / sampling variability):  3.74
+
+Test for Heterogeneity: 
+Q(df = 72) = 302.6662, p-val < .0001
+
+Model Results:
+
+estimate       se     zval     pval    ci.lb    ci.ub          
+  0.4222   0.0286  14.7389   <.0001   0.3661   0.4784      *** 
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > setEPS()
 > postscript("figures/figure s5.eps", width = 7, height = 8) # change file name
 > funnel(res, main = "Funnel plot based on original studies")
-Error: could not find function "funnel"
 > dev.off()
 null device 
           1 
 > 
 > ### Meta-analysis with se in original study as moderator
 > rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0235 (SE = 0.0071)
+tau (square root of estimated tau^2 value):             0.1531
+I^2 (residual heterogeneity / unaccounted variability): 63.50%
+H^2 (unaccounted variability / sampling variability):   2.74
+R^2 (amount of heterogeneity accounted for):            35.91%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 206.7817, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 32.0537, p-val < .0001
+
+Model Results:
+
+             estimate      se    zval    pval    ci.lb   ci.ub     
+intrcpt        0.1129  0.0582  1.9401  0.0524  -0.0012  0.2270    .
+final$sei.o    2.2398  0.3956  5.6616  <.0001   1.4644  3.0152  ***
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with se in original study as moderator with "ML" as estimator for tau2 (model comparison)
 > res0 <- rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o, method = "ML")
-Error: could not find function "rma"
 > res0
-Error: object 'res0' not found
+
+Mixed-Effects Model (k = 73; tau^2 estimator: ML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0226 (SE = 0.0068)
+tau (square root of estimated tau^2 value):             0.1503
+I^2 (residual heterogeneity / unaccounted variability): 62.64%
+H^2 (unaccounted variability / sampling variability):   2.68
+R^2 (amount of heterogeneity accounted for):            36.96%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 206.7817, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 32.5987, p-val < .0001
+
+Model Results:
+
+             estimate      se    zval    pval   ci.lb   ci.ub     
+intrcpt        0.1129  0.0575  1.9612  0.0499  0.0001  0.2256    *
+final$sei.o    2.2403  0.3924  5.7095  <.0001  1.4712  3.0093  ***
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with se in original study and dummy variables for journal and discipline (JPSP is reference category)
 > rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0227 (SE = 0.0071)
+tau (square root of estimated tau^2 value):             0.1507
+I^2 (residual heterogeneity / unaccounted variability): 61.86%
+H^2 (unaccounted variability / sampling variability):   2.62
+R^2 (amount of heterogeneity accounted for):            37.96%
+
+Test for Residual Heterogeneity: 
+QE(df = 68) = 198.0292, p-val < .0001
+
+Test of Moderators (coefficient(s) 2,3,4,5): 
+QM(df = 4) = 37.7504, p-val < .0001
+
+Model Results:
+
+               estimate      se    zval    pval    ci.lb   ci.ub     
+intrcpt          0.0622  0.0654  0.9512  0.3415  -0.0660  0.1904     
+final$sei.o      2.0024  0.4374  4.5779  <.0001   1.1451  2.8597  ***
+final$d.JEP      0.1363  0.0671  2.0320  0.0422   0.0048  0.2679    *
+final$d.PSCog    0.1197  0.0895  1.3370  0.1812  -0.0558  0.2952     
+final$d.PSSoc    0.1106  0.0627  1.7638  0.0778  -0.0123  0.2335    .
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with se in original study and dummy variables for journal and discipline (JPSP is reference category) with "ML" as estimator for tau2 (model comparison)
 > res1 <- rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "ML")
-Error: could not find function "rma"
 > res1
-Error: object 'res1' not found
+
+Mixed-Effects Model (k = 73; tau^2 estimator: ML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0205 (SE = 0.0064)
+tau (square root of estimated tau^2 value):             0.1433
+I^2 (residual heterogeneity / unaccounted variability): 59.46%
+H^2 (unaccounted variability / sampling variability):   2.47
+R^2 (amount of heterogeneity accounted for):            42.74%
+
+Test for Residual Heterogeneity: 
+QE(df = 68) = 198.0292, p-val < .0001
+
+Test of Moderators (coefficient(s) 2,3,4,5): 
+QM(df = 4) = 39.5118, p-val < .0001
+
+Model Results:
+
+               estimate      se    zval    pval    ci.lb   ci.ub     
+intrcpt          0.0618  0.0635  0.9744  0.3298  -0.0625  0.1862     
+final$sei.o      2.0094  0.4272  4.7035  <.0001   1.1721  2.8467  ***
+final$d.JEP      0.1352  0.0652  2.0752  0.0380   0.0075  0.2629    *
+final$d.PSCog    0.1180  0.0872  1.3537  0.1758  -0.0529  0.2889     
+final$d.PSSoc    0.1105  0.0607  1.8199  0.0688  -0.0085  0.2294    .
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Comparing models with and without discipline
 > anova(res0, res1)
-Error in anova(res0, res1) : object 'res0' not found
+        df      AIC      BIC     AICc  logLik    LRT   pval       QE  tau^2
+Full     6 -19.7099  -5.9671 -18.4372 15.8550               198.0292 0.0205
+Reduced  3 -20.3518 -13.4804 -20.0040 13.1759 5.3581 0.1474 206.7817 0.0226
+          R^2
+Full         
+Reduced 9.17%
 > 
 > ### Meta-analysis with dummy variables for journal and discipline (JPSP is reference category)
 > rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0322 (SE = 0.0089)
+tau (square root of estimated tau^2 value):             0.1793
+I^2 (residual heterogeneity / unaccounted variability): 69.86%
+H^2 (unaccounted variability / sampling variability):   3.32
+R^2 (amount of heterogeneity accounted for):            12.13%
+
+Test for Residual Heterogeneity: 
+QE(df = 69) = 270.0697, p-val < .0001
+
+Test of Moderators (coefficient(s) 2,3,4): 
+QM(df = 3) = 14.6988, p-val = 0.0021
+
+Model Results:
+
+               estimate      se    zval    pval    ci.lb   ci.ub     
+intrcpt          0.2904  0.0484  5.9961  <.0001   0.1955  0.3853  ***
+final$d.JEP      0.2278  0.0718  3.1726  0.0015   0.0871  0.3685   **
+final$d.PSCog    0.2838  0.0912  3.1118  0.0019   0.1050  0.4625   **
+final$d.PSSoc    0.1113  0.0706  1.5749  0.1153  -0.0272  0.2497     
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with se in original study, dummy variables for journal and discipline (JPSP is reference category), and its interactions as moderators
 > rma(yi = final$fis.o, sei = final$sei.o, mods = ~ final$sei.o + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$sei.o*final$d.JEP + final$sei.o*final$d.PSSoc, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0235 (SE = 0.0074)
+tau (square root of estimated tau^2 value):             0.1534
+I^2 (residual heterogeneity / unaccounted variability): 62.24%
+H^2 (unaccounted variability / sampling variability):   2.65
+R^2 (amount of heterogeneity accounted for):            35.65%
+
+Test for Residual Heterogeneity: 
+QE(df = 66) = 195.5739, p-val < .0001
+
+Test of Moderators (coefficient(s) 2,3,4,5,6,7): 
+QM(df = 6) = 37.3641, p-val < .0001
+
+Model Results:
+
+                           estimate      se     zval    pval    ci.lb   ci.ub
+intrcpt                      0.0617  0.0866   0.7130  0.4758  -0.1079  0.2314
+final$sei.o                  2.0055  0.6627   3.0261  0.0025   0.7066  3.3045
+final$d.JEP                  0.1034  0.1523   0.6791  0.4971  -0.1950  0.4018
+final$d.PSCog                0.1199  0.0980   1.2231  0.2213  -0.0722  0.3120
+final$d.PSSoc                0.1549  0.1471   1.0533  0.2922  -0.1334  0.4432
+final$sei.o:final$d.JEP      0.2134  0.9963   0.2142  0.8304  -1.7393  2.1660
+final$sei.o:final$d.PSSoc   -0.3939  1.1789  -0.3341  0.7383  -2.7045  1.9168
+                             
+intrcpt                      
+final$sei.o                **
+final$d.JEP                  
+final$d.PSCog                
+final$d.PSSoc                
+final$sei.o:final$d.JEP      
+final$sei.o:final$d.PSSoc    
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analyses based on only replication studies
 > ### Meta-analysis of null model
 > res <- rma(yi = final$fis.r, sei = final$sei.r, method = "REML")
-Error: could not find function "rma"
 > res
-Error: object 'res' not found
+
+Random-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of total heterogeneity): 0.0662 (SE = 0.0143)
+tau (square root of estimated tau^2 value):      0.2574
+I^2 (total heterogeneity / total variability):   90.08%
+H^2 (total variability / sampling variability):  10.08
+
+Test for Heterogeneity: 
+Q(df = 72) = 454.0039, p-val < .0001
+
+Model Results:
+
+estimate       se     zval     pval    ci.lb    ci.ub          
+  0.2003   0.0347   5.7723   <.0001   0.1323   0.2683      *** 
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > setEPS()
 > postscript("figures/figure s6.eps", width = 7, height = 8) # change file name
 > funnel(res, main = "Funnel plot based on replication studies")
-Error: could not find function "funnel"
 > dev.off()
 null device 
           1 
 > 
 > ### Meta-analysis with se in replication study as moderator
 > rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0538 (SE = 0.0121)
+tau (square root of estimated tau^2 value):             0.2321
+I^2 (residual heterogeneity / unaccounted variability): 87.10%
+H^2 (unaccounted variability / sampling variability):   7.75
+R^2 (amount of heterogeneity accounted for):            18.71%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 407.5719, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 12.0708, p-val = 0.0005
+
+Model Results:
+
+             estimate      se     zval    pval    ci.lb   ci.ub     
+intrcpt       -0.0104  0.0676  -0.1536  0.8780  -0.1428  0.1221     
+final$sei.r    1.6246  0.4676   3.4743  0.0005   0.7081  2.5411  ***
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with se in replication study as moderator with "ML" as estimator for tau2 (model comparison)
 > res0 <- rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r, method = "ML")
-Error: could not find function "rma"
 > res0
-Error: object 'res0' not found
+
+Mixed-Effects Model (k = 73; tau^2 estimator: ML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0517 (SE = 0.0116)
+tau (square root of estimated tau^2 value):             0.2274
+I^2 (residual heterogeneity / unaccounted variability): 86.64%
+H^2 (unaccounted variability / sampling variability):   7.48
+R^2 (amount of heterogeneity accounted for):            20.16%
+
+Test for Residual Heterogeneity: 
+QE(df = 71) = 407.5719, p-val < .0001
+
+Test of Moderators (coefficient(s) 2): 
+QM(df = 1) = 12.3953, p-val = 0.0004
+
+Model Results:
+
+             estimate      se     zval    pval    ci.lb   ci.ub     
+intrcpt       -0.0107  0.0665  -0.1609  0.8722  -0.1411  0.1197     
+final$sei.r    1.6269  0.4621   3.5207  0.0004   0.7212  2.5326  ***
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category)
 > rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0501 (SE = 0.0117)
+tau (square root of estimated tau^2 value):             0.2238
+I^2 (residual heterogeneity / unaccounted variability): 84.65%
+H^2 (unaccounted variability / sampling variability):   6.52
+R^2 (amount of heterogeneity accounted for):            24.38%
+
+Test for Residual Heterogeneity: 
+QE(df = 68) = 341.5945, p-val < .0001
+
+Test of Moderators (coefficient(s) 2,3,4,5): 
+QM(df = 4) = 18.9579, p-val = 0.0008
+
+Model Results:
+
+               estimate      se     zval    pval    ci.lb   ci.ub   
+intrcpt         -0.0824  0.0755  -1.0926  0.2746  -0.2303  0.0655   
+final$sei.r      1.2465  0.5433   2.2941  0.0218   0.1816  2.3114  *
+final$d.JEP      0.1671  0.0879   1.9005  0.0574  -0.0052  0.3394  .
+final$d.PSCog    0.1867  0.1153   1.6201  0.1052  -0.0392  0.4127   
+final$d.PSSoc    0.1798  0.0808   2.2237  0.0262   0.0213  0.3382  *
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category) with "ML" as estimator for tau2 (model comparison)
 > res1 <- rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "ML")
-Error: could not find function "rma"
 > res1
-Error: object 'res1' not found
+
+Mixed-Effects Model (k = 73; tau^2 estimator: ML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0447 (SE = 0.0103)
+tau (square root of estimated tau^2 value):             0.2114
+I^2 (residual heterogeneity / unaccounted variability): 83.11%
+H^2 (unaccounted variability / sampling variability):   5.92
+R^2 (amount of heterogeneity accounted for):            31.04%
+
+Test for Residual Heterogeneity: 
+QE(df = 68) = 341.5945, p-val < .0001
+
+Test of Moderators (coefficient(s) 2,3,4,5): 
+QM(df = 4) = 20.4579, p-val = 0.0004
+
+Model Results:
+
+               estimate      se     zval    pval    ci.lb   ci.ub   
+intrcpt         -0.0830  0.0722  -1.1499  0.2502  -0.2245  0.0585   
+final$sei.r      1.2558  0.5245   2.3943  0.0167   0.2278  2.2838  *
+final$d.JEP      0.1653  0.0842   1.9624  0.0497   0.0002  0.3304  *
+final$d.PSCog    0.1858  0.1106   1.6790  0.0932  -0.0311  0.4026  .
+final$d.PSSoc    0.1795  0.0771   2.3270  0.0200   0.0283  0.3306  *
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Comparing models with and without discipline
 > anova(res0, res1)
-Error in anova(res0, res1) : object 'res0' not found
+        df     AIC     BIC    AICc   logLik    LRT   pval       QE  tau^2
+Full     6 33.1391 46.8818 34.4118 -10.5695               341.5945 0.0447
+Reduced  3 33.6273 40.4987 33.9752 -13.8137 6.4883 0.0901 407.5719 0.0517
+           R^2
+Full          
+Reduced 13.63%
 > 
 > ### Meta-analysis with se in replication study and dummy variables for journal and discipline (JPSP is reference category)
 > rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0501 (SE = 0.0117)
+tau (square root of estimated tau^2 value):             0.2238
+I^2 (residual heterogeneity / unaccounted variability): 84.65%
+H^2 (unaccounted variability / sampling variability):   6.52
+R^2 (amount of heterogeneity accounted for):            24.38%
+
+Test for Residual Heterogeneity: 
+QE(df = 68) = 341.5945, p-val < .0001
+
+Test of Moderators (coefficient(s) 2,3,4,5): 
+QM(df = 4) = 18.9579, p-val = 0.0008
+
+Model Results:
+
+               estimate      se     zval    pval    ci.lb   ci.ub   
+intrcpt         -0.0824  0.0755  -1.0926  0.2746  -0.2303  0.0655   
+final$sei.r      1.2465  0.5433   2.2941  0.0218   0.1816  2.3114  *
+final$d.JEP      0.1671  0.0879   1.9005  0.0574  -0.0052  0.3394  .
+final$d.PSCog    0.1867  0.1153   1.6201  0.1052  -0.0392  0.4127   
+final$d.PSSoc    0.1798  0.0808   2.2237  0.0262   0.0213  0.3382  *
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with dummy variables for journal and discipline (JPSP is reference category)
 > rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$d.JEP + final$d.PSCog + final$d.PSSoc, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0557 (SE = 0.0127)
+tau (square root of estimated tau^2 value):             0.2360
+I^2 (residual heterogeneity / unaccounted variability): 86.69%
+H^2 (unaccounted variability / sampling variability):   7.51
+R^2 (amount of heterogeneity accounted for):            15.95%
+
+Test for Residual Heterogeneity: 
+QE(df = 69) = 377.6040, p-val < .0001
+
+Test of Moderators (coefficient(s) 2,3,4): 
+QM(df = 3) = 12.7823, p-val = 0.0051
+
+Model Results:
+
+               estimate      se    zval    pval    ci.lb   ci.ub    
+intrcpt          0.0362  0.0576  0.6279  0.5301  -0.0767  0.1490    
+final$d.JEP      0.2462  0.0845  2.9130  0.0036   0.0806  0.4119  **
+final$d.PSCog    0.3116  0.1058  2.9450  0.0032   0.1042  0.5189  **
+final$d.PSSoc    0.1880  0.0844  2.2261  0.0260   0.0225  0.3534   *
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ### Meta-analysis with se in replication study, dummy variables for journal and discipline (JPSP is reference category), and its interactions as moderators
 > rma(yi = final$fis.r, sei = final$sei.r, mods = ~ final$sei.r + final$d.JEP + final$d.PSCog + final$d.PSSoc + final$sei.r*final$d.JEP + final$sei.r*final$d.PSSoc, method = "REML")
-Error: could not find function "rma"
+
+Mixed-Effects Model (k = 73; tau^2 estimator: REML)
+
+tau^2 (estimated amount of residual heterogeneity):     0.0515 (SE = 0.0122)
+tau (square root of estimated tau^2 value):             0.2268
+I^2 (residual heterogeneity / unaccounted variability): 83.65%
+H^2 (unaccounted variability / sampling variability):   6.11
+R^2 (amount of heterogeneity accounted for):            22.32%
+
+Test for Residual Heterogeneity: 
+QE(df = 66) = 338.3602, p-val < .0001
+
+Test of Moderators (coefficient(s) 2,3,4,5,6,7): 
+QM(df = 6) = 19.6952, p-val = 0.0031
+
+Model Results:
+
+                           estimate      se     zval    pval    ci.lb   ci.ub
+intrcpt                     -0.0378  0.0932  -0.4052  0.6853  -0.2204  0.1449
+final$sei.r                  0.7756  0.7858   0.9871  0.3236  -0.7644  2.3157
+final$d.JEP                 -0.0107  0.1930  -0.0555  0.9557  -0.3891  0.3676
+final$d.PSCog                0.2334  0.1291   1.8081  0.0706  -0.0196  0.4864
+final$d.PSSoc                0.1471  0.1627   0.9037  0.3661  -0.1719  0.4661
+final$sei.r:final$d.JEP      1.3187  1.2754   1.0339  0.3012  -1.1811  3.8184
+final$sei.r:final$d.PSSoc    0.3523  1.4163   0.2488  0.8035  -2.4235  3.1282
+                            
+intrcpt                     
+final$sei.r                 
+final$d.JEP                 
+final$d.PSCog              .
+final$d.PSSoc               
+final$sei.r:final$d.JEP     
+final$sei.r:final$d.PSSoc   
+
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
+
 > 
 > ##############################
 > ### Meta-analyses per pair ###
@@ -1321,21 +1972,162 @@ Error: could not find function "rma"
 +   if(tmp$pval < 0.05) { in.ci[i] <- 1
 +   } else { in.ci[i] <- 0 }
 + }
-Error: could not find function "rma"
 > 
 > sum(in.ci)/length(in.ci) # Proportion of times the null hypothesis of no effect is rejected
-[1] NaN
+[1] 0.6986301
 > 
 > ### Create data frame
 > tab <- data.frame(ID = final$ID, fis.o = final$fis.o, sei.o = final$sei.o, pval.o = final$pval.o, fis.r = final$fis.r, sei.r = final$sei.r, 
 +                   pval.r = final$pval.r, diff = final$yi, es.meta = es.meta, se.meta = se.meta, ci.lb.meta = ci.lb.meta, ci.ub.meta = ci.ub.meta, pval.meta = pval.meta)
-Error in data.frame(ID = final$ID, fis.o = final$fis.o, sei.o = final$sei.o,  : 
-  arguments imply differing number of rows: 73, 0
 > round(tab, 3)
-   
-     0  1
-  0  2  1
-  1 62 35
+    ID fis.o sei.o pval.o  fis.r sei.r pval.r   diff es.meta se.meta ci.lb.meta
+1    1 0.685 0.289  0.009  0.149 0.192  0.219  0.535   0.314   0.160      0.000
+2    2 0.711 0.213  0.000  0.234 0.213  0.136  0.477   0.472   0.151      0.177
+3    3 0.454 0.209  0.015 -0.219 0.183  0.884  0.672   0.073   0.137     -0.196
+4    4 0.233 0.073  0.001 -0.006 0.061  0.540  0.239   0.093   0.047      0.001
+5    5 0.499 0.183  0.003  0.136 0.147  0.179  0.363   0.279   0.115      0.054
+6    6 0.685 0.213  0.001  0.419 0.183  0.011  0.267   0.532   0.139      0.260
+7    7 0.898 0.101  0.000  0.132 0.277  0.317  0.765   0.808   0.095      0.622
+8    8 0.635 0.167  0.000 -0.111 0.183  0.729  0.746   0.296   0.123      0.055
+9   10 0.865 0.192  0.000  1.047 0.189  0.000 -0.183   0.958   0.135      0.693
+10  11 0.815 0.224  0.000  0.506 0.189  0.004  0.309   0.634   0.144      0.351
+11  15 0.198 0.104  0.028  0.252 0.065  0.000 -0.054   0.237   0.055      0.129
+12  19 0.634 0.183  0.000  0.426 0.236  0.035  0.208   0.556   0.144      0.273
+13  20 0.228 0.104  0.014  0.019 0.098  0.421  0.209   0.117   0.071     -0.022
+14  24 0.381 0.081  0.000  0.292 0.146  0.023  0.089   0.360   0.071      0.221
+15  26 0.162 0.104  0.059  0.145 0.105  0.083  0.017   0.154   0.074      0.009
+16  27 0.398 0.183  0.015  0.400 0.120  0.000 -0.002   0.399   0.101      0.202
+17  28 0.356 0.183  0.026  0.104 0.106  0.164  0.252   0.167   0.092     -0.012
+18  29 0.946 0.408  0.010  0.875 0.277  0.001  0.071   0.897   0.229      0.448
+19  32 0.730 0.169  0.000  0.524 0.167  0.001  0.207   0.626   0.119      0.393
+20  33 0.572 0.162  0.000  0.327 0.162  0.022  0.245   0.450   0.115      0.225
+21  36 0.895 0.229  0.000  0.832 0.229  0.000  0.063   0.864   0.162      0.546
+22  37 0.620 0.316  0.025  0.365 0.250  0.072  0.255   0.463   0.196      0.079
+23  44 0.368 0.123  0.001  0.151 0.076  0.023  0.217   0.211   0.064      0.084
+24  48 0.229 0.105  0.014 -0.052 0.072  0.765  0.282   0.039   0.060     -0.078
+25  49 0.398 0.174  0.011 -0.030 0.108  0.611  0.429   0.089   0.092     -0.091
+26  52 0.209 0.088  0.009  0.094 0.095  0.161  0.114   0.156   0.065      0.030
+27  53 0.397 0.183  0.015  0.077 0.118  0.257  0.320   0.171   0.099     -0.023
+28  56 0.399 0.101  0.000 -0.042 0.164  0.601  0.441   0.278   0.086      0.109
+29  58 0.169 0.074  0.012  0.037 0.060  0.270  0.132   0.089   0.047     -0.003
+30  61 0.223 0.097  0.010 -0.005 0.068  0.528  0.228   0.070   0.055     -0.038
+31  63 0.281 0.122  0.011  0.074 0.083  0.187  0.207   0.140   0.069      0.005
+32  65 0.462 0.158  0.002  0.012 0.088  0.447  0.450   0.118   0.077     -0.033
+33  68 0.188 0.093  0.022  0.003 0.067  0.482  0.185   0.066   0.055     -0.041
+34  71 0.226 0.052  0.000  0.073 0.076  0.166  0.152   0.177   0.043      0.093
+35  72 0.211 0.062  0.000  0.045 0.064  0.242  0.166   0.129   0.045      0.042
+36  81 0.275 0.106  0.005 -0.102 0.086  0.883  0.377   0.047   0.067     -0.084
+37  82 0.310 0.158  0.025  0.277 0.158  0.040  0.033   0.293   0.112      0.074
+38  87 0.418 0.141  0.002  0.013 0.147  0.465  0.405   0.224   0.102      0.024
+39  89 0.141 0.200  0.241  0.029 0.200  0.442  0.111   0.085   0.141     -0.192
+40  93 0.329 0.110  0.001 -0.136 0.122  0.867  0.465   0.120   0.082     -0.041
+41  94 0.359 0.200  0.036  0.298 0.131  0.012  0.061   0.317   0.110      0.101
+42  97 0.398 0.118  0.000 -0.037 0.026  0.923  0.435  -0.017   0.025     -0.067
+43 106 0.402 0.174  0.010 -0.227 0.151  0.934  0.629   0.043   0.114     -0.181
+44 107 0.226 0.110  0.020  0.105 0.080  0.095  0.121   0.147   0.065      0.020
+45 110 0.625 0.060  0.000  0.091 0.084  0.139  0.533   0.445   0.049      0.349
+46 111 0.347 0.136  0.005  0.230 0.093  0.007  0.117   0.267   0.077      0.116
+47 112 0.869 0.354  0.007  0.974 0.354  0.003 -0.104   0.922   0.250      0.432
+48 113 0.831 0.090  0.000  1.005 0.076  0.000 -0.173   0.933   0.058      0.819
+49 114 0.649 0.186  0.000  0.780 0.186  0.000 -0.131   0.714   0.131      0.457
+50 115 0.552 0.183  0.001 -0.485 0.378  0.900  1.037   0.356   0.164      0.033
+51 116 0.296 0.076  0.000  0.335 0.085  0.000 -0.039   0.313   0.057      0.202
+52 118 0.217 0.095  0.011 -0.049 0.080  0.730  0.266   0.061   0.061     -0.059
+53 120 0.400 0.189  0.017  0.255 0.158  0.053  0.145   0.315   0.121      0.077
+54 122 0.912 0.408  0.013  1.608 0.258  0.000 -0.697   1.409   0.218      0.982
+55 124 0.405 0.174  0.010 -0.034 0.122  0.611  0.439   0.111   0.100     -0.085
+56 127 0.839 0.192  0.000  0.586 0.204  0.002  0.253   0.720   0.140      0.446
+57 129 0.390 0.200  0.025  0.018 0.126  0.444  0.373   0.124   0.107     -0.085
+58 133 0.479 0.213  0.012  0.452 0.167  0.003  0.027   0.462   0.131      0.205
+59 134 0.213 0.094  0.011  0.550 0.066  0.000 -0.336   0.439   0.054      0.334
+60 135 0.005 0.042  0.456  0.106 0.017  0.000 -0.102   0.092   0.016      0.062
+61 136 0.547 0.192  0.002  0.103 0.135  0.223  0.444   0.249   0.110      0.033
+62 145 1.017 0.115  0.000  0.780 0.169  0.000  0.237   0.942   0.095      0.755
+63 146 0.775 0.277  0.003  0.545 0.316  0.042  0.230   0.675   0.209      0.267
+64 148 0.191 0.072  0.004 -0.030 0.062  0.686  0.221   0.064   0.047     -0.028
+65 149 0.191 0.072  0.004  0.018 0.057  0.373  0.173   0.084   0.044     -0.003
+66 150 0.913 0.289  0.001  0.211 0.243  0.193  0.702   0.501   0.186      0.137
+67 151 0.424 0.158  0.004  0.003 0.090  0.487  0.421   0.106   0.078     -0.047
+68 153 1.292 0.408  0.001  0.121 0.408  0.384  1.171   0.706   0.289      0.140
+69 154 0.460 0.122  0.000  0.110 0.277  0.345  0.349   0.403   0.112      0.184
+70 155 0.321 0.141  0.012 -0.034 0.120  0.611  0.355   0.115   0.092     -0.065
+71 158 0.394 0.164  0.008  0.437 0.104  0.000 -0.043   0.425   0.088      0.252
+72 161 0.527 0.152  0.000  0.180 0.152  0.119  0.348   0.354   0.108      0.142
+73 167 0.686 0.250  0.003  0.260 0.224  0.123  0.426   0.449   0.167      0.122
+   ci.ub.meta pval.meta
+1       0.628     0.050
+2       0.768     0.002
+3       0.342     0.594
+4       0.185     0.047
+5       0.504     0.015
+6       0.803     0.000
+7       0.994     0.000
+8       0.537     0.016
+9       1.222     0.000
+10      0.917     0.000
+11      0.344     0.000
+12      0.839     0.000
+13      0.257     0.099
+14      0.499     0.000
+15      0.298     0.037
+16      0.596     0.000
+17      0.347     0.068
+18      1.347     0.000
+19      0.858     0.000
+20      0.674     0.000
+21      1.182     0.000
+22      0.848     0.018
+23      0.337     0.001
+24      0.155     0.517
+25      0.270     0.332
+26      0.283     0.015
+27      0.365     0.084
+28      0.447     0.001
+29      0.181     0.057
+30      0.179     0.205
+31      0.275     0.042
+32      0.268     0.125
+33      0.173     0.224
+34      0.261     0.000
+35      0.217     0.004
+36      0.178     0.480
+37      0.512     0.009
+38      0.424     0.028
+39      0.362     0.547
+40      0.280     0.144
+41      0.532     0.004
+42      0.033     0.506
+43      0.266     0.707
+44      0.274     0.023
+45      0.541     0.000
+46      0.418     0.001
+47      1.412     0.000
+48      1.047     0.000
+49      0.972     0.000
+50      0.678     0.031
+51      0.425     0.000
+52      0.181     0.322
+53      0.553     0.009
+54      1.837     0.000
+55      0.307     0.268
+56      0.995     0.000
+57      0.333     0.246
+58      0.720     0.000
+59      0.544     0.000
+60      0.123     0.000
+61      0.465     0.024
+62      1.129     0.000
+63      1.084     0.001
+64      0.157     0.171
+65      0.171     0.058
+66      0.865     0.007
+67      0.260     0.176
+68      1.272     0.014
+69      0.622     0.000
+70      0.295     0.210
+71      0.597     0.000
+72      0.565     0.001
+73      0.776     0.007
 > 
 > ### Check how often effect size original study is within CI of meta-analysis
 > in.ci.meta <- numeric()
@@ -1347,11 +2139,9 @@ Error in data.frame(ID = final$ID, fis.o = final$fis.o, sei.o = final$sei.o,  :
 +   } else { in.ci.meta[i] <- FALSE }
 +   
 + }
-Error in if (final$fis.o[i] > ci.lb.meta[i] & final$fis.o[i] < ci.ub.meta[i]) { : 
-  missing value where TRUE/FALSE needed
 > 
 > sum(in.ci.meta)/length(in.ci.meta) # Proportion of times the original study is within the CI of meta-analysis
-[1] NaN
+[1] 0.5753425
 > 
 > ######################################################################################
 > ### Predicting how often effect size of original study is within CI of replication ###
@@ -1408,21 +2198,21 @@ Error in if (final$fis.o[i] > ci.lb.meta[i] & final$fis.o[i] < ci.ub.meta[i]) { 
 > ### Create table with correlations
 > rcorr(mat, type = "spearman")
              fis.o fis.r  diff es.meta importance surprising experience.O
-fis.o         1.00  0.51  0.28      NA      -0.05      -0.09        -0.08
-fis.r         0.51  1.00 -0.59      NA      -0.13      -0.16        -0.08
-diff          0.28 -0.59  1.00      NA       0.04       0.10        -0.03
-es.meta         NA    NA    NA       1         NA         NA           NA
-importance   -0.05 -0.13  0.04      NA       1.00       0.35         0.34
-surprising   -0.09 -0.16  0.10      NA       0.35       1.00         0.07
-experience.O -0.08 -0.08 -0.03      NA       0.34       0.07         1.00
-challenge    -0.19 -0.25  0.09      NA       0.17       0.15         0.11
-experience.R  0.16  0.04  0.13      NA      -0.01       0.10        -0.11
-quality      -0.08 -0.03  0.02      NA       0.17       0.04         0.24
+fis.o         1.00  0.51  0.28    0.79      -0.05      -0.09        -0.08
+fis.r         0.51  1.00 -0.59    0.85      -0.13      -0.16        -0.08
+diff          0.28 -0.59  1.00   -0.22       0.04       0.10        -0.03
+es.meta       0.79  0.85 -0.22    1.00      -0.20      -0.18        -0.06
+importance   -0.05 -0.13  0.04   -0.20       1.00       0.35         0.34
+surprising   -0.09 -0.16  0.10   -0.18       0.35       1.00         0.07
+experience.O -0.08 -0.08 -0.03   -0.06       0.34       0.07         1.00
+challenge    -0.19 -0.25  0.09   -0.30       0.17       0.15         0.11
+experience.R  0.16  0.04  0.13    0.02      -0.01       0.10        -0.11
+quality      -0.08 -0.03  0.02    0.05       0.17       0.04         0.24
              challenge experience.R quality
 fis.o            -0.19         0.16   -0.08
 fis.r            -0.25         0.04   -0.03
 diff              0.09         0.13    0.02
-es.meta             NA           NA      NA
+es.meta          -0.30         0.02    0.05
 importance        0.17        -0.01    0.17
 surprising        0.15         0.10    0.04
 experience.O      0.11        -0.11    0.24
@@ -1432,21 +2222,21 @@ quality           0.12        -0.09    1.00
 
 n
              fis.o fis.r diff es.meta importance surprising experience.O
-fis.o           97    97   97       0         97         97           97
-fis.r           97    97   97       0         97         97           97
-diff            97    97   97       0         97         97           97
-es.meta          0     0    0       0          0          0            0
-importance      97    97   97       0         97         97           97
-surprising      97    97   97       0         97         97           97
-experience.O    97    97   97       0         97         97           97
-challenge       97    97   97       0         97         97           97
-experience.R    96    96   96       0         96         96           96
-quality         97    97   97       0         97         97           97
+fis.o           97    97   97      73         97         97           97
+fis.r           97    97   97      73         97         97           97
+diff            97    97   97      73         97         97           97
+es.meta         73    73   73      73         73         73           73
+importance      97    97   97      73         97         97           97
+surprising      97    97   97      73         97         97           97
+experience.O    97    97   97      73         97         97           97
+challenge       97    97   97      73         97         97           97
+experience.R    96    96   96      73         96         96           96
+quality         97    97   97      73         97         97           97
              challenge experience.R quality
 fis.o               97           96      97
 fis.r               97           96      97
 diff                97           96      97
-es.meta              0            0       0
+es.meta             73           73      73
 importance          97           96      97
 surprising          97           96      97
 experience.O        97           96      97
@@ -1456,29 +2246,27 @@ quality             97           96      97
 
 P
              fis.o  fis.r  diff   es.meta importance surprising experience.O
-fis.o               0.0000 0.0056         0.6049     0.3707     0.4256      
-fis.r        0.0000        0.0000         0.2151     0.1192     0.4117      
-diff         0.0056 0.0000                0.7124     0.3213     0.7515      
-es.meta                                                                     
-importance   0.6049 0.2151 0.7124                    0.0004     0.0006      
-surprising   0.3707 0.1192 0.3213         0.0004                0.5036      
-experience.O 0.4256 0.4117 0.7515         0.0006     0.5036                 
-challenge    0.0600 0.0145 0.4061         0.0924     0.1344     0.2935      
-experience.R 0.1314 0.7323 0.1955         0.9472     0.3389     0.2763      
-quality      0.4232 0.7711 0.8691         0.1002     0.6841     0.0188      
+fis.o               0.0000 0.0056 0.0000  0.6049     0.3707     0.4256      
+fis.r        0.0000        0.0000 0.0000  0.2151     0.1192     0.4117      
+diff         0.0056 0.0000        0.0633  0.7124     0.3213     0.7515      
+es.meta      0.0000 0.0000 0.0633         0.0825     0.1247     0.6201      
+importance   0.6049 0.2151 0.7124 0.0825             0.0004     0.0006      
+surprising   0.3707 0.1192 0.3213 0.1247  0.0004                0.5036      
+experience.O 0.4256 0.4117 0.7515 0.6201  0.0006     0.5036                 
+challenge    0.0600 0.0145 0.4061 0.0096  0.0924     0.1344     0.2935      
+experience.R 0.1314 0.7323 0.1955 0.8887  0.9472     0.3389     0.2763      
+quality      0.4232 0.7711 0.8691 0.6474  0.1002     0.6841     0.0188      
              challenge experience.R quality
 fis.o        0.0600    0.1314       0.4232 
 fis.r        0.0145    0.7323       0.7711 
 diff         0.4061    0.1955       0.8691 
-es.meta                                    
+es.meta      0.0096    0.8887       0.6474 
 importance   0.0924    0.9472       0.1002 
 surprising   0.1344    0.3389       0.6841 
 experience.O 0.2935    0.2763       0.0188 
 challenge              0.5685       0.2607 
 experience.R 0.5685                 0.4007 
 quality      0.2607    0.4007              
-Warning message:
-In sqrt(npair - 2) : NaNs produced
 > 
 > ###########
 > # TABLE 1 #
@@ -1658,21 +2446,19 @@ Self-assessed quality of replication
 > 
 > round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
                              p-value                 Original Effect size 
-                                  NA                                   NA 
+                              -0.468                                0.793 
                 Original sample size                 Importance of effect 
-                                  NA                                   NA 
+                              -0.502                               -0.205 
                    Surprising effect   Experience and expertise of team O 
-                                  NA                                   NA 
+                              -0.181                               -0.059 
                  Replication p-value              Replication Effect size 
-                                  NA                                   NA 
+                              -0.614                                0.850 
                                Power              Replication Sample size 
-                                  NA                                   NA 
+                               0.142                               -0.692 
  Challenge of conducting replication   Experience and expertise of team R 
-                                  NA                                   NA 
+                              -0.301                                0.017 
 Self-assessed quality of replication 
-                                  NA 
-Warning message:
-In sqrt(npair - 2) : NaNs produced
+                               0.054 
 > 
 > ### "original effect size within replication 95% CI"
 > ### How often is original study within CI of replication
@@ -1767,19 +2553,17 @@ Self-assessed quality of replication
 > 
 > rcorr(sub, type = "spearman")$r # Create table with correlations
                           rep.dir Effect Size Difference Meta-analytic estimate
-rep.dir                 1.0000000             -0.6189402                     NA
-Effect Size Difference -0.6189402              1.0000000                     NA
-Meta-analytic estimate         NA                     NA                      1
-Original in CI          0.5438291             -0.4942272                     NA
-Did it replicate?       0.9560222             -0.5768331                     NA
+rep.dir                 1.0000000             -0.6189402              0.5923369
+Effect Size Difference -0.6189402              1.0000000             -0.2184993
+Meta-analytic estimate  0.5923369             -0.2184993              1.0000000
+Original in CI          0.5438291             -0.4942272              0.5153215
+Did it replicate?       0.9560222             -0.5768331              0.5655839
                        Original in CI Did it replicate?
 rep.dir                     0.5438291         0.9560222
 Effect Size Difference     -0.4942272        -0.5768331
-Meta-analytic estimate             NA                NA
+Meta-analytic estimate      0.5153215         0.5655839
 Original in CI              1.0000000         0.6005354
 Did it replicate?           0.6005354         1.0000000
-Warning message:
-In sqrt(npair - 2) : NaNs produced
 > 
 > ##########################
 > ##### TABLE S4 BRIAN #####
@@ -1850,14 +2634,12 @@ Original.effect.size      Original.pvalue Original.sample.size
               0.3174 
 > 
 > ### Variables in the columns
-> rows <- cbind(MASTER$T_r..O., MASTER$T_pval_USE..O., MASTER$T_N..O., MASTER$Institution.prestige..1st.author..O., MASTER$Institution.prestige..senior.author..O.,
+> rows <- cbind(MASTER$T_r..O., MASTER$T_pval_USE..O., MASTER$T_N_O_for_tables, MASTER$Institution.prestige..1st.author..O., MASTER$Institution.prestige..senior.author..O.,
 +               MASTER$Citation.Count..1st.author..O., MASTER$Citation.count..senior.author..O., MASTER$Citation.count..paper..O., MASTER$Internal.conceptual.replications..O.,
 +               MASTER$Internal.direct.replications..O., as.numeric(fac.expe), as.numeric(fac.oppo.expe), as.numeric(fac.oppo.dili), 
-+               as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.], as.numeric(levels(MASTER$Exciting.result..O.))[MASTER$Exciting.result..O.], MASTER$T_pval_USE..R.)
-Warning messages:
-1: In cbind(MASTER$T_r..O., MASTER$T_pval_USE..O., MASTER$T_N..O.,  :
-  NAs introduced by coercion
-2: In cbind(MASTER$T_r..O., MASTER$T_pval_USE..O., MASTER$T_N..O.,  :
++               as.numeric(levels(MASTER$Surprising.result..O.))[MASTER$Surprising.result..O.], df$sc.impo, MASTER$T_pval_USE..R.)
+Warning message:
+In cbind(MASTER$T_r..O., MASTER$T_pval_USE..O., MASTER$T_N_O_for_tables,  :
   NAs introduced by coercion
 > 
 > colnames(rows) <- c("Original.effect.size", "Original.pvalue", "Original.sample.size", "Inst.1st.author", "Inst.sen.author", "Cit.1st.author", "Cit.sen.author",
@@ -1872,7 +2654,7 @@ Warning messages:
 > 
 > round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 Original.effect.size      Original.pvalue Original.sample.size 
-               0.304               -0.327               -0.187 
+               0.304               -0.327               -0.150 
      Inst.1st.author      Inst.sen.author       Cit.1st.author 
               -0.026               -0.057                0.117 
       Cit.sen.author           Cit.impact          concep.repl 
@@ -1880,7 +2662,7 @@ Original.effect.size      Original.pvalue Original.sample.size
             dir.repl             expe.req      oppo.expec.bias 
                0.061               -0.114               -0.214 
            oppo.dili             surp.res             exci.res 
-              -0.194               -0.244               -0.104 
+              -0.194               -0.244               -0.105 
 > 
 > ### "Effect size difference" (Fisher z)
 > mat <- cbind(es.dif, rows)
@@ -1891,7 +2673,7 @@ Original.effect.size      Original.pvalue Original.sample.size
 > 
 > round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 Original.effect.size      Original.pvalue Original.sample.size 
-               0.279               -0.057               -0.090 
+               0.279               -0.057               -0.194 
      Inst.1st.author      Inst.sen.author       Cit.1st.author 
                0.012               -0.062               -0.111 
       Cit.sen.author           Cit.impact          concep.repl 
@@ -1899,7 +2681,7 @@ Original.effect.size      Original.pvalue Original.sample.size
             dir.repl             expe.req      oppo.expec.bias 
                0.023                0.042                0.117 
            oppo.dili             surp.res             exci.res 
-               0.086                0.102                0.103 
+               0.086                0.102                0.038 
 > 
 > ### "Meta-analytic estimate" (Fisher z)
 > mat <- cbind(es.meta.all, rows)
@@ -1910,17 +2692,15 @@ Original.effect.size      Original.pvalue Original.sample.size
 > 
 > round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 Original.effect.size      Original.pvalue Original.sample.size 
-                  NA                   NA                   NA 
+               0.793               -0.468               -0.502 
      Inst.1st.author      Inst.sen.author       Cit.1st.author 
-                  NA                   NA                   NA 
+              -0.059                0.019                0.090 
       Cit.sen.author           Cit.impact          concep.repl 
-                  NA                   NA                   NA 
+              -0.189               -0.172               -0.185 
             dir.repl             expe.req      oppo.expec.bias 
-                  NA                   NA                   NA 
+               0.071               -0.054               -0.355 
            oppo.dili             surp.res             exci.res 
-                  NA                   NA                   NA 
-Warning message:
-In sqrt(npair - 2) : NaNs produced
+              -0.333               -0.181               -0.205 
 > 
 > ### "original effect size within replication 95% CI"
 > mat <- cbind(in.ci, rows)
@@ -1931,7 +2711,7 @@ In sqrt(npair - 2) : NaNs produced
 > 
 > round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 Original.effect.size      Original.pvalue Original.sample.size 
-               0.121                0.032               -0.226 
+               0.121                0.032               -0.221 
      Inst.1st.author      Inst.sen.author       Cit.1st.author 
               -0.132               -0.104                0.004 
       Cit.sen.author           Cit.impact          concep.repl 
@@ -1939,7 +2719,7 @@ Original.effect.size      Original.pvalue Original.sample.size
             dir.repl             expe.req      oppo.expec.bias 
                0.116               -0.077               -0.109 
            oppo.dili             surp.res             exci.res 
-              -0.037               -0.113               -0.098 
+              -0.037               -0.113               -0.133 
 > 
 > ### "subjective 'yes' to 'Did it replicate?'"
 > mat <- cbind(replic, rows)
@@ -1950,7 +2730,7 @@ Original.effect.size      Original.pvalue Original.sample.size
 > 
 > round(rcorr(sub, type = "spearman")$r[-1,1], 3) # Create table with correlations and select the appropriate rows
 Original.effect.size      Original.pvalue Original.sample.size 
-               0.277               -0.260               -0.214 
+               0.277               -0.260               -0.185 
      Inst.1st.author      Inst.sen.author       Cit.1st.author 
               -0.002               -0.019                0.117 
       Cit.sen.author           Cit.impact          concep.repl 
@@ -1958,7 +2738,7 @@ Original.effect.size      Original.pvalue Original.sample.size
             dir.repl             expe.req      oppo.expec.bias 
                0.047               -0.044               -0.172 
            oppo.dili             surp.res             exci.res 
-              -0.149               -0.241               -0.085 
+              -0.149               -0.241               -0.074 
 > 
 > ##########################
 > ##### TABLE S5 BRIAN #####
@@ -2075,15 +2855,13 @@ In cbind(MASTER$Institution.prestige..1st.author..R., MASTER$Institution.prestig
 > 
 > rcorr(sub, type = "spearman")$r[-1,1] # Create table with correlations and select the appropriate rows
    Inst.1st.author Inst.senior.author     Cit.1st.author  Cit.senior.author 
-                NA                 NA                 NA                 NA 
+      -0.435664594       -0.422608584       -0.044844694       -0.070198961 
           position             degree         total.publ             domain 
-                NA                 NA                 NA                 NA 
+      -0.241024867       -0.039577160        0.036597136        0.129801303 
             method              imple          data.coll           repl.sim 
-                NA                 NA                 NA                 NA 
+       0.213745534       -0.114932477        0.229975015       -0.004953132 
          diff.impl             repl.N            power.R            sur.out 
-                NA                 NA                 NA                 NA 
-Warning message:
-In sqrt(npair - 2) : NaNs produced
+      -0.058724131       -0.692297041        0.142326862       -0.323111236 
 > 
 > ### "original effect size within replication 95% CI"
 > mat <- cbind(in.ci, rows)
