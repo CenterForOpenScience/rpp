@@ -39,3 +39,7 @@ Lines 922-971 in `masterscript.R` correspond to the *Meta­analysis of differe
 
 Lines 1101-1446 in `masterscript.R` correspond to the *Moderator Analyses* section.
 
+### versions used of packages in the analyses
+- `R` package: `v3.2.1`
+- `metafor` package: `v1.9-7`
+- `Hmisc` package: `v3.16-0` 
