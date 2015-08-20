@@ -1,7 +1,8 @@
-# Reproducibility project
-Repository for working on the Reproducibility project. Here we develop the analyses for Tilburg. The Github repository also operates as the issue tracker for the Tilburg people on the analysis committee.
+# Reproducibility Project: Psychology
+Repository for working on the Reproducibility Project: Psychology. These files represent the analyses conducted in Tilburg and
+reported in the Science publication. The Github repository also operates as the issue tracker for the analysis committee.
 
-The data are contained in this repository and were retrieved from the [Masterdata](https://docs.google.com/spreadsheets/d/10IXGYUvt9vb64FyXP2Wlf03X5lPo_AvhQOsNs6w84dk/edit#gid=0) sheet on March 23, 2015. Differences might arise due to changes made subsequently to the Masterdata.
+The data are contained in this repository and were retrieved from rpp_data.csv. Differences might arise due to changes made subsequently to the data.
 
 ## Running the analyses for the RP:P project
 There are two ways of getting the files required to reproduce all analyses in the RPP manuscript:
