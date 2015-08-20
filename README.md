@@ -31,13 +31,11 @@ Lines 255-299 in `masterscript.R` correspond to the figure in *Evaluating replic
 
 Lines 301-531 are data-ordering code.
 
-Lines ??-?? in `masterscript.R` correspond to the *Combining original and replication effect sizes for cumulative evidence​* section.
+Lines 775-920 in `masterscript.R` correspond to the *Combining original and replication effect sizes for cumulative evidence​* section.
 
-Lines ??-?? in `masterscript.R` correspond to the *Subjective assessment of “Did it replicate?”* section.
+Lines 973-1043 in `masterscript.R` correspond to the *Meta­analysis of all original study effects, and of all replication study effects* section.
 
-Lines ??-?? in `masterscript.R` correspond to the *Meta­analysis of all original study effects, and of all replication study effects* section.
+Lines 922-971 in `masterscript.R` correspond to the *Meta­analysis of difference of effect size between original and replication study* section.
 
-Lines ??-?? in `masterscript.R` correspond to the *Meta­analysis of difference of effect size between original and replication study* section.
-
-Lines ??-?? in `masterscript.R` correspond to the *Moderator Analyses* section.
+Lines 1101-1446 in `masterscript.R` correspond to the *Moderator Analyses* section.
 
