@@ -10,7 +10,9 @@ setwd(choose.dir())
 MASTER <- read.csv('rpp_data.csv', sep = ";")[1:167, ]
 # source functions
 source('functions.r')
+if(!require(Hmisc)){install.packages('Hmisc')}
 library(Hmisc)
+if(!require(metafor)){install.packages('metafor')}
 library(metafor)
 
 # ALL ANALYSES INCLUDE PAIRWISE SELECTION.
