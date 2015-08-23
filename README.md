@@ -1,9 +1,3 @@
----
-output:
-  html_document:
-    keep_md: yes
-    toc: yes
----
 # Reproducibility Project: Psychology
 Repository for working on the Reproducibility Project: Psychology. These files represent the analyses conducted in Tilburg and
 reported in the Science publication, as well as the code used to generate Figures 1-3. The Github repository also operates as the issue tracker for the analysis committee.
@@ -63,7 +57,7 @@ Download this file either by cloning this repository as explained above, or by s
 
 To generate the Figures: 
   
-1. Open your local of the file `RPP_figures.R` in your `R` environment.  
+1. Open your local copy of the file `RPP_figures.R` in your `R` environment.  
 2. Select `run all` from your `R` GUI or use the `R` console to run: `source('RPP_figures.R', echo=TRUE)` (this assumes the `RPP_figures.R` file is in current working directory)  
   
 > **Note:** You will need an internet connection to run the script.  
