@@ -13,8 +13,8 @@ if(!require(Hmisc)){install.packages('Hmisc')}
 library(Hmisc)
 if(!require(metafor)){install.packages('metafor')}
 library(metafor)
-if(!require(readxl)){install.packages('readxl')}
-library(readxl)
+if(!require(xlsx)){install.packages('xlsx')}
+library(xlsx)
 if(!require(httr)){install.packages('httr')}
 library(httr)
 
