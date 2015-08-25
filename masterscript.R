@@ -6,14 +6,21 @@
 ######################################################################################
 
 setwd(choose.dir())
-# Read in Tilburg data
-MASTER <- read.csv('rpp_data.csv', sep = ";")[1:167, ]
+
 # source functions
 source('functions.r')
 if(!require(Hmisc)){install.packages('Hmisc')}
 library(Hmisc)
 if(!require(metafor)){install.packages('metafor')}
 library(metafor)
+if(!require(readxl)){install.packages('readxl')}
+library(readxl)
+if(!require(httr)){install.packages('httr')}
+library(httr)
+
+# Read in Tilburg data
+info <- GET('https://osf.io/5wup8/?action=download', write_disk('RPP_master_data.xlsx', overwrite = TRUE))
+MASTER <- read.xlsx(file='RPP_master_data.xlsx',sheetIndex=1)
 
 # ALL ANALYSES INCLUDE PAIRWISE SELECTION.
 
