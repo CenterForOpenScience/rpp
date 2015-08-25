@@ -1,9 +1,3 @@
----
-output:
-  html_document:
-    keep_md: yes
-    toc: yes
----
 # Reproducibility Project: Psychology
 Repository for working on the Reproducibility Project: Psychology. These files represent the analyses conducted in Tilburg and
 reported in the Science publication, as well as the code used to generate Figures 1-3. The Github repository also operates as the issue tracker for the analysis committee.
