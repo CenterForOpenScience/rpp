@@ -23,11 +23,11 @@ require(devtools)
 source_url('https://raw.githubusercontent.com/FredHasselman/toolboxR/master/C-3PR.R')
 
 # This will load and (if necessary) install libraries frequently used for data management and plotting
-in.IT(c('plyr','dplyr','ggplot2','RColorBrewer','scales','lattice','gridExtra'))
+in.IT(c('ggplot2','RColorBrewer','lattice','gridExtra','plyr','dplyr','httr'))
 
-# Read the data from the GoogleSheet
-# Note: get.GoogleSheet() returns a list with the GoogleSheet data (df) and information (info) containing the URL download timestamp and original column and rownames (these names will be changed if dfCln=TRUE).  
-RPPdata <- get.GoogleSheet(data='RPPdata',dfCln=TRUE)$df
+# Read the data from the OSF storage
+# Note: get.OSFfile() returns a list with the Excel data (df) and information (info) containing the URL download timestamp and original column and rownames (these names will be changed if dfCln=TRUE).  
+RPPdata <- get.OSFfile(code='https://osf.io/5wup8/',dfCln=T)$df
 
 # Select the completed replication studies
 RPPdata <- dplyr::filter(RPPdata, !is.na(T.pval.USE.O),!is.na(T.pval.USE.R))
