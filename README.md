@@ -101,7 +101,7 @@ Load (and if necessary install) libraries used for data management and plotting 
 RPPdata <- get.OSFfile(code='https://osf.io/fgjvw/',dfCln=T)$df
 ```
 Read the data from the OSF storage
-> *Note:* get.OSFfile() returns a list with the Excel data (df) and information (info) containing the URL download timestamp and original column and rownames (these names will be changed if dfCln=TRUE).  
+> *Note:* get.OSFfile() returns a list with the CSV data (df) and information (info) containing the URL download timestamp and original column and rownames (these names will be changed if dfCln=TRUE).  
 
 *Lines 32-41*:  
 These lines contain code to select the correct studies and prepare some variables needed for plotting.  
