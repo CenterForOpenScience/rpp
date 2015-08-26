@@ -13,14 +13,13 @@ if(!require(Hmisc)){install.packages('Hmisc')}
 library(Hmisc)
 if(!require(metafor)){install.packages('metafor')}
 library(metafor)
-if(!require(xlsx)){install.packages('xlsx')}
-library(xlsx)
 if(!require(httr)){install.packages('httr')}
 library(httr)
 
 # Read in Tilburg data
-info <- GET('https://osf.io/5wup8/?action=download', write_disk('RPP_master_data.xlsx', overwrite = TRUE))
-MASTER <- read.xlsx(file='RPP_master_data.xlsx',sheetIndex=1)
+info <- GET('https://osf.io/fgjvw/?action=download&version=1', write_disk('rpp_data.csv', overwrite = TRUE))
+MASTER <- read.csv("rpp_data.csv")[1:167, ]
+colnames(MASTER)[1] <- "ID" # Change first column name to ID to be able to load .csv file
 
 # ALL ANALYSES INCLUDE PAIRWISE SELECTION.
 
