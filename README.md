@@ -22,30 +22,29 @@ The `masterscript.R` contains all the analyses conducted by the analysis team, s
 
 Note that there was some code run in TURBO PASCAL, which was not run in R and is only available in the supplement.
 
-Lines 46-56 in `masterscript.R` correspond to the *Preliminary analyses* section.
+Lines 45-55 in `masterscript.R` correspond to the *Preliminary analyses* section.
 
-Lines 58-186 in `masterscript.R` correspond to the *Evaluating replication effect against null hypothesis of no effect* section. Note that this section also includes the part with TURBO PASCAL code.
+Lines 57-185 in `masterscript.R` correspond to the *Evaluating replication effect against null hypothesis of no effect* section. Note that this section also includes the part with TURBO PASCAL code.
 
-Lines 188-261 in `masterscript.R` correspond to the *Comparing original and replication effect sizes* section.
+Lines 187-260 in `masterscript.R` correspond to the *Comparing original and replication effect sizes* section.
 
-Lines 263-307 in `masterscript.R` correspond to the figure in *Evaluating replication effect against original effect size* section. Code from [A5] is in lines 541-767
+Lines 262-306 in `masterscript.R` correspond to the figure in *Evaluating replication effect against original effect size* section. Code from [A5] is in lines 540-766
 
-Lines 309-539 are data-ordering code.
+Lines 308-538 are data-ordering code.
 
-Lines 783-928 in `masterscript.R` correspond to the *Combining original and replication effect sizes for cumulative evidence​* section.
+Lines 782-927 in `masterscript.R` correspond to the *Combining original and replication effect sizes for cumulative evidence​* section.
 
-Lines 981-1051 in `masterscript.R` correspond to the *Meta­analysis of all original study effects, and of all replication study effects* section.
+Lines 980-1050 in `masterscript.R` correspond to the *Meta­analysis of all original study effects, and of all replication study effects* section.
 
-Lines 930-979 in `masterscript.R` correspond to the *Meta­analysis of difference of effect size between original and replication study* section.
+Lines 929-978 in `masterscript.R` correspond to the *Meta­analysis of difference of effect size between original and replication study* section.
 
-Lines 1109-1455 in `masterscript.R` correspond to the *Moderator Analyses* section.
+Lines 1108-1454 in `masterscript.R` correspond to the *Moderator Analyses* section.
 
 ### Versions of packages used in the analyses
 - `R` package: `v3.2.1`
 - `metafor` package: `v1.9-7`
 - `Hmisc` package: `v3.16-0`   
-- `xlsx` package: `v0.5.7`  
-- `Hmisc` package: `v1`  
+- `httr` package: `v1`  
   
   
 ******   

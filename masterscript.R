@@ -17,7 +17,7 @@ if(!require(httr)){install.packages('httr')}
 library(httr)
 
 # Read in Tilburg data
-info <- GET('https://osf.io/fgjvw/?action=download&version=1', write_disk('rpp_data.csv', overwrite = TRUE))
+info <- GET('https://osf.io/fgjvw/?action=download', write_disk('rpp_data.csv', overwrite = TRUE))
 MASTER <- read.csv("rpp_data.csv")[1:167, ]
 colnames(MASTER)[1] <- "ID" # Change first column name to ID to be able to load .csv file
 
@@ -132,7 +132,7 @@ summary(MASTER$T_pval_USE..R.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pv
 
 # Figure S1 (CDF PVAL)
 setEPS()
-postscript("figures/figure s1.eps", width = 7, height = 8) # change file name
+postscript("figure s1.eps", width = 7, height = 8) # change file name
 plot(ecdf(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
      lty=1,
      frame.plot=F, 
@@ -158,7 +158,7 @@ dev.off()
 
 # Figure S2 (PDF Pvalues)
 setEPS()
-postscript("figures/figure s2.eps", width = 7, height = 8) # change file name
+postscript("figure s2.eps", width = 7, height = 8) # change file name
 plot(density(MASTER$T_pval_USE..O.[!is.na(MASTER$T_pval_USE..O.) & !is.na(MASTER$T_pval_USE..R.)]),
      lty=1,
      frame.plot=F, 
@@ -219,7 +219,7 @@ cor(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)],
     method = "spearman")
 
 setEPS()
-postscript("figures/figure s3.eps", width = 11, height = 7) # change file name
+postscript("figure s3.eps", width = 11, height = 7) # change file name
 # Histogram effects 
 par(mfrow=c(1,2))
 hist1 <- hist(MASTER$T_r..O.[!is.na(MASTER$T_r..O.) & !is.na(MASTER$T_r..R.)], breaks=15)
@@ -264,7 +264,7 @@ dev.off()
 # Plot by CHJ Hartgerink
 
 setEPS()
-postscript("figures/figure s4.eps", width = 7, height = 8) # change file name
+postscript("figure s4.eps", width = 7, height = 8) # change file name
 plot(y = MASTER$T_r..R., x = MASTER$T_r..O., xlab = "Effect size r (original)",
      ylab = "Effect size r (replication)", col = "white", xlim = c(-.3, 1), ylim = c(-.3, 1),
      frame.plot=F,
@@ -936,7 +936,7 @@ res <- rma(yi = final$yi, sei = final$sei, method = "REML")
 res
 
 setEPS()
-postscript("figures/figure s7.eps", width = 7, height = 8) # change file name
+postscript("figure s7.eps", width = 7, height = 8) # change file name
 funnel(res, main = "Funnel plot based on difference original and replication study")
 dev.off()
 
@@ -987,7 +987,7 @@ res <- rma(yi = final$fis.o, sei = final$sei.o, method = "REML")
 res
 
 setEPS()
-postscript("figures/figure s5.eps", width = 7, height = 8) # change file name
+postscript("figure s5.eps", width = 7, height = 8) # change file name
 funnel(res, main = "Funnel plot based on original studies")
 dev.off()
 
@@ -1020,7 +1020,7 @@ res <- rma(yi = final$fis.r, sei = final$sei.r, method = "REML")
 res
 
 setEPS()
-postscript("figures/figure s6.eps", width = 7, height = 8) # change file name
+postscript("figure s6.eps", width = 7, height = 8) # change file name
 funnel(res, main = "Funnel plot based on replication studies")
 dev.off()
 
