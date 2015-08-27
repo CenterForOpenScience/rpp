@@ -17,7 +17,7 @@ if(!require(httr)){install.packages('httr')}
 library(httr)
 
 # Read in Tilburg data
-info <- GET('https://osf.io/fgjvw/?action=download', write_disk('rpp_data.csv', overwrite = TRUE))
+info <- GET('https://osf.io/fgjvw/?action=download', write_disk('rpp_data.csv', overwrite = TRUE)) #downloads data file from the OSF
 MASTER <- read.csv("rpp_data.csv")[1:167, ]
 colnames(MASTER)[1] <- "ID" # Change first column name to ID to be able to load .csv file
 

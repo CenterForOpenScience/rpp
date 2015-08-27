@@ -2,7 +2,7 @@
 Repository for working on the Reproducibility Project: Psychology. These files represent the analyses conducted in Tilburg and
 reported in the Science publication, as well as the code used to generate Figures 1-3. The Github repository also operates as the issue tracker for the analysis committee.
 
-The data are contained in this repository and were retrieved from rpp_data.csv. Differences might arise due to changes made subsequently to the data. The data used to generate the Figures 1-3 is downloaded from a GoogleSheet.   
+The data are contained in this repository and were retrieved from rpp_data.csv. The analysis script includes a function to download the .csv file directly from the Open Science Framework project page. If you would like to view the .csv file separately, you can visit it here: https://osf.io/fgjvw/. Differences might arise due to changes made subsequently to the data. The data used to generate the Figures 1-3 is downloaded from a GoogleSheet.   
 
 ## Running the analyses for the RP:P project
 There are two ways of getting the files required to reproduce all analyses in the RPP manuscript:
