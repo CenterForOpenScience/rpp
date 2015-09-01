@@ -5,10 +5,11 @@ reported in the Science publication, as well as the code used to generate Figure
 The data are contained in this repository and were retrieved from rpp_data.csv. The analysis script includes a function to download the .csv file directly from the Open Science Framework project page. If you would like to view the .csv file separately, you can visit it here: https://osf.io/fgjvw/. Differences might arise due to changes made subsequently to the data. The data used to generate the Figures 1-3 is downloaded from the OSF.  
 
 ## Running the analyses for the RP:P project
-There are two ways of getting the files required to reproduce all analyses in the RPP manuscript:
+There are three ways of getting the files required to reproduce all analyses in the RPP manuscript:
 
-1. Download the zip file `rpp_reproduce.zip` and extract the folder (this is for the non-git users). You can use [this](https://github.com/centerforopenscience/rpp/raw/master/rpp_reproduce.zip) link to do that.
-2. Clone this git repository and run the `masterscript.R` (this is for the git-users. The command to do this would be `git clone https://github.com/centerforopenscience/rpp FOLDERNAME`, where FOLDERNAME is the name of the folder these files will be contained (note your working directory to know where this folder will be placed)
+1. Download the `masterscript.R` file, and run this in R (downloads all dependencies from the OSF)
+2. Download the zip file `rpp_reproduce.zip` and extract the folder (this is for the non-git users). You can use [this](https://github.com/centerforopenscience/rpp/raw/master/rpp_reproduce.zip) link to do that.
+3. Clone this git repository and run the `masterscript.R` (this is for the git-users. The command to do this would be `git clone https://github.com/centerforopenscience/rpp FOLDERNAME`, where FOLDERNAME is the name of the folder these files will be contained (note your working directory to know where this folder will be placed)
 
 Once the files are downloaded, running the analyses has been made user-friendly (please make sure you have the R statistical package installed, downloadable [here](https://cran.r-project.org/)).
 
@@ -22,23 +23,23 @@ The `masterscript.R` contains all the analyses conducted by the analysis team, s
 
 Note that there was some code run in TURBO PASCAL, which was not run in R and is only available in the supplement.
 
-Lines 45-55 in `masterscript.R` correspond to the *Preliminary analyses* section.
+Lines 46-56 in `masterscript.R` correspond to the *Preliminary analyses* section.
 
-Lines 57-185 in `masterscript.R` correspond to the *Evaluating replication effect against null hypothesis of no effect* section. Note that this section also includes the part with TURBO PASCAL code.
+Lines 58-186 in `masterscript.R` correspond to the *Evaluating replication effect against null hypothesis of no effect* section. Note that this section also includes the part with TURBO PASCAL code.
 
-Lines 187-260 in `masterscript.R` correspond to the *Comparing original and replication effect sizes* section.
+Lines 188-261 in `masterscript.R` correspond to the *Comparing original and replication effect sizes* section.
 
-Lines 262-306 in `masterscript.R` correspond to the figure in *Evaluating replication effect against original effect size* section. Code from [A5] is in lines 540-766
+Lines 263-307 in `masterscript.R` correspond to the figure in *Evaluating replication effect against original effect size* section. Code from [A5] is in lines 541-767
 
-Lines 308-538 are data-ordering code.
+Lines 309-539 are data-ordering code.
 
-Lines 782-927 in `masterscript.R` correspond to the *Combining original and replication effect sizes for cumulative evidence​* section.
+Lines 783-928 in `masterscript.R` correspond to the *Combining original and replication effect sizes for cumulative evidence​* section.
 
-Lines 980-1050 in `masterscript.R` correspond to the *Meta­analysis of all original study effects, and of all replication study effects* section.
+Lines 981-1051 in `masterscript.R` correspond to the *Meta­analysis of all original study effects, and of all replication study effects* section.
 
-Lines 929-978 in `masterscript.R` correspond to the *Meta­analysis of difference of effect size between original and replication study* section.
+Lines 930-979 in `masterscript.R` correspond to the *Meta­analysis of difference of effect size between original and replication study* section.
 
-Lines 1108-1454 in `masterscript.R` correspond to the *Moderator Analyses* section.
+Lines 1109-1455 in `masterscript.R` correspond to the *Moderator Analyses* section.
 
 ### Versions of packages used in the analyses
 - `R` package: `v3.2.1`

@@ -8,13 +8,14 @@
 setwd(choose.dir())
 
 # source functions
+if(!require(httr)){install.packages('httr')}
+library(httr)
+info <- GET('https://osf.io/b2vn7/?action=download', write_disk('functions.r', overwrite = TRUE)) #downloads data file from the OSF
 source('functions.r')
 if(!require(Hmisc)){install.packages('Hmisc')}
 library(Hmisc)
 if(!require(metafor)){install.packages('metafor')}
 library(metafor)
-if(!require(httr)){install.packages('httr')}
-library(httr)
 
 # Read in Tilburg data
 info <- GET('https://osf.io/fgjvw/?action=download', write_disk('rpp_data.csv', overwrite = TRUE)) #downloads data file from the OSF
