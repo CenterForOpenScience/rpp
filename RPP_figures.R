@@ -27,12 +27,12 @@ in.IT(c('ggplot2','RColorBrewer','lattice','gridExtra','plyr','dplyr','httr'))
 
 # Read the data from the OSF storage
 # Note: get.OSFfile() returns a list with the Excel data (df) and information (info) containing the URL download timestamp and original column and rownames (these names will be changed if dfCln=TRUE).  
-RPPdata <- GET('https://osf.io/fgjvw/?action=download', write_disk('rpp_data.csv', overwrite = TRUE))
+#RPPdata <- get.OSFfile(code='https://osf.io/fgjvw/',dfCln=T)$df
 
 ## If you dowloaded the csv file to your harddrive use this code:
-# RPPdata<-read.csv('rpp_data.csv',stringsAsFactors=F )
-# RPPdata<-df.Clean(RPPdata)
-# RPPdata<-RPPdata$df
+ RPPdata<-read.csv('rpp_data.csv',stringsAsFactors=F )
+ RPPdata<-df.Clean(RPPdata)
+ RPPdata<-RPPdata$df
 
 # Select the completed replication studies
 RPPdata <- dplyr::filter(RPPdata, !is.na(T.pval.USE.O),!is.na(T.pval.USE.R))
