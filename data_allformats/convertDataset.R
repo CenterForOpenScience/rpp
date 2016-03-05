@@ -22,6 +22,8 @@ varnames <-  colnames(RPPdata[,(nNA<168)&!nINT])
 # "X95.power"                    "Planned.Power"                "Original.Author.s.Assessment" "P.value.R"
 # "Power.R"
 
+colnames(RPPdata)
+
 # Fix it!
 for(cn in varnames){
     RPPdata[cn] <- as.numeric(RPPdata[cn][[1]])
