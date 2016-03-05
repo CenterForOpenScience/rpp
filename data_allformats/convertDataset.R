@@ -1,6 +1,7 @@
 # Load packages
 library(devtools)
-source_url('https://raw.githubusercontent.com/FredHasselman/toolboxR/master/C-3PR.R')
+source_url('https://raw.githubusercontent.com/FredHasselman/ManyLabRs/master/manylabRs/R/getData.R')
+source_url('https://raw.githubusercontent.com/FredHasselman/ManyLabRs/master/manylabRs/R/inIT.R')
 # This will load and (if necessary) install libraries frequently used for data management and plotting
 in.IT(c('plyr','dplyr','httr','rio','haven'))
 
@@ -11,23 +12,28 @@ RPPdata <- get.OSFfile(code='https://osf.io/fgjvw/',dfCln=TRUE)$df
 
 # Figure out how many NAs result from changing to numeric
 errs <- llply(1:ncol(RPPdata), function(c) try.CATCH(sum(is.na(as.numeric(RPPdata[c][[1]])))))
+
 nNA  <- laply(seq_along(errs), function(e) if(is.integer(errs[[e]]$value)){errs[[e]]$value}else{168})
 # Which variables are numeric
 nINT <- colwise(is.numeric)(RPPdata)
 
 # These variables are likely Character format and should be changed to Numeric format
-varnames <-  colnames(RPPdata[,(nNA<168)&!nINT])
-# "Surprising.result.O"          "Exciting.result.O"            "Replicated.study.number.R"    "N.O"
-# "Reported.P.value.O"           "X.Tails.O"                    "X80.power"                    "X90.power"
-# "X95.power"                    "Planned.Power"                "Original.Author.s.Assessment" "P.value.R"
-# "Power.R"
+varnames <-  colnames(RPPdata[,(nNA<120)&!nINT])
+# [1] "Surprising.result.O"          "Exciting.result.O"            "Replicated.study.number.R"    "N.O"
+# [5] "80.power"                     "90.power"                     "95.power"                     "Planned.Power"
+# [9] "Original.Author.s.Assessment" "P.value.R"                    "Power.R"
 
-colnames(RPPdata)
 
 # Fix it!
 for(cn in varnames){
     RPPdata[cn] <- as.numeric(RPPdata[cn][[1]])
 }
+
+# Convert empty cells to NA
+l_ply(1:ncol(RPPdata), function(c) if(is.character(RPPdata[c][[1]])){
+    RPPdata[c][[1]] <<- zap_empty(RPPdata[c][[1]])
+    }
+)
 
 # Use package rio for export to:
 #
