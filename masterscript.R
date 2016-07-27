@@ -7,6 +7,10 @@
 
 setwd(choose.dir())
 
+# If you are having problems with reading in the data run this
+# Thanks @hcp4715
+# Sys.setlocale("LC_ALL", "English")
+
 # source functions
 if(!require(httr)){install.packages('httr')}
 library(httr)
